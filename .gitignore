@@ -1,0 +1,10 @@
+desktop.ini
+build/
+tmp/
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.synctex.gz
+*.toc
