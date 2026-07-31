@@ -8,9 +8,12 @@ anteriores. Cada tipo compara simultaneamente tres alternativas:
 3. trabajo formal con PAYG.
 
 La capitalizacion es portable. El PAYG tiene una probabilidad de elegibilidad
-creciente con el tipo, devuelve una fraccion del saldo cuando el trabajador no
-cumple los requisitos y aplica un beneficio con piso y techo. No se imponen
-cuotas, umbrales de eleccion ni shocks logit.
+creciente con el tipo y devuelve la cuenta nocional sin interes real cuando el
+trabajador no cumple los requisitos. La calibracion usa un aporte total de 16%,
+11.5% acreditado a capitalizacion y 13% a la cuenta nocional PAYG. Dos momentos
+comparables del CEDE Pension Model disciplinan formalidad y elegibilidad; la
+afiliacion PAYG de entrantes y el retorno real quedan como validaciones externas.
+No se imponen cuotas, umbrales de eleccion ni shocks logit.
 
 ## Ejecutar las pruebas
 
@@ -35,7 +38,11 @@ Rscript scripts/run_endogenous_analysis.R
 
 El script resuelve primero una malla de 101 tipos y usa esa solucion para
 inicializar la malla de 501 tipos. Tambien ejecuta una sensibilidad local de la
-elegibilidad PAYG. Los resultados se guardan en `outputs/`.
+elegibilidad PAYG. Los resultados se guardan en `../results/`. Los archivos
+`becerra2026_moment_comparison.csv` y
+`becerra2026_parameter_provenance.csv` documentan, respectivamente, los ajustes
+contra los datos y la condicion de cada parametro (directo, calibrado, validado
+o retenido).
 
 ## Alcance
 

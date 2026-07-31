@@ -3,13 +3,30 @@
 
 default_endogenous_parameters <- function() {
   param <- default_parameters("compete")
+
+  # Calibracion colombiana basada en Becerra (2026), CEDE Pension Model.
+  # Un periodo del modelo equivale a 40 anos.
+  param$tau_pension <- 0.160
+  param$replacement_rate <- 0.650
+  param$A_informal <- 0.08215
+
   param$choice_model <- "endogenous"
-  param$payg_eligibility_intercept <- -9.75
+  param$payg_eligibility_intercept <- -8.79
   param$payg_eligibility_slope <- 15.00
-  param$payg_refund_rate <- 0.50
-  param$payg_benefit_multiplier <- 2.80
+  param$payg_refund_rate <- 1.00
+  param$payg_refund_annual_return <- 0.00
+  param$funded_account_rate <- 0.115
+  param$payg_notional_account_rate <- 0.130
+  param$payg_benefit_multiplier <- 2.90
   param$payg_minimum_benefit <- 0.05
   param$payg_maximum_benefit <- 100.00
+
+  # Momentos objetivo. La cobertura contributiva aproxima la probabilidad
+  # media de elegibilidad entre formales; no es una identidad contable.
+  param$target_formal_share <- 0.485
+  param$target_payg_share_among_formal <- 0.100
+  param$target_contributory_coverage <- 0.250
+  param$target_annual_real_return <- 0.040
   param
 }
 
@@ -18,8 +35,13 @@ validate_endogenous_parameters <- function(param) {
   required <- c(
     "choice_model", "payg_eligibility_intercept",
     "payg_eligibility_slope", "payg_refund_rate",
+    "payg_refund_annual_return", "funded_account_rate",
+    "payg_notional_account_rate",
     "payg_benefit_multiplier", "payg_minimum_benefit",
-    "payg_maximum_benefit"
+    "payg_maximum_benefit", "target_formal_share",
+    "target_payg_share_among_formal",
+    "target_contributory_coverage",
+    "target_annual_real_return"
   )
   missing <- setdiff(required, names(param))
   if (length(missing) > 0L) {
@@ -43,6 +65,24 @@ validate_endogenous_parameters <- function(param) {
   )
   assert_scalar(param$payg_refund_rate, "payg_refund_rate", 0, 1)
   assert_scalar(
+    param$payg_refund_annual_return,
+    "payg_refund_annual_return",
+    -0.999999,
+    Inf
+  )
+  assert_scalar(
+    param$funded_account_rate,
+    "funded_account_rate",
+    0,
+    param$tau_pension
+  )
+  assert_scalar(
+    param$payg_notional_account_rate,
+    "payg_notional_account_rate",
+    0,
+    param$tau_pension
+  )
+  assert_scalar(
     param$payg_benefit_multiplier,
     "payg_benefit_multiplier",
     0,
@@ -58,6 +98,25 @@ validate_endogenous_parameters <- function(param) {
     param$payg_maximum_benefit,
     "payg_maximum_benefit",
     param$payg_minimum_benefit,
+    Inf
+  )
+  assert_scalar(param$target_formal_share, "target_formal_share", 0, 1)
+  assert_scalar(
+    param$target_payg_share_among_formal,
+    "target_payg_share_among_formal",
+    0,
+    1
+  )
+  assert_scalar(
+    param$target_contributory_coverage,
+    "target_contributory_coverage",
+    0,
+    param$target_formal_share
+  )
+  assert_scalar(
+    param$target_annual_real_return,
+    "target_annual_real_return",
+    -0.999999,
     Inf
   )
   invisible(TRUE)
@@ -93,29 +152,37 @@ pension_choice_accounts <- function(
   in_payg <- choice == "payg"
   formal <- funded | in_payg
   covered_wage <- wage * as.numeric(formal)
-  funded_contribution <- param$tau_pension * covered_wage *
+  funded_contribution <- param$funded_account_rate * covered_wage *
     as.numeric(funded)
+  funded_public_contribution <- (
+    param$tau_pension - param$funded_account_rate
+  ) * covered_wage * as.numeric(funded)
   payg_contribution <- param$tau_pension * covered_wage *
     as.numeric(in_payg)
+  payg_notional_contribution <-
+    param$payg_notional_account_rate * covered_wage *
+      as.numeric(in_payg)
 
   eligibility <- payg_eligibility_probability(i, param) *
     as.numeric(in_payg)
   eligible_pension_base <- pmin(
     param$payg_maximum_benefit,
-    pmax(
+    param$payg_benefit_multiplier * pmax(
       param$payg_minimum_benefit,
-      param$payg_benefit_multiplier *
-        param$replacement_rate * covered_wage
+      param$replacement_rate * covered_wage
     )
   )
   eligible_benefit <- (1 - param$m) * eligible_pension_base /
     (1 + param$g)
   refund_benefit <- param$payg_refund_rate *
-    (1 + prices$r) * payg_contribution / (1 + param$g)
+    (1 + param$payg_refund_annual_return)^40 *
+    payg_notional_contribution / (1 + param$g)
 
   list(
     funded_contribution = funded_contribution,
+    funded_public_contribution = funded_public_contribution,
     payg_contribution = payg_contribution,
+    payg_notional_contribution = payg_notional_contribution,
     funded_benefit = (1 + prices$r) * funded_contribution /
       (1 + param$g),
     payg_benefit = as.numeric(in_payg) * (
@@ -191,7 +258,9 @@ household_choice_outcomes <- function(i, choice, param, prices) {
     experienced_utility = current_utility +
       (1 - param$m) * param$delta * old_utility,
     funded_contribution = pension$funded_contribution,
+    funded_public_contribution = pension$funded_public_contribution,
     payg_contribution = pension$payg_contribution,
+    payg_notional_contribution = pension$payg_notional_contribution,
     funded_benefit = pension$funded_benefit,
     payg_benefit = pension$payg_benefit,
     eligibility_probability = pension$eligibility_probability,
@@ -355,6 +424,10 @@ evaluate_endogenous_cohort <- function(param, prices, grid) {
   informal_share <- integrate_indicator("informal")
   capitalization_share <- integrate_indicator("capitalization")
   payg_share <- integrate_indicator("payg")
+  formal_eligibility_mass <- integrate_piecewise(
+    as.numeric(formal) * payg_eligibility_probability(left_i, param),
+    as.numeric(formal) * payg_eligibility_probability(right_i, param)
+  )
 
   formal_labor <- integrate_piecewise(
     as.numeric(formal) * param$base_formal *
@@ -390,6 +463,10 @@ evaluate_endogenous_cohort <- function(param, prices, grid) {
     formal_share = capitalization_share + payg_share,
     capitalization_share = capitalization_share,
     payg_share = payg_share,
+    payg_share_among_formal = payg_share /
+      (capitalization_share + payg_share),
+    formal_eligibility_probability = formal_eligibility_mass /
+      (capitalization_share + payg_share),
     formal_labor = formal_labor,
     informal_labor = informal_labor,
     capital_next = voluntary_capital + funded_capital +
@@ -409,6 +486,14 @@ evaluate_endogenous_cohort <- function(param, prices, grid) {
     payg_contributions = integrate_piecewise(
       left$payg_contribution,
       right$payg_contribution
+    ),
+    funded_public_contributions = integrate_piecewise(
+      left$funded_public_contribution,
+      right$funded_public_contribution
+    ),
+    pension_public_revenue = integrate_piecewise(
+      left$funded_public_contribution + left$payg_contribution,
+      right$funded_public_contribution + right$payg_contribution
     ),
     payg_benefits_next = integrate_piecewise(
       left$payg_benefit,

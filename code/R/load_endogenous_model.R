@@ -14,3 +14,7 @@ source(
   file.path(project_dir, "R", "endogenous_choice.R"),
   local = .GlobalEnv
 )
+source(
+  file.path(project_dir, "R", "calibration_becerra2026.R"),
+  local = .GlobalEnv
+)

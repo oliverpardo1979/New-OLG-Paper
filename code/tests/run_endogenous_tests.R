@@ -10,6 +10,13 @@ source(file.path(project_dir, "R", "load_endogenous_model.R"))
 
 grid <- make_type_grid(501L)
 param <- default_endogenous_parameters()
+stopifnot(
+  abs(param$tau_pension - 0.160) < 1e-12,
+  abs(param$funded_account_rate - 0.115) < 1e-12,
+  abs(param$payg_notional_account_rate - 0.130) < 1e-12,
+  abs(param$payg_refund_rate - 1.000) < 1e-12,
+  abs(param$payg_refund_annual_return) < 1e-12
+)
 eligibility <- payg_eligibility_probability(grid$i, param)
 stopifnot(all(diff(eligibility) > 0))
 stopifnot(all(eligibility > 0), all(eligibility < 1))
@@ -30,6 +37,15 @@ solution <- solve_steady_state_endogenous(
   residual_tolerance = 2e-6
 )
 stopifnot(solution$validated)
+targets <- becerra2026_targets(param)
+moments <- becerra2026_moments(solution)
+stopifnot(
+  abs(moments[["formal_share"]] - targets[["formal_share"]]) < 0.01,
+  abs(
+    moments[["formal_eligibility_probability"]] -
+      targets[["formal_eligibility_probability"]]
+  ) < 0.01
+)
 shares <- c(
   informal = solution$cohort$informal_share,
   capitalization = solution$cohort$capitalization_share,

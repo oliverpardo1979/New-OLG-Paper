@@ -25,17 +25,20 @@ This paper studies the joint choice of labor-market sector and pension regime in
 with informality. I build a two-period overlapping-generations model in which heterogeneous
 workers choose among informal employment, formal employment with a funded account, and formal
 employment with a pay-as-you-go (PAYG) pension. Funded contributions are portable. PAYG
-eligibility increases with worker type, non-eligible contributors receive a partial refund,
-and the pension formula includes a floor and a ceiling. These institutional differences
-generate two endogenous thresholds without quotas or random-utility shocks. In the benchmark
-equilibrium, 52.5 percent of workers are informal, 45.4 percent choose formal employment with
-capitalization, and 2.0 percent choose formal employment with PAYG. Workers below type 0.476
-are informal, those between 0.476 and 0.801 choose capitalization, and higher types choose
-PAYG. Easier PAYG eligibility increases PAYG participation but also raises the consumption
-tax and informality because the additional benefits are fiscally costly. A local sensitivity
-exercise preserves positive masses in all three alternatives, although the size of the PAYG
-group remains small. The results establish a coherent mechanism for regime coexistence; they
-do not yet constitute an empirical evaluation of a specific pension reform.
+eligibility increases with worker type, non-eligible contributors recover their notional
+balance, and the pension formula includes a floor and a ceiling. I discipline the Colombian
+calibration with legal parameters and long-run moments reported by the CEDE Pension Model.
+The total contribution rate is 16 percent; 11.5 percent is credited to a funded account and
+13 percent to a PAYG notional account. The benchmark matches a 48.5 percent long-run formality
+anchor and an eligibility proxy derived from 25 percent contributory coverage. It produces
+50.9 percent informality, 46.0 percent formal capitalization, and 3.1 percent formal PAYG.
+Workers below type 0.470 are informal, those between 0.470 and 0.771 choose capitalization,
+and higher types choose PAYG. PAYG accounts for 6.4 percent of formal workers, below the
+10 percent enrollment share observed for young entrants. Easier PAYG eligibility raises
+participation but also raises the consumption tax and informality because the additional
+benefits are fiscally costly. The results establish a coherent mechanism for regime
+coexistence and a transparent calibration crosswalk; they are not an evaluation of the
+2024 reform.
 
 \medskip\noindent\textbf{Keywords:} pension choice; informality; funded accounts; pay-as-you-go;
 eligibility; overlapping generations. \quad \textbf{JEL:} E21; H55; J26; J46.
@@ -59,8 +62,8 @@ endogenous choices. The model gives each worker three alternatives:
 The pension regimes differ in three institutional dimensions. A funded account is portable
 and pays the accumulated market return. PAYG requires the worker to complete a contribution
 history, represented by an eligibility probability that increases with productivity. A
-worker who does not qualify receives only a partial refund. Conditional on qualifying, the
-PAYG pension follows a replacement formula with a floor and a ceiling.
+worker who does not qualify recovers the notional balance without a real return. Conditional
+on qualifying, the PAYG pension follows a replacement formula with a floor and a ceiling.
 
 These differences generate comparative advantage across worker types. Low types prefer
 informality because formal taxes and pension contributions exceed the value of formal-sector
@@ -69,25 +72,28 @@ eligibility remains low and their account is portable. High types choose PAYG be
 are likely to qualify and receive its implicit subsidy. The model therefore produces two
 endogenous thresholds rather than imposing an assignment rule.
 
-The benchmark equilibrium has the desired three-way sorting. Workers below type 0.476 are
-informal; workers between 0.476 and 0.801 choose capitalization; and workers above 0.801
-choose PAYG. The corresponding population shares are 52.5, 45.4, and 2.0 percent. The
-consumption tax that balances the consolidated public budget is 16.0 percent.
+The benchmark equilibrium has the desired three-way sorting. Workers below type 0.470 are
+informal; workers between 0.470 and 0.771 choose capitalization; and workers above 0.771
+choose PAYG. The corresponding population shares are 50.9, 46.0, and 3.1 percent. The
+consumption tax that balances the consolidated public budget is 19.6 percent.
 
 The small PAYG share is economically informative. PAYG is selected only by high-productivity
 workers with high eligibility. Moreover, PAYG benefits exceed contemporaneous PAYG
 contributions in the calibration, so easier eligibility increases fiscal expenditure.
-When the eligibility intercept rises from $-10.00$ to $-9.60$, the PAYG share rises from
-1.5 to 2.5 percent, but informality also rises from 49.4 to 55.2 percent and the consumption
-tax from 13.3 to 18.6 percent. The general-equilibrium fiscal response reverses the partial
+When the eligibility intercept rises from $-8.90$ to $-8.70$, the PAYG share rises from
+2.7 to 3.8 percent, but informality rises from 48.3 to 54.8 percent and the consumption
+tax from 17.1 to 23.7 percent. The general-equilibrium fiscal response reverses the partial
 equilibrium presumption that easier eligibility must increase formality.
 
 The paper makes two contributions. First, it replaces exogenous pension assignment with a
 joint discrete choice that remains deterministic and interpretable. Second, it shows that
 eligibility and portability can produce regime coexistence without preference shocks.
-The present exercise is a mechanism and calibration result. The eligibility profile and the
-long-period conversion of PAYG benefits are not estimated independently, so the regime shares
-should not be read as empirical predictions.
+The calibration adds a third contribution: it distinguishes parameters that can be transferred
+from a Colombian microsimulation from those that cannot. Statutory contribution, account, and
+refund rates enter directly; long-run formality and contributory coverage discipline two
+parameters; the observed enrollment of young workers and the assumed real return are retained
+as external checks. The long-period conversion of PAYG benefits remains unidentified, so the
+regime shares should not be read as empirical predictions.
 
 The rest of the paper reviews the related literature, presents the model and calibration,
 reports the equilibrium and sensitivity results, and describes the algorithm.
@@ -117,6 +123,13 @@ formal--informal margin. The objective is not to impose observed regime shares, 
 conditions under which the three alternatives are simultaneously optimal for positive masses
 of workers.
 
+
+For Colombia, \citet{Becerra2026} develops the CEDE Pension Model, a dynamic microsimulation
+that combines household surveys, administrative records, legal rules, and population
+projections. That model supplies the institutional rates and empirical anchors used below.
+Its annual partial-equilibrium accounting and the present model's 40-year general-equilibrium
+period are not interchangeable. The calibration therefore uses a documented crosswalk rather
+than copying the entire parameter vector.
 \section{Model}
 
 \subsection{Demography, heterogeneity, and preferences}
@@ -172,14 +185,16 @@ Informal income is $y_{1I}(i)=w_sz_s(i)$. Both formal alternatives have
 y_{1C}(i)=y_{1P}(i)
 =\left(1-\tau_\ell-\tau_p\right)w_fz_f(i).
 \end{equation}
-Thus the formal regimes differ through retirement benefits, not current contribution rates.
-Baseline transfers are zero.
+Both formal alternatives pay the statutory rate $\tau_p$. The funded account credits
+$\tau_C\leq\tau_p$, while the PAYG notional balance credits $\tau_N\leq\tau_p$; uncredited
+amounts enter consolidated public revenue. The regimes therefore share the current wedge but
+differ in credited balances and retirement benefits. Baseline transfers are zero.
 
 \subsection{Capitalization}
 
 A funded contribution is fully vested and portable:
 \begin{align}
-A_C(i)&=\tau_p w_fz_f(i),\\
+A_C(i)&=\tau_C w_fz_f(i),\\
 p_C(i)&=\frac{(1+r)A_C(i)}{1+g}.
 \label{eq:capitalization}
 \end{align}
@@ -202,7 +217,7 @@ The pension conditional on eligibility is
 \mathcal B(y_i)=
 \min\left\{
 B_{\max},
-\max\left[B_{\min},\,\chi b y_i\right]
+\chi\max\left[B_{\min},\,b y_i\right]
 \right\},
 \qquad y_i=w_fz_f(i),
 \label{eq:paygformula}
@@ -210,17 +225,19 @@ B_{\max},
 where $b$ is the replacement parameter and $\chi$ converts the replacement flow into units
 of the long model period. It also captures the implicit subsidy embedded in the PAYG formula.
 
-If the worker fails to qualify, a fraction $\varphi$ of the market value of contributions is
-returned. Expected PAYG retirement income is therefore
+If the worker fails to qualify, a fraction $\varphi$ of the notional balance is returned.
+Let $r_N$ denote the annual real return credited to that balance. Expected PAYG retirement
+income is therefore
 \begin{equation}
 p_P(i)=
 q(i)\frac{(1-m)\mathcal B(y_i)}{1+g}
 +[1-q(i)]\varphi
-\frac{(1+r)\tau_py_i}{1+g}.
+\frac{(1+r_N)^{40}\tau_Ny_i}{1+g}.
 \label{eq:paygbenefit}
 \end{equation}
-PAYG contributions are public revenue and expected benefits, including refunds, are public
-expenditure.
+In the Colombian calibration, $\varphi=1$ and $r_N=0$: a non-eligible worker recovers the
+notional contribution adjusted for inflation but receives no real return. Expected PAYG
+benefits, including refunds, are public expenditure.
 
 \subsection{Joint choice and endogenous thresholds}
 
@@ -259,13 +276,18 @@ Next period's capital is
 \begin{equation}
 K'=\frac{1}{1+n}\int_0^1a_{j^*(i)}(i)f(i)\dd i
 +\frac{1}{(1+n)(1+g)}
-\int_0^1d_C(i)\tau_pw_fz_f(i)f(i)\dd i.
+\int_0^1d_C(i)\tau_Cw_fz_f(i)f(i)\dd i.
 \end{equation}
 
-With PAYG receipts $R^{pg}$ and expected benefits $B^{pg}$, the consolidated public budget is
+Public pension revenue is
+\begin{equation}
+R^{pen}=\int_0^1\left[d_P(i)\tau_p+d_C(i)(\tau_p-\tau_C)\right]
+w_fz_f(i)f(i)\dd i.
+\end{equation}
+With expected PAYG benefits $B^{pg}$, the consolidated public budget is
 \begin{equation}
 \tau_c\mathcal C+\tau_\ell w_fN_f+\tau_nw_fN_f
-+\tau_k\widetilde rK+R^{pg}
++\tau_k\widetilde rK+R^{pen}
 =G+\mathcal T+B^{pg}.
 \label{eq:budget}
 \end{equation}
@@ -274,91 +296,150 @@ that raises expected PAYG benefits can affect all three choices through the fisc
 
 \section{Calibration}
 
-Table~\ref{tab:parameters} reports the benchmark. Annual rates are compounded over 40 years:
-$n=1.013^{40}-1$, $g=1.004^{40}-1$, and $\beta=0.97^{40}$. The first block preserves the
-earlier calibration. The second block governs endogenous regime choice.
+\subsection{Parameter crosswalk}
+
+The Colombian inputs come from the CEDE Pension Model documented by \citet{Becerra2026}.
+That source is an annual dynamic microsimulation; the present model is a stationary
+40-year OLG equilibrium. I therefore classify each input as a direct legal parameter, a
+comparable calibration moment, an external validation, or a retained structural parameter.
+This prevents annual accounting assumptions from being reinterpreted as balanced-growth
+parameters.
+
+The direct legal inputs are the 16 percent total contribution rate, the 11.5 percent credited
+to the individual retirement account, and the 13 percent credited to the PAYG notional
+account. A funded worker pays the full 16 percent: the 11.5 percent account balance becomes
+capital and the remaining 4.5 percent enters consolidated public revenue, which parsimoniously
+combines the minimum-pension fund, administration, and insurance components not separately
+modeled here. A PAYG worker also pays 16 percent, while a failed eligibility draw returns the
+13 percent notional balance with no real interest. The statutory DB replacement formula is
+approximately 65 percent at one minimum wage, so I set $b=0.65$.
+
+Table~\ref{tab:parameters} reports the complete benchmark. Annual population growth,
+productivity growth, and discounting remain compounded over 40 years:
+$n=1.013^{40}-1$, $g=1.004^{40}-1$, and $\beta=0.97^{40}$. The source assumes 1.6 percent
+annual real wage growth, but that rate only indexes earnings and benefits in its
+microsimulation. Substituting it for balanced-growth productivity $g$ changes every
+intergenerational scaling equation and does not yield a stable benchmark. Likewise, the
+source's 4 percent real return is retained as an external check rather than imposed on the
+endogenous return of a closed economy.
 
 \begin{table}[htbp]\centering
-\small\setlength{\tabcolsep}{5pt}
-\caption{Baseline parameters}\label{tab:parameters}
-\begin{tabular}{lrl}
-\toprule Parameter&Value&Interpretation\\ \midrule
-$m$&0.4000&mortality before old age\\
-$n$&0.6764&population growth per model period\\
-$\sigma$&2.5000&CRRA curvature\\
-$\beta$&0.2957&behavioral discount factor\\
-$g$&0.1731&productivity growth per model period\\
-$\alpha$&0.4000&capital share\\
-$A_s$&0.1000&informal productivity\\
-$\rho_s,\rho_f$&2.90, 4.64&type gradients\\
-$\tau_\ell,\tau_n,\tau_p$&0.125, 0.125, 0.125&labor, payroll, pension rates\\
-$\tau_k$&0.3200&capital-income tax\\
-$b$&0.6400&PAYG replacement parameter\\
-$G$&0.3300&government purchases\\ \midrule
-$\gamma_0$&$-9.7500$&eligibility intercept\\
-$\gamma_1$&15.0000&eligibility slope\\
-$\varphi$&0.5000&refund fraction if not eligible\\
-$\chi$&2.8000&long-period benefit multiplier\\
-$B_{\min}$&0.0500&minimum eligible pension\\
-$B_{\max}$&100.0000&maximum eligible pension\\ \bottomrule
+\scriptsize\setlength{\tabcolsep}{3.5pt}
+\caption{Baseline parameters and provenance}\label{tab:parameters}
+\begin{tabular}{lrlp{0.38\textwidth}}
+\toprule Parameter&Value&Use&Interpretation\\ \midrule
+$m$&0.4000&retained&mortality before old age\\
+$n$&0.6764&retained&population growth per model period\\
+$\sigma$&2.5000&retained&CRRA curvature\\
+$\beta$&0.2957&retained&behavioral discount factor\\
+$g$&0.1731&retained&balanced-growth productivity\\
+$\alpha$&0.4000&retained&capital share\\
+$A_s$&0.08215&calibrated&matches the long-run formality anchor\\
+$\rho_s,\rho_f$&2.90, 4.64&retained&type gradients\\
+$\tau_\ell,\tau_n$&0.125, 0.125&retained&labor and payroll rates\\
+$\tau_p$&0.1600&direct&total pension contribution\\
+$\tau_C$&0.1150&direct&credited funded-account rate\\
+$\tau_N$&0.1300&direct&credited PAYG notional rate\\
+$r_N$&0.0000&direct&real return on a PAYG refund\\
+$\tau_k$&0.3200&retained&capital-income tax\\
+$b$&0.6500&direct&replacement rate near one minimum wage\\
+$G$&0.3300&retained&government purchases\\ \midrule
+$\gamma_0$&$-8.7900$&calibrated&matches the eligibility proxy\\
+$\gamma_1$&15.0000&retained&shape normalization for eligibility\\
+$\varphi$&1.0000&direct&refund fraction if not eligible\\
+$\chi$&2.9000&selected&40-year benefit conversion; interior branch\\
+$B_{\min}$&0.0500&retained&floor in internal OLG units\\
+$B_{\max}$&100.0000&retained&nonbinding ceiling\\ \bottomrule
 \end{tabular}
 \end{table}
 
-The values of $\gamma_0$, $\gamma_1$, $\varphi$, and $\chi$ are not independently estimated.
-They are selected to implement the institutional mechanism and obtain an interior equilibrium
-without regime quotas. In the benchmark, $B_{\max}$ does not bind. A complete empirical
-calibration would discipline eligibility with contribution histories and discipline $\chi$
-with the present value of statutory PAYG benefits. This limitation matters for the size of
-the PAYG group and the fiscal effects reported below.
+\subsection{Moments and external checks}
 
-The benchmark is solved in two stages. A 101-type grid produces a stable initial state; a
-501-type grid then refines factor prices, thresholds, aggregates, and the consumption tax.
-The maximum fixed-point residual in the refined equilibrium is $1.6\times10^{-7}$.
+The CEDE projection raises formal employment from 42 percent in 2020 to 48.5 percent in
+2100. I use 48.5 percent as the stationary formality anchor. It also projects contributory
+coverage near 25 percent in 2080--2100. Because the OLG has no contribution-history state, I
+approximate conditional eligibility among formal workers by $0.25/0.485=0.51546$. This ratio
+is a calibration proxy, not an accounting identity: contributory coverage in the source
+includes DB, DC, and DB+DC pensions and is measured among older adults.\footnote{The coverage
+rows in Table 2 of \citet{Becerra2026} are labeled in the reverse order. Section 4.1, Figure 4,
+and Table 1 consistently report contributory coverage of 23.7--23.8 percent on average and
+non-contributory coverage of 53.1--53.3 percent. The calibration uses the separately reported
+long-run contributory value of approximately 25 percent.}
 
+The two comparable moments discipline $A_s$ and $\gamma_0$. The 10 percent DB enrollment
+share among young entrants and the 4 percent real return in the source are not imposed. They
+are external checks because the former is a cohort-specific plan assignment and the latter is
+an actuarial assumption rather than a general-equilibrium price. Table~\ref{tab:moments}
+reports both the matched moments and these transparent discrepancies.
+
+\begin{table}[htbp]\centering
+\small
+\caption{Calibration moments and external validation}\label{tab:moments}
+\begin{tabular}{llrrr}
+\toprule Use&Moment&Target&Model&Gap\\ \midrule
+Calibrated&Formal share&0.48500&0.49081&0.00581\\
+Calibrated&Eligibility among formals&0.51546&0.51373&$-0.00173$\\
+Validation&PAYG share among formals&0.10000&0.06353&$-0.03647$\\
+Validation&Annual real return&0.04000&0.05741&0.01741\\ \bottomrule
+\end{tabular}
+\begin{flushleft}\footnotesize
+Notes: The eligibility target is the proxy $0.25/0.485$. The PAYG validation uses the
+approximately 10 percent DB enrollment share among entrants aged 20--30 reported for 2017.
+\end{flushleft}
+\end{table}
+
+The source does not identify the logistic slope, the conversion from an annual pension flow
+to a 40-year benefit, or the minimum wage in the model's efficiency-wage units. Accordingly,
+$\gamma_1$, $\chi$, and $B_{\min}$ are not claimed as empirical estimates. The value
+$\chi=2.9$ selects a locally stable interior branch. The benchmark is solved first on a
+101-type grid and then refined on a 501-type grid. Its maximum fixed-point residual is
+$1.8\times10^{-7}$.
 \section{Results}
 
 \subsection{Benchmark equilibrium}
 
-Table~\ref{tab:benchmark} reports the endogenous steady state. All three choices have positive
-mass. Informality represents 52.5 percent of workers, capitalization 45.4 percent, and PAYG
-2.0 percent. The formal-entry threshold is $i_1=0.4763$ and the pension-regime threshold is
-$i_2=0.8005$.
+Table~\ref{tab:benchmark} reports the refined stationary equilibrium. All three alternatives
+have positive mass. Informality represents 50.9 percent of workers, capitalization 46.0
+percent, and PAYG 3.1 percent. PAYG therefore accounts for 6.4 percent of formal workers.
+The formal-entry threshold is $i_1=0.4696$ and the pension-regime threshold is $i_2=0.7713$.
 
 \begin{table}[htbp]\centering
 \caption{Endogenous-choice steady state}\label{tab:benchmark}
 \begin{tabular}{lr@{\qquad}lr}
 \toprule Outcome&Value&Outcome&Value\\ \midrule
-Informal share&0.52525&Capital stock&0.03742\\
-Capitalization share&0.45432&Formal labor&8.74614\\
-PAYG share&0.02044&Informal labor&1.47254\\
-First threshold $i_1$&0.47626&Consumption tax&0.16007\\
-Second threshold $i_2$&0.80052&Annualized return&0.05393\\
-Young consumption&0.47367&Formal wage&0.06019\\
-Old-age consumption&0.29448&Voluntary capital&0.00822\\
-Funded capital&0.02921&PAYG contributions&0.00836\\
-Decision welfare&$-4.12107$&PAYG benefits&0.03570\\
-Experienced welfare&$-4.53434$&Maximum residual&$1.6\times10^{-7}$\\
+Informal share&0.50919&Capital stock&0.02968\\
+Capitalization share&0.45962&Formal labor&8.89024\\
+PAYG share&0.03118&Informal labor&1.40926\\
+First threshold $i_1$&0.46965&Consumption tax&0.19612\\
+Second threshold $i_2$&0.77128&Annualized return&0.05741\\
+Young consumption&0.39523&Formal wage&0.05450\\
+Old-age consumption&0.27038&Voluntary capital&0.00620\\
+Funded capital&0.02348&PAYG contributions&0.01328\\
+Decision welfare&$-5.43803$&PAYG benefits&0.04661\\
+Experienced welfare&$-5.93741$&Maximum residual&$1.8\times10^{-7}$\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The first threshold reflects the formal tax wedge. Types below 0.476 obtain too little
+The first threshold reflects the formal tax wedge. Types below 0.4696 obtain too little
 formal-sector income to compensate for labor and pension contributions. Above that threshold,
 formal productivity grows faster than informal productivity and capitalization becomes
-optimal. PAYG does not attract middle types because their probability of completing the
-eligibility requirement remains low.
+optimal. PAYG does not attract the middle group because its probability of completing the
+eligibility requirement is still too low.
 
 The second threshold reflects the interaction between eligibility and the implicit PAYG
-subsidy. At $i=0.8005$, the expected PAYG benefit overtakes the portable funded balance.
+subsidy. At $i=0.7713$, the expected PAYG benefit overtakes the portable funded balance.
 Higher types remain in PAYG because eligibility continues to increase and the benefit ceiling
-does not bind. The two thresholds therefore arise from different comparisons:
-$V_C-V_I$ at the first threshold and $V_P-V_C$ at the second.
+does not bind. The two thresholds therefore arise from different comparisons: $V_C-V_I$ at
+the first threshold and $V_P-V_C$ at the second.
 
-PAYG benefits are large relative to contemporaneous PAYG contributions. The ratio is 4.27 in
-the benchmark. Part of this difference reflects the model's demographic scaling, and part
-reflects the multiplier $\chi$ required to make PAYG competitive with a funded account over a
-40-year period. The consolidated budget finances the difference. This is why regime choice
-cannot be analyzed independently of fiscal closure.
+PAYG benefits are 3.51 times contemporaneous PAYG contributions. Part of this difference
+reflects demographic scaling and part reflects $\chi$, which is required to compare an annual
+replacement flow with a 40-year funded balance. The consolidated budget finances the gap.
+This is why regime choice cannot be analyzed independently of fiscal closure. The model's
+6.4 percent PAYG share among formals is below the 10 percent enrollment check from young
+entrants. Closing that gap mechanically by raising $\chi$ moves the equilibrium toward a
+high-tax PAYG branch, rather than providing an innocuous fit.
 
 \subsection{Eligibility sensitivity}
 
@@ -369,28 +450,27 @@ masses remain in all three alternatives throughout the reported range.
 \begin{table}[htbp]\centering
 \caption{Sensitivity to PAYG eligibility}\label{tab:sensitivity}
 \begin{tabular}{lrrr}
-\toprule & $\gamma_0=-10.00$ & Benchmark & $\gamma_0=-9.60$\\ \midrule
-Informal share&0.49434&0.52530&0.55183\\
-Capitalization share&0.49057&0.45425&0.42277\\
-PAYG share&0.01510&0.02045&0.02540\\
-Consumption tax&0.13264&0.16012&0.18600\\
-First threshold $i_1$&0.46353&0.47628&0.48726\\
-Second threshold $i_2$&0.82018&0.80050&0.78578\\
+\toprule & $\gamma_0=-8.90$ & Benchmark & $\gamma_0=-8.70$\\ \midrule
+Informal share&0.48269&0.50929&0.54806\\
+Capitalization share&0.49050&0.45951&0.41403\\
+PAYG share&0.02681&0.03120&0.03792\\
+Consumption tax&0.17123&0.19622&0.23667\\
+First threshold $i_1$&0.45874&0.46969&0.48570\\
+Second threshold $i_2$&0.78201&0.77125&0.75696\\
 \bottomrule
 \end{tabular}
 \begin{flushleft}\footnotesize
 Notes: Sensitivity equilibria use 201 types and the refined benchmark as their initial state.
-All three converge and have maximum fixed-point residuals below $3.6\times10^{-6}$.
+All three converge and have maximum fixed-point residuals below $4.1\times10^{-6}$.
 \end{flushleft}
 \end{table}
 
 Easier eligibility lowers the second threshold and raises PAYG participation, as expected.
-However, it also increases expected benefits and the consumption tax. The higher tax raises
-the first threshold, so informality increases by 5.7 percentage points between the two
-columns. Capitalization absorbs both movements: some of its workers enter PAYG while others
-leave formality. The result is a general-equilibrium implication of the calibrated fiscal
-rule, not a claim that easier eligibility must raise informality in every pension system.
-
+It also increases expected benefits and the consumption tax. The higher tax raises the first
+threshold, so informality increases by 6.5 percentage points between the two endpoints. The
+capitalization share falls by 7.6 points: some workers enter PAYG while others leave formality.
+This is a general-equilibrium implication of the calibrated fiscal rule, not a claim that
+easier eligibility must raise informality in every pension system.
 \section{Conclusion}
 
 Informality, capitalization, and PAYG can coexist without exogenous pension assignment. The
@@ -398,20 +478,30 @@ model generates two endogenous thresholds because funded balances are portable w
 benefits depend on eligibility and include an implicit subsidy. Low types choose informality,
 middle types choose formal capitalization, and high types choose formal PAYG.
 
-The benchmark produces positive masses in all three alternatives, and local changes in the
-eligibility intercept preserve the sorting pattern. The exercise also uncovers a fiscal
-tension. Easier PAYG eligibility raises PAYG participation but increases expected benefits,
-the consumption tax, and the informal share. Ignoring the budget response would miss this
-channel.
+The Colombian crosswalk sharpens the quantitative exercise. Statutory contribution,
+account-crediting, refund, and replacement rates now come from an explicit institutional
+source. The benchmark approximates long-run formality and the contributory-eligibility proxy
+while preserving an interior allocation: 50.9 percent informal, 46.0 percent capitalization,
+and 3.1 percent PAYG. Local changes in eligibility preserve all three alternatives. They also
+reveal the fiscal tension: easier PAYG access increases expected benefits, the consumption
+tax, and informality.
 
-The quantitative magnitudes remain provisional. Eligibility depends only on productivity;
-the model does not contain a separate contribution-history state. The benefit multiplier is
-calibrated rather than estimated, and the PAYG group is small. The next empirical step is to
-discipline eligibility with observed contribution densities and to value statutory PAYG and
-funded benefits on a common present-value basis. A second heterogeneity dimension would be
-appropriate only if the data require workers with similar productivity to choose different
-regimes. Random-utility shocks are not needed to obtain the reported interior equilibrium.
+The audit also identifies what the calibration cannot support. The source's annual wage
+growth is not the model's balanced-growth productivity rate, and its assumed 4 percent
+actuarial return is not an endogenous closed-economy price. The 10 percent DB enrollment of
+young entrants is a useful external check, but the model produces 6.4 percent PAYG among
+formals. Forcing that fit through the benefit multiplier pushes the economy toward a
+high-tax branch. Treating non-comparable quantities as direct parameters would therefore
+create spurious precision.
 
+The remaining magnitudes are provisional. Eligibility still depends only on productivity;
+the model has no separate contribution-history state, sex, or education. The next empirical
+step is to import the contribution densities behind the CEDE transitions, map the minimum
+wage into efficiency-wage units, and value statutory DB and DC benefits with the same annuity
+factor. Those additions would permit a genuine reform experiment. The present stationary
+competition between PAYG and capitalization is not a simulation of Colombia's 2024
+complementarity reform. Random-utility shocks are not required for the interior equilibrium
+reported here.
 \appendix
 \section{Numerical algorithm}
 

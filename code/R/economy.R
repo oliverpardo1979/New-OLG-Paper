@@ -93,10 +93,16 @@ government_budget <- function(
     payg_benefits +
     param$transfer_young
 
+  pension_public_revenue <- if (!is.null(cohort$pension_public_revenue)) {
+    cohort$pension_public_revenue
+  } else {
+    cohort$payg_contributions
+  }
+
   non_consumption_revenue <-
     (param$tau_labor + param$tau_payroll) *
       prices$wage_formal * cohort$formal_labor +
-    cohort$payg_contributions +
+    pension_public_revenue +
     param$tau_capital * capital_tax_base
 
   consumption_tax_base <- cohort$consumption_young +

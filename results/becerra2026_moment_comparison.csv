@@ -1,0 +1,5 @@
+"use","moment","target","model","gap"
+"calibrated","formal_share",0.485,0.49080567751589,0.00580567751588973
+"calibrated","formal_eligibility_probability",0.515463917525773,0.513732594033681,-0.00173132349209204
+"external_validation","payg_share_among_formal",0.1,0.0635305096199656,-0.0364694903800344
+"external_validation","annual_real_return",0.04,0.0574072765702129,0.0174072765702129

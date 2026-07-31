@@ -86,7 +86,79 @@ write.csv(
 )
 saveRDS(solution, file.path(output_dir, "endogenous_solution.rds"))
 
-sensitivity_values <- c(-10.00, -9.75, -9.60)
+calibration_targets <- becerra2026_targets(param)
+calibration_moments <- becerra2026_moments(solution)
+calibration_validation <- becerra2026_validation(solution, param)
+calibration_comparison <- rbind(
+  data.frame(
+    use = "calibrated",
+    moment = names(calibration_targets),
+    target = unname(calibration_targets),
+    model = unname(calibration_moments),
+    stringsAsFactors = FALSE
+  ),
+  data.frame(
+    use = "external_validation",
+    moment = calibration_validation$moment,
+    target = calibration_validation$target,
+    model = calibration_validation$model,
+    stringsAsFactors = FALSE
+  )
+)
+calibration_comparison$gap <-
+  calibration_comparison$model - calibration_comparison$target
+write.csv(
+  calibration_comparison,
+  file.path(output_dir, "becerra2026_moment_comparison.csv"),
+  row.names = FALSE
+)
+
+parameter_provenance <- data.frame(
+  parameter = c(
+    "tau_pension", "funded_account_rate",
+    "payg_notional_account_rate", "payg_refund_rate",
+    "payg_refund_annual_return", "replacement_rate",
+    "A_informal", "payg_eligibility_intercept",
+    "payg_eligibility_slope", "payg_benefit_multiplier",
+    "payg_minimum_benefit", "g"
+  ),
+  value = c(
+    param$tau_pension, param$funded_account_rate,
+    param$payg_notional_account_rate, param$payg_refund_rate,
+    param$payg_refund_annual_return, param$replacement_rate,
+    param$A_informal, param$payg_eligibility_intercept,
+    param$payg_eligibility_slope, param$payg_benefit_multiplier,
+    param$payg_minimum_benefit, param$g
+  ),
+  status = c(
+    rep("direct_legal_input", 6L),
+    rep("calibrated_to_comparable_moment", 2L),
+    "retained_shape_normalization", "selected_for_interior_branch",
+    "retained_internal_units", "retained_structural_parameter"
+  ),
+  note = c(
+    "Total statutory contribution rate",
+    "Credited to the individual retirement account",
+    "Credited to the PAYG notional account",
+    "Full nominal refund when ineligible",
+    "Refund adjusted only for inflation",
+    "Approximate statutory rate at one minimum wage",
+    "Matches the long-run formality anchor",
+    "Matches the contributory-eligibility proxy",
+    "The source does not identify a logistic slope",
+    "The source does not identify the 40-year conversion",
+    "Minimum-wage units are not mapped to efficiency wages",
+    "Wage growth is not balanced-growth productivity"
+  ),
+  stringsAsFactors = FALSE
+)
+write.csv(
+  parameter_provenance,
+  file.path(output_dir, "becerra2026_parameter_provenance.csv"),
+  row.names = FALSE
+)
+
+sensitivity_values <- c(-8.90, -8.79, -8.70)
 sensitivity <- do.call(rbind, lapply(
   sensitivity_values,
   function(intercept) {
@@ -122,4 +194,6 @@ write.csv(
 
 print(solution)
 print(summary)
+print(calibration_comparison)
+print(parameter_provenance)
 print(sensitivity)
