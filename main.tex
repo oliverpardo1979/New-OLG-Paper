@@ -5,301 +5,456 @@
 \usepackage[margin=1.15in]{geometry}
 \usepackage{amsmath,amssymb,booktabs,threeparttable,microtype,setspace,enumitem,natbib}
 \usepackage{xcolor,hyperref}
-\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black,pdftitle={Pension Regime Choice under Informality},pdfauthor={Oliver Pardo}}
 \onehalfspacing
 \newcommand{\1}{\mathbf{1}}
 \newcommand{\dd}{\,\mathrm{d}}
 
-\title{\textbf{Pension Pillars under Informality:}\\
-\large General-Equilibrium Effects of Reallocating Contributions}
-\author{Oliver Pardo\thanks{Departamento de AdministraciÃ³n, Pontificia Universidad Javeriana,
-BogotÃ¡, Colombia. Email: \href{mailto:pardoo@javeriana.edu.co}{pardoo@javeriana.edu.co}.}}
+\title{\textbf{Pension Regime Choice under Informality:}\\
+\large Endogenous Sorting between PAYG and Funded Accounts}
+\author{Oliver Pardo\thanks{Departamento de Administraci{\'o}n, Pontificia Universidad Javeriana,
+Bogot{\'a}, Colombia. Email: \href{mailto:pardoo@javeriana.edu.co}{pardoo@javeriana.edu.co}.}}
 \date{July 2026}
+
 \begin{document}
 \maketitle
 
 \begin{abstract}\small\sloppy
-\noindent This paper studies how pension architecture affects labor informality, capital
-accumulation, and fiscal adjustment. I build a two-period overlapping-generations model with
-heterogeneous productivity, endogenous formal--informal choice, present bias, funded accounts,
-a pay-as-you-go (PAYG) program, and an endogenous consumption tax. The exercise compares a
-dual-assignment benchmark---lower-productivity formal workers in funded accounts and
-higher-productivity formal workers in PAYG---with pillars: every formal worker contributes
-to PAYG below a ceiling and to a funded account above it. When PAYG receipts are approximately
-matched, pillars raise informality by 6.2 percentage points, lower capital by 5.4 percent, and
-require a 5.3 percentage-point consumption-tax increase. Old-age consumption falls by
-10.2 percent and experienced welfare by 1.0 percent in consumption-equivalent terms.
-An expanded public pillar produces larger effects but raises PAYG receipts by 79 percent, so
-it is not an apples-to-apples comparison. Contribution incidence can matter as much as the
-public program's aggregate size.
+\noindent
+This paper studies the joint choice of labor-market sector and pension regime in an economy
+with informality. I build a two-period overlapping-generations model in which heterogeneous
+workers choose among informal employment, formal employment with a funded account, and formal
+employment with a pay-as-you-go (PAYG) pension. Funded contributions are portable. PAYG
+eligibility increases with worker type, non-eligible contributors receive a partial refund,
+and the pension formula includes a floor and a ceiling. These institutional differences
+generate two endogenous thresholds without quotas or random-utility shocks. In the benchmark
+equilibrium, 52.5 percent of workers are informal, 45.4 percent choose formal employment with
+capitalization, and 2.0 percent choose formal employment with PAYG. Workers below type 0.476
+are informal, those between 0.476 and 0.801 choose capitalization, and higher types choose
+PAYG. Easier PAYG eligibility increases PAYG participation but also raises the consumption
+tax and informality because the additional benefits are fiscally costly. A local sensitivity
+exercise preserves positive masses in all three alternatives, although the size of the PAYG
+group remains small. The results establish a coherent mechanism for regime coexistence; they
+do not yet constitute an empirical evaluation of a specific pension reform.
 
-\medskip\noindent\textbf{Keywords:} pensions; informality; overlapping generations; PAYG;
-funded accounts; present bias. \quad \textbf{JEL:} E21; H55; J26; J46.
+\medskip\noindent\textbf{Keywords:} pension choice; informality; funded accounts; pay-as-you-go;
+eligibility; overlapping generations. \quad \textbf{JEL:} E21; H55; J26; J46.
 \end{abstract}\fussy
 
 \section{Introduction}
-Pension reform in an economy with a large informal sector has a general-equilibrium trade-off.
-Mandatory contributions can protect present-biased workers from insufficient retirement
-saving, but they also change the return to formal work. When workers can move across sectors,
-the distribution of contributions affects the tax base, aggregate saving, and fiscal closure.
 
-This paper asks what happens when a pension system moves from separate funded and PAYG
-assignments to a pillar architecture. In the benchmark, lower-productivity formal workers
-are assigned to funded accounts and higher-productivity formal workers to PAYG. Under pillars,
-the first tranche of every formal worker's earnings finances PAYG and earnings above a ceiling
-finance an individual account. This is a comparison between \emph{architectures}, not a model
-in which workers choose between pension regimes. The individual choice is formal versus
-informal employment.
+Workers in economies with large informal sectors make two related decisions. They decide
+whether to participate in formal employment and, when the law permits it, which pension
+regime will receive their contributions. Treating pension assignment as exogenous suppresses
+the second margin. It can also conceal a corner solution: if the two formal regimes charge the
+same contribution rate and promise linear benefits, the regime with the higher implicit
+return attracts every formal worker.
 
-The distinction drives the result. Funded contributions earn the market return; PAYG benefits
-follow a replacement rule and the growth of the contribution base. Extending the PAYG tranche
-to workers near the sectoral margin reduces their value of formality. Some become informal,
-funded saving and capital fall, and a narrower tax base requires a higher consumption tax.
+This paper asks whether informality, funded accounts, and PAYG pensions can coexist as
+endogenous choices. The model gives each worker three alternatives:
+\[
+\text{informal},\qquad \text{formal--capitalization},\qquad
+\text{formal--PAYG}.
+\]
+The pension regimes differ in three institutional dimensions. A funded account is portable
+and pays the accumulated market return. PAYG requires the worker to complete a contribution
+history, represented by an eligibility probability that increases with productivity. A
+worker who does not qualify receives only a partial refund. Conditional on qualifying, the
+PAYG pension follows a replacement formula with a floor and a ceiling.
 
-The main exercise approximately holds PAYG scale fixed: receipts are within 1.2 percent of the
-benchmark. Informality rises from 56.4 to 62.5 percent, capital falls 5.4 percent, and the
-consumption tax rises from 17.0 to 22.3 percent. An expanded-pillar exercise yields larger
-effects but also raises PAYG receipts 79 percent; it therefore combines architecture and scale.
+These differences generate comparative advantage across worker types. Low types prefer
+informality because formal taxes and pension contributions exceed the value of formal-sector
+benefits. Middle types enter formal employment but choose capitalization because their PAYG
+eligibility remains low and their account is portable. High types choose PAYG because they
+are likely to qualify and receive its implicit subsidy. The model therefore produces two
+endogenous thresholds rather than imposing an assignment rule.
 
-The contribution is threefold. First, the exercise isolates contribution incidence across
-heterogeneous workers. Second, it integrates informality, present-biased saving, funded and
-PAYG pensions, and fiscal closure. Third, it separates decision utility from experienced
-welfare. The appendix gives the numerical algorithm.
+The benchmark equilibrium has the desired three-way sorting. Workers below type 0.476 are
+informal; workers between 0.476 and 0.801 choose capitalization; and workers above 0.801
+choose PAYG. The corresponding population shares are 52.5, 45.4, and 2.0 percent. The
+consumption tax that balances the consolidated public budget is 16.0 percent.
+
+The small PAYG share is economically informative. PAYG is selected only by high-productivity
+workers with high eligibility. Moreover, PAYG benefits exceed contemporaneous PAYG
+contributions in the calibration, so easier eligibility increases fiscal expenditure.
+When the eligibility intercept rises from $-10.00$ to $-9.60$, the PAYG share rises from
+1.5 to 2.5 percent, but informality also rises from 49.4 to 55.2 percent and the consumption
+tax from 13.3 to 18.6 percent. The general-equilibrium fiscal response reverses the partial
+equilibrium presumption that easier eligibility must increase formality.
+
+The paper makes two contributions. First, it replaces exogenous pension assignment with a
+joint discrete choice that remains deterministic and interpretable. Second, it shows that
+eligibility and portability can produce regime coexistence without preference shocks.
+The present exercise is a mechanism and calibration result. The eligibility profile and the
+long-period conversion of PAYG benefits are not estimated independently, so the regime shares
+should not be read as empirical predictions.
+
+The rest of the paper reviews the related literature, presents the model and calibration,
+reports the equilibrium and sensitivity results, and describes the algorithm.
 
 \section{Related literature}
-The framework follows the OLG approach to social security in \citet{Diamond1977}. Mandatory
-retirement programs can address undersaving \citep{Feldstein1985}; present-biased preferences
-provide a behavioral rationale \citep{Laibson1998,Imrohoroglu2003}. \citet{Pardo2023} studies
-mandatory saving with an informal labor market. Here the question is how funded and PAYG
-contributions are allocated across formal workers.
 
-Social insurance cannot be evaluated independently of informality. Payroll-financed benefits
-alter formal employment incentives \citep{Levy2008}, while informality reflects worker and
-firm choices \citep{Ulyssea2018}. Search and human-capital accumulation shape sector
-transitions \citep{Bobba2021}; the shadow economy changes optimal redistribution
-\citep{DoligalskiRojas2023}. Pension models with informality include \citet{Joubert2015} and
+The model follows the overlapping-generations approach to social security in
+\citet{Diamond1977}. Mandatory retirement programs can address undersaving
+\citep{Feldstein1985}, while present-biased preferences provide a behavioral rationale for
+mandatory contributions \citep{Laibson1998,Imrohoroglu2003}. \citet{Pardo2023} introduces
+mandatory retirement saving into an economy with endogenous informality. The present paper
+adds a second choice margin: formal workers select the institution that receives their
+contributions.
+
+Pension design cannot be separated from labor informality. Payroll-financed programs alter
+the value of formal employment \citep{Levy2008}, and informality reflects choices by workers
+and firms rather than a residual labor-market state \citep{Ulyssea2018}. Search frictions and
+human-capital accumulation create heterogeneous formal careers \citep{Bobba2021}. The shadow
+economy also changes the information and tax bases available for redistribution
+\citep{DoligalskiRojas2023}.
+
+Quantitative pension models with informality include \citet{Joubert2015} and
 \citet{McKiernan2020}. Related work studies retirement and occupational behavior when formal
-contributions can be avoided \citep{Ferreira2020,Moreno2022}. This paper focuses on which
-workers bear the low-return pension tranche and how close they are to the informality margin.
+contributions can be avoided \citep{Ferreira2020,Moreno2022}. This paper focuses on a narrower
+mechanism: the interaction between pension eligibility, contribution portability, and the
+formal--informal margin. The objective is not to impose observed regime shares, but to identify
+conditions under which the three alternatives are simultaneously optimal for positive masses
+of workers.
 
 \section{Model}
-\subsection{Demography, types, and preferences}
-One period is approximately 40 years. Population grows at rate $n$, productivity at $g$, and
-an agent survives to old age with probability $1-m$. Type $i\in[0,1]$ has density
+
+\subsection{Demography, heterogeneity, and preferences}
+
+One model period represents approximately 40 years. Population grows at rate $n$,
+labor-augmenting productivity at rate $g$, and a worker survives to old age with probability
+$1-m$. Type $i\in[0,1]$ has density
 \begin{equation}
 f(i)=\frac{2.4450}{1.006341403957648}
-\exp\!\left[-\left(\frac{i-0.4655}{0.2329}\right)^2\right],
-\qquad \int_0^1f(i)\dd i=1.
+\exp\left[-\left(\frac{i-0.4655}{0.2329}\right)^2\right],
+\qquad \int_0^1 f(i)\dd i=1.
 \end{equation}
 Sector-specific efficiency is
 \begin{equation}
-z_f(i)=\mathrm{base}_f e^{\rho_f i},\qquad z_s(i)=\mathrm{base}_s e^{\rho_s i}.
+z_f(i)=\mathrm{base}_f e^{\rho_f i},
+\qquad
+z_s(i)=\mathrm{base}_s e^{\rho_s i}.
 \end{equation}
-With $u(c)=(c^{1-\sigma}-1)/(1-\sigma)$, decision and experienced utilities are
-\begin{align}
-V(i)&=u(c_1(i))+\beta(1-m)u(c_2(i)),&
-W(i)&=u(c_1(i))+(1-m)u(c_2(i)).
-\end{align}
-Thus $\beta<1$ distorts behavior but is not a normative welfare weight.
 
-\subsection{Technology, households, and sector choice}
+Instantaneous utility is CRRA, $u(c)=c^{1-\sigma}/(1-\sigma)$. Decision utility and
+experienced utility are
+\begin{align}
+V_j(i)&=u(c_{1j}(i))+\beta(1-m)\delta u(\widetilde c_{2j}(i)),\\
+W_j(i)&=u(c_{1j}(i))+(1-m)\delta u(\widetilde c_{2j}(i)),
+\end{align}
+where $j\in\{I,C,P\}$ denotes informal employment, capitalization, and PAYG.
+The parameter $\beta<1$ affects saving and regime choice but is not used as a normative
+welfare weight.
+
+\subsection{Technology and household budgets}
+
 Formal and informal output are
-\[
-Y_f=A_fK^\alpha N_f^{1-\alpha},\qquad Y_s=A_sN_s.
-\]
+\begin{equation}
+Y_f=K^\alpha N_f^{1-\alpha},
+\qquad
+Y_s=A_sN_s.
+\end{equation}
 Competitive pre-tax prices satisfy
-\[
-\widetilde r+\delta=\alpha A_f(N_f/K)^{1-\alpha},\quad
-\widetilde w_f=(1-\alpha)A_f(K/N_f)^\alpha,\quad \widetilde w_s=A_s.
-\]
-Taxes map these into the net return $r$ and effective wages $w_f,w_s$.
+\begin{equation}
+\widetilde r+\delta_k=\alpha(N_f/K)^{1-\alpha},\quad
+\widetilde w_f=(1-\alpha)(K/N_f)^\alpha,\quad
+\widetilde w_s=A_s.
+\end{equation}
+Taxes map these into the net return $r$ and the effective wages $w_f$ and $w_s$.
 
-For sector $j\in\{f,s\}$ and voluntary saving $a_j(i)\geq0$,
+For choice $j$, voluntary saving $a_j(i)\geq0$ satisfies
 \begin{align}
-(1+\tau_c)c_{1j}(i)+a_j(i)&=y_{1j}(i),\\
-c_{2j}(i)&=\frac{1+r}{1+g}a_j(i)+p_j(i).
+(1+\tau_c)c_{1j}(i)+(1+g)a_j(i)&=y_{1j}(i),\\
+(1-m)(1+\tau_c)c_{2j}(i)&=(1+r)a_j(i)+p_j(i).
 \end{align}
-Formal income is $y_{1f}=(1-\tau_\ell-\tau_p)w_fz_f(i)+T_{1f}$ and informal income is
-$y_{1s}=w_sz_s(i)+T_{1s}$. Baseline transfers are zero. After solving saving in each sector,
-\[
-d_f(i)=\1\{V_f(i)\geq V_s(i)\}.
-\]
-The formal set is computed point by point rather than imposed as an interval.
-
-\subsection{Pension architectures}
-In the \emph{dual-assignment benchmark}, $D(i)=\1\{i\geq\bar i\}$ and
+Informal income is $y_{1I}(i)=w_sz_s(i)$. Both formal alternatives have
 \begin{equation}
-p_f^D(i)=[1-D(i)]\frac{(1+r)\tau_pw_fz_f(i)}{1+g}
-+D(i)\frac{(1-m)b\,w_fz_f(i)}{1+g}.
-\label{eq:dual}
+y_{1C}(i)=y_{1P}(i)
+=\left(1-\tau_\ell-\tau_p\right)w_fz_f(i).
 \end{equation}
-Lower types are funded and higher types PAYG. Assignment is exogenous; workers do not choose
-their pension regime.
+Thus the formal regimes differ through retirement benefits, not current contribution rates.
+Baseline transfers are zero.
 
-Under \emph{pillars}, every formal worker's first earnings tranche is PAYG and the excess is
-funded:
+\subsection{Capitalization}
+
+A funded contribution is fully vested and portable:
+\begin{align}
+A_C(i)&=\tau_p w_fz_f(i),\\
+p_C(i)&=\frac{(1+r)A_C(i)}{1+g}.
+\label{eq:capitalization}
+\end{align}
+The contribution adds to the capital stock. The worker receives the accumulated value
+regardless of whether the subsequent formal career would have satisfied PAYG vesting
+requirements.
+
+\subsection{PAYG eligibility, refund, and pension formula}
+
+The probability that type $i$ completes the PAYG eligibility requirement is
 \begin{equation}
-p_f^P(i)=\frac{(1-m)b\min\{w_fz_f(i),\bar y\}}{1+g}
-+\frac{(1+r)\tau_p\max\{w_fz_f(i)-\bar y,0\}}{1+g}.
-\label{eq:pillars}
+q(i)=
+\frac{\exp(\gamma_0+\gamma_1i)}
+{1+\exp(\gamma_0+\gamma_1i)},
+\qquad \gamma_1>0.
+\label{eq:eligibility}
 \end{equation}
-Pillars therefore shift PAYG incidence from high types to the lower earnings of all formal
-workers.
+The pension conditional on eligibility is
+\begin{equation}
+\mathcal B(y_i)=
+\min\left\{
+B_{\max},
+\max\left[B_{\min},\,\chi b y_i\right]
+\right\},
+\qquad y_i=w_fz_f(i),
+\label{eq:paygformula}
+\end{equation}
+where $b$ is the replacement parameter and $\chi$ converts the replacement flow into units
+of the long model period. It also captures the implicit subsidy embedded in the PAYG formula.
+
+If the worker fails to qualify, a fraction $\varphi$ of the market value of contributions is
+returned. Expected PAYG retirement income is therefore
+\begin{equation}
+p_P(i)=
+q(i)\frac{(1-m)\mathcal B(y_i)}{1+g}
++[1-q(i)]\varphi
+\frac{(1+r)\tau_py_i}{1+g}.
+\label{eq:paygbenefit}
+\end{equation}
+PAYG contributions are public revenue and expected benefits, including refunds, are public
+expenditure.
+
+\subsection{Joint choice and endogenous thresholds}
+
+Every worker solves the saving problem under all three alternatives and chooses
+\begin{equation}
+j^*(i)=\arg\max_{j\in\{I,C,P\}}V_j(i).
+\label{eq:choice}
+\end{equation}
+An interior three-regime equilibrium has thresholds $0<i_1<i_2<1$ satisfying
+\begin{align}
+V_I(i_1)&=V_C(i_1)>V_P(i_1),\\
+V_C(i_2)&=V_P(i_2)>V_I(i_2).
+\end{align}
+The resulting allocation is
+\begin{equation}
+j^*(i)=
+\begin{cases}
+I,&i<i_1,\\
+C,&i_1\leq i<i_2,\\
+P,&i\geq i_2.
+\end{cases}
+\label{eq:sorting}
+\end{equation}
+Equation~\eqref{eq:sorting} is an equilibrium outcome. The algorithm evaluates all three
+utilities point by point and does not impose either threshold.
 
 \subsection{Aggregation and fiscal closure}
+
+Let $d_j(i)=\1\{j^*(i)=j\}$. Regime shares and effective labor are
 \begin{align}
-N_f&=\int d_f(i)z_f(i)f(i)\dd i,&
-N_s&=\int[1-d_f(i)]z_s(i)f(i)\dd i,\\
-I&=\int[1-d_f(i)]f(i)\dd i,&
-K'&=\frac{\int[a_j(i)+a^p(i)]f(i)\dd i}{(1+n)(1+g)}.
+\pi_j&=\int_0^1d_j(i)f(i)\dd i,\\
+N_f&=\int_0^1[d_C(i)+d_P(i)]z_f(i)f(i)\dd i,\\
+N_s&=\int_0^1d_I(i)z_s(i)f(i)\dd i.
 \end{align}
-Here $a^p$ is funded pension saving. With PAYG receipts $R^{pg}$ and benefits $B^{pg}$,
-\[
-\tau_c\mathcal C+\tau_\ell w_fN_f+\tau_nw_fN_f+\tau_k\widetilde rK+R^{pg}
+Next period's capital is
+\begin{equation}
+K'=\frac{1}{1+n}\int_0^1a_{j^*(i)}(i)f(i)\dd i
++\frac{1}{(1+n)(1+g)}
+\int_0^1d_C(i)\tau_pw_fz_f(i)f(i)\dd i.
+\end{equation}
+
+With PAYG receipts $R^{pg}$ and expected benefits $B^{pg}$, the consolidated public budget is
+\begin{equation}
+\tau_c\mathcal C+\tau_\ell w_fN_f+\tau_nw_fN_f
++\tau_k\widetilde rK+R^{pg}
 =G+\mathcal T+B^{pg}.
-\]
-The consumption tax closes the budget. Equilibrium combines household optimality, sector
-choice, competitive prices, market clearing, the capital fixed point, and public balance.
+\label{eq:budget}
+\end{equation}
+The consumption tax $\tau_c$ adjusts to satisfy \eqref{eq:budget}. Consequently, a policy
+that raises expected PAYG benefits can affect all three choices through the fiscal response.
 
 \section{Calibration}
-Annual rates are compounded over 40 years: $n=1.013^{40}-1$, $g=1.004^{40}-1$, and
-$\beta=0.97^{40}$. Table~\ref{tab:param} gives the remaining parameters.
+
+Table~\ref{tab:parameters} reports the benchmark. Annual rates are compounded over 40 years:
+$n=1.013^{40}-1$, $g=1.004^{40}-1$, and $\beta=0.97^{40}$. The first block preserves the
+earlier calibration. The second block governs endogenous regime choice.
 
 \begin{table}[htbp]\centering
-\small\setlength{\tabcolsep}{3pt}
-\caption{Baseline parameters}\label{tab:param}
-\begin{tabular}{lrl@{\qquad}lrl}
-\toprule Parameter&Value&Meaning&Parameter&Value&Meaning\\ \midrule
-$m$&.4000&mortality&$\sigma$&2.5000&curvature\\
-$n$&.6764&population growth&$\beta$&.2957&present bias\\
-$\delta$&1.0000&depreciation&$g$&.1731&productivity growth\\
-$\alpha$&.4000&capital share&$A_s$&.1000&informal scale\\
-$\rho_s$&2.9000&informal gradient&$\rho_f$&4.6400&formal gradient\\
-$\tau_\ell$&.1250&labor tax&$\tau_n$&.1250&payroll wedge\\
-$\tau_k$&.3200&capital tax&$\tau_p$&.1250&pension rate\\
-$b$&.6400&PAYG replacement&$G$&.3300&government purchases\\
-$\bar i$&.7358&assignment cutoff&$\bar y$&.3360&pillar ceiling\\ \bottomrule
+\small\setlength{\tabcolsep}{5pt}
+\caption{Baseline parameters}\label{tab:parameters}
+\begin{tabular}{lrl}
+\toprule Parameter&Value&Interpretation\\ \midrule
+$m$&0.4000&mortality before old age\\
+$n$&0.6764&population growth per model period\\
+$\sigma$&2.5000&CRRA curvature\\
+$\beta$&0.2957&behavioral discount factor\\
+$g$&0.1731&productivity growth per model period\\
+$\alpha$&0.4000&capital share\\
+$A_s$&0.1000&informal productivity\\
+$\rho_s,\rho_f$&2.90, 4.64&type gradients\\
+$\tau_\ell,\tau_n,\tau_p$&0.125, 0.125, 0.125&labor, payroll, pension rates\\
+$\tau_k$&0.3200&capital-income tax\\
+$b$&0.6400&PAYG replacement parameter\\
+$G$&0.3300&government purchases\\ \midrule
+$\gamma_0$&$-9.7500$&eligibility intercept\\
+$\gamma_1$&15.0000&eligibility slope\\
+$\varphi$&0.5000&refund fraction if not eligible\\
+$\chi$&2.8000&long-period benefit multiplier\\
+$B_{\min}$&0.0500&minimum eligible pension\\
+$B_{\max}$&100.0000&maximum eligible pension\\ \bottomrule
 \end{tabular}
 \end{table}
 
-Steady states use 501 types. Capital and the consumption tax are joint fixed points. The main
-ceiling yields PAYG receipts 1.2 percent below the benchmark. The $\bar y=1$ robustness is
-both an architecture change and a public-pillar expansion.
+The values of $\gamma_0$, $\gamma_1$, $\varphi$, and $\chi$ are not independently estimated.
+They are selected to implement the institutional mechanism and obtain an interior equilibrium
+without regime quotas. In the benchmark, $B_{\max}$ does not bind. A complete empirical
+calibration would discipline eligibility with contribution histories and discipline $\chi$
+with the present value of statutory PAYG benefits. This limitation matters for the size of
+the PAYG group and the fiscal effects reported below.
+
+The benchmark is solved in two stages. A 101-type grid produces a stable initial state; a
+501-type grid then refines factor prices, thresholds, aggregates, and the consumption tax.
+The maximum fixed-point residual in the refined equilibrium is $1.6\times10^{-7}$.
 
 \section{Results}
-\subsection{Comparable PAYG scale}
+
+\subsection{Benchmark equilibrium}
+
+Table~\ref{tab:benchmark} reports the endogenous steady state. All three choices have positive
+mass. Informality represents 52.5 percent of workers, capitalization 45.4 percent, and PAYG
+2.0 percent. The formal-entry threshold is $i_1=0.4763$ and the pension-regime threshold is
+$i_2=0.8005$.
+
 \begin{table}[htbp]\centering
-\caption{Steady states with approximately matched PAYG receipts}\label{tab:ss}
-\begin{threeparttable}
+\caption{Endogenous-choice steady state}\label{tab:benchmark}
+\begin{tabular}{lr@{\qquad}lr}
+\toprule Outcome&Value&Outcome&Value\\ \midrule
+Informal share&0.52525&Capital stock&0.03742\\
+Capitalization share&0.45432&Formal labor&8.74614\\
+PAYG share&0.02044&Informal labor&1.47254\\
+First threshold $i_1$&0.47626&Consumption tax&0.16007\\
+Second threshold $i_2$&0.80052&Annualized return&0.05393\\
+Young consumption&0.47367&Formal wage&0.06019\\
+Old-age consumption&0.29448&Voluntary capital&0.00822\\
+Funded capital&0.02921&PAYG contributions&0.00836\\
+Decision welfare&$-4.12107$&PAYG benefits&0.03570\\
+Experienced welfare&$-4.53434$&Maximum residual&$1.6\times10^{-7}$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The first threshold reflects the formal tax wedge. Types below 0.476 obtain too little
+formal-sector income to compensate for labor and pension contributions. Above that threshold,
+formal productivity grows faster than informal productivity and capitalization becomes
+optimal. PAYG does not attract middle types because their probability of completing the
+eligibility requirement remains low.
+
+The second threshold reflects the interaction between eligibility and the implicit PAYG
+subsidy. At $i=0.8005$, the expected PAYG benefit overtakes the portable funded balance.
+Higher types remain in PAYG because eligibility continues to increase and the benefit ceiling
+does not bind. The two thresholds therefore arise from different comparisons:
+$V_C-V_I$ at the first threshold and $V_P-V_C$ at the second.
+
+PAYG benefits are large relative to contemporaneous PAYG contributions. The ratio is 4.27 in
+the benchmark. Part of this difference reflects the model's demographic scaling, and part
+reflects the multiplier $\chi$ required to make PAYG competitive with a funded account over a
+40-year period. The consolidated budget finances the difference. This is why regime choice
+cannot be analyzed independently of fiscal closure.
+
+\subsection{Eligibility sensitivity}
+
+Table~\ref{tab:sensitivity} changes only the eligibility intercept. Increasing $\gamma_0$
+makes every type more likely to qualify while preserving the slope of the profile. Positive
+masses remain in all three alternatives throughout the reported range.
+
+\begin{table}[htbp]\centering
+\caption{Sensitivity to PAYG eligibility}\label{tab:sensitivity}
 \begin{tabular}{lrrr}
-\toprule Outcome&Dual assignment&Pillars&Change\\ \midrule
-Capital stock&.03429&.03245&$-5.36\%$\\
-Informal worker share&.56358&.62524&$+6.17$ pp\\
-Effective formal labor&8.38358&7.74061&$-7.67\%$\\
-Effective informal labor&1.62865&1.89552&$+16.39\%$\\
-Consumption-tax rate&.16980&.22255&$+5.28$ pp\\
-Annualized net return&.05456&.05421&$-0.03$ pp\\
-Formal wage index&.05911&.05970&$+0.99\%$\\
-Young consumption&.46230&.45522&$-1.53\%$\\
-Old-age consumption&.26664&.23943&$-10.21\%$\\
-Voluntary capital&.01089&.01108&$+1.76\%$\\
-Funded pension capital&.02340&.02137&$-8.68\%$\\
-PAYG receipts&.01593&.01574&$-1.19\%$\\
-PAYG benefits&.02488&.02459&$-1.19\%$\\ \bottomrule
+\toprule & $\gamma_0=-10.00$ & Benchmark & $\gamma_0=-9.60$\\ \midrule
+Informal share&0.49434&0.52530&0.55183\\
+Capitalization share&0.49057&0.45425&0.42277\\
+PAYG share&0.01510&0.02045&0.02540\\
+Consumption tax&0.13264&0.16012&0.18600\\
+First threshold $i_1$&0.46353&0.47628&0.48726\\
+Second threshold $i_2$&0.82018&0.80050&0.78578\\
+\bottomrule
 \end{tabular}
-\begin{tablenotes}[flushleft]\footnotesize
-\item Annual return: $(1+r)^{1/40}-1$. pp denotes percentage points. Maximum equilibrium
-residuals are below $10^{-7}$.
-\end{tablenotes}
-\end{threeparttable}
+\begin{flushleft}\footnotesize
+Notes: Sensitivity equilibria use 201 types and the refined benchmark as their initial state.
+All three converge and have maximum fixed-point residuals below $3.6\times10^{-6}$.
+\end{flushleft}
 \end{table}
 
-Pillars raise informality by 6.2 percentage points. Formal labor falls 7.7 percent and funded
-assets 8.7 percent, so capital declines 5.4 percent despite a small voluntary-saving increase.
-The smaller formal sector erodes tax bases and the consumption tax rises 5.3 percentage
-points. Young consumption falls 1.5 percent and old-age consumption 10.2 percent.
-
-The mechanism is incidence. At the calibrated equilibrium, the funded tranche has a higher
-implicit return than PAYG. Dual assignment places PAYG on high types with a strong formal
-comparative advantage. Pillars extend it to workers near the sector margin, reducing
-$V_f(i)-V_s(i)$. Exit to informality reduces funded saving, narrows the formal tax base, and
-raises the consumption tax, reinforcing the response.
-
-Decision utility falls from $-4.1412$ to $-4.1834$ and experienced welfare from $-4.5563$ to
-$-4.6276$. By CRRA homogeneity, pillar consumption would need a uniform 1.04 percent increase
-to match benchmark experienced welfare. Decision-utility compensation is 0.68 percent.
-
-\subsection{Expanded public pillar}
-\begin{table}[htbp]\centering
-\caption{Robustness: expanded public pillar}
-\begin{tabular}{lrrr}
-\toprule Outcome&Dual&Expanded pillars&Change\\ \midrule
-Capital&.03429&.03039&$-11.38\%$\\
-Informal share&.56358&.77138&$+20.78$ pp\\
-Consumption tax&.16980&.45209&$+28.23$ pp\\
-Young consumption&.46230&.43033&$-6.92\%$\\
-Old-age consumption&.26664&.18519&$-30.55\%$\\
-PAYG receipts&.01593&.02858&$+79.39\%$\\ \bottomrule
-\end{tabular}
-\end{table}
-With $\bar y=1$, informality reaches 77.1 percent and the consumption tax 45.2 percent.
-Because PAYG receipts rise 79 percent, these magnitudes quantify architecture plus scale.
-
-\subsection{Diagnostic transition}
-\begin{table}[htbp]\centering
-\caption{Selected dates in the transition to pillars}
-\begin{tabular}{rrrrr}
-\toprule Date&Capital&Informal share&Consumption tax&Period return\\ \midrule
-1&.034153&.567143&.173010&7.369671\\
-2&.034153&.577030&.174042&7.317255\\
-3&.031988&.649558&.255602&7.167026\\
-5&.032232&.635181&.235394&7.228585\\
-10&.032461&.624755&.222091&7.263177\\
-11&.032449&.625217&.222615&7.262405\\ \bottomrule
-\end{tabular}
-\end{table}
-Capital is predetermined initially; informality and the tax respond immediately, after which
-the economy approaches the pillar steady state. This 101-type short path is a numerical
-diagnostic, not a forecast.
+Easier eligibility lowers the second threshold and raises PAYG participation, as expected.
+However, it also increases expected benefits and the consumption tax. The higher tax raises
+the first threshold, so informality increases by 5.7 percentage points between the two
+columns. Capitalization absorbs both movements: some of its workers enter PAYG while others
+leave formality. The result is a general-equilibrium implication of the calibrated fiscal
+rule, not a claim that easier eligibility must raise informality in every pension system.
 
 \section{Conclusion}
-Pension architecture changes the formal-employment margin even with an approximately fixed
-PAYG envelope. Moving to pillars shifts the PAYG tranche toward lower-earning formal workers,
-reduces funded saving and capital, narrows the formal tax base, and forces a higher consumption
-tax. In the comparable-scale experiment, informality rises 6.2 percentage points and
-experienced welfare falls about 1 percent in consumption-equivalent terms.
 
-These results identify a mechanism, not a universal empirical claim. Pension assignment is
-exogenous, employment histories are absent, and the transition is diagnostic. A policy
-evaluation should estimate sector transitions, contribution density, benefit eligibility,
-administrative costs, heterogeneous mortality, and actual legal budget rules.
+Informality, capitalization, and PAYG can coexist without exogenous pension assignment. The
+model generates two endogenous thresholds because funded balances are portable while PAYG
+benefits depend on eligibility and include an implicit subsidy. Low types choose informality,
+middle types choose formal capitalization, and high types choose formal PAYG.
+
+The benchmark produces positive masses in all three alternatives, and local changes in the
+eligibility intercept preserve the sorting pattern. The exercise also uncovers a fiscal
+tension. Easier PAYG eligibility raises PAYG participation but increases expected benefits,
+the consumption tax, and the informal share. Ignoring the budget response would miss this
+channel.
+
+The quantitative magnitudes remain provisional. Eligibility depends only on productivity;
+the model does not contain a separate contribution-history state. The benefit multiplier is
+calibrated rather than estimated, and the PAYG group is small. The next empirical step is to
+discipline eligibility with observed contribution densities and to value statutory PAYG and
+funded benefits on a common present-value basis. A second heterogeneity dimension would be
+appropriate only if the data require workers with similar productivity to choose different
+regimes. Random-utility shocks are not needed to obtain the reported interior equilibrium.
 
 \appendix
 \section{Numerical algorithm}
-\subsection{Stationary equilibrium}
+
+\subsection{Household alternatives}
+
+For each candidate aggregate state $(K,N_f,\tau_c)$, the algorithm computes prices and solves
+three household problems at every diagnostic type:
 \begin{enumerate}
-\item Build and normalize the type grid and quadrature weights.
-\item Guess capital $K$ and consumption tax $\tau_c$ and compute factor prices.
-\item For every type and sector, solve the constrained one-dimensional saving problem and
-calculate benefits under \eqref{eq:dual} or \eqref{eq:pillars}.
-\item Compare decision utilities point by point and aggregate labor, informality, consumption,
-saving, and PAYG flows.
-\item Update capital from aggregate saving and $\tau_c$ from the public-budget residual, using
-damping when necessary. Iterate to tolerance.
+\item informal employment with no pension contribution;
+\item formal employment with a fully funded contribution;
+\item formal employment with PAYG eligibility, pension, and refund given by
+\eqref{eq:eligibility}--\eqref{eq:paygbenefit}.
 \end{enumerate}
-The reported steady states use $Q=501$ and maximum residual below $10^{-7}$. A single formal
-cutoff is not imposed because pension kinks can create multiple crossings.
+The saving solution imposes nonnegative voluntary saving and positive consumption. The
+algorithm records all three decision utilities and applies \eqref{eq:choice}.
 
-\subsection{Matched PAYG and transition}
-For every candidate ceiling, the complete pillar equilibrium is recomputed. The outer objective
-is $h(\bar y)=R^{pg,P}(\bar y)-R^{pg,D}$. Grid kinks imply an approximate match:
-$\bar y=.336$ is within 1.2 percent.
+\subsection{Locating endogenous thresholds}
 
-For the transition, guess paths $\{K_t,\tau_{c,t}\}$, solve household and sector choices at
-each date, construct implied capital and tax paths, and update with damping. The diagnostic
-uses $Q=101$, ten periods, and 334 iterations; its terminal capital gap is
-$2.1\times10^{-4}$. Checks cover positive consumption, nonnegative saving, density
-normalization, capital consistency, and government balance.
+The diagnostic grid identifies every interval in which the selected alternative changes.
+Within each interval, a scalar root finder solves the relevant pairwise utility equation.
+The roots are added to the quadrature nodes. Choice is then evaluated at each interval
+midpoint and held constant only within that root-bounded interval. This procedure neither
+assumes the number of crossings nor imposes their order.
+
+\subsection{General-equilibrium fixed point}
+
+Given the exact choice intervals, trapezoidal quadrature aggregates labor, consumption,
+voluntary saving, funded contributions, PAYG flows, and welfare. The update map is
+\begin{equation}
+(K,N_f,N_s,\tau_c)
+\longmapsto
+(\widehat K,\widehat N_f,\widehat N_s,\widehat\tau_c),
+\end{equation}
+where $\widehat K$ follows the capital-accumulation equation and
+$\widehat\tau_c$ solves the consolidated budget. Damped updates continue until capital, both
+labor aggregates, the consumption tax, and the budget residual satisfy tolerance.
+
+The implementation first solves 101 types and uses that state to initialize 501 types.
+Validation requires positive consumption, nonnegative saving, normalized regime shares,
+positive masses in all three choices, two interior roots, the sequence
+$I\rightarrow C\rightarrow P$, the income identity, and a maximum fixed-point residual below
+$2\times10^{-6}$. The sensitivity equilibria repeat the complete fixed point rather than
+holding prices or taxes fixed.
 
 \bibliographystyle{chicago}
 \bibliography{references}

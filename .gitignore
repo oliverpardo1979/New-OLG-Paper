@@ -8,3 +8,5 @@ tmp/
 *.out
 *.synctex.gz
 *.toc
+results/*.rds
+code/outputs/
