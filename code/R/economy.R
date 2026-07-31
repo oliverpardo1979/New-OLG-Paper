@@ -75,8 +75,16 @@ government_budget <- function(
     cohort,
     consumption_old,
     payg_benefits,
-    old_informal_share = cohort$informal_share
+    old_informal_share = NULL
 ) {
+  conditional_share <- if (
+      !is.null(cohort$solidarity_beneficiary_share)
+  ) {
+    cohort$solidarity_beneficiary_share
+  } else {
+    cohort$informal_share
+  }
+  if (is.null(old_informal_share)) old_informal_share <- conditional_share
   capital_tax_base <- (
     param$alpha * (cohort$formal_labor / k)^(1 - param$alpha) -
       param$depreciation
@@ -85,7 +93,7 @@ government_budget <- function(
   spending <-
     param$government_spending +
     param$universal_basic_saving +
-    param$conditional_basic_saving * cohort$informal_share +
+    param$conditional_basic_saving * conditional_share +
     (1 - param$m) / (1 + param$n) * (
       param$universal_basic_pension +
         param$conditional_basic_pension * old_informal_share

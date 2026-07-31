@@ -1,51 +1,48 @@
-# Eleccion endogena de regimen pensional
+# Modelo OLG con reforma pensional endogena
 
-Este modulo amplia la implementacion validada sin eliminar los benchmarks
-anteriores. Cada tipo compara simultaneamente tres alternativas:
+El modulo implementa dos arquitecturas institucionales:
 
-1. trabajo informal;
-2. trabajo formal con cuenta de capitalizacion;
-3. trabajo formal con PAYG.
+1. `regime = "compete"`: Ley 100, con eleccion entre informalidad,
+   capitalizacion formal y PAYG formal;
+2. `regime = "pillars"`: Ley 2381, con eleccion entre informalidad y un
+   paquete formal obligatorio. El paquete asigna PAYG hasta 2.3 SMLMV y ahorro
+   individual sobre el excedente.
 
-La capitalizacion es portable. El PAYG tiene una probabilidad de elegibilidad
-creciente con el tipo y devuelve la cuenta nocional sin interes real cuando el
-trabajador no cumple los requisitos. La calibracion usa un aporte total de 16%,
-11.5% acreditado a capitalizacion y 13% a la cuenta nocional PAYG. Dos momentos
-comparables del CEDE Pension Model disciplinan formalidad y elegibilidad; la
-afiliacion PAYG de entrantes y el retorno real quedan como validaciones externas.
-No se imponen cuotas, umbrales de eleccion ni shocks logit.
+La cuenta individual recibe 13.2% del excedente, la formula PAYG usa
+`0.655 - 0.005 * s`, el piso contributivo es un SMLMV y la renta solidaria se
+normaliza con la linea de pobreza extrema de 2023. El multiplicador PAYG de 1
+es la normalizacion central; 2.9 es un estres no identificado.
 
-## Ejecutar las pruebas
+## Pruebas
 
 ```powershell
 Rscript tests/run_endogenous_tests.R
+Rscript tests/run_policy_reform_tests.R
 ```
 
-Las pruebas exigen:
+Las pruebas exigen consumo positivo, ahorro no negativo, participaciones
+normalizadas, masas positivas en las tres categorias, cierre presupuestal y
+residuos bajo tolerancia. La transicion se valida si converge al estado
+estacionario o a un ciclo de dos generaciones no degenerado. En la calibracion
+central, la brecha de repeticion a dos periodos es menor a 1%, aunque el estado
+estacionario de pilares no es el limite dinamico.
 
-- convergencia y residuos inferiores a la tolerancia;
-- consumo positivo y ahorro no negativo;
-- participaciones positivas en las tres alternativas;
-- dos umbrales interiores;
-- el orden informal, capitalizacion y PAYG;
-- consistencia de la identidad del ingreso y del presupuesto publico.
-
-## Reproducir los resultados
+## Analisis reproducible
 
 ```powershell
 Rscript scripts/run_endogenous_analysis.R
+Rscript scripts/run_policy_reform_analysis.R
 ```
 
-El script resuelve primero una malla de 101 tipos y usa esa solucion para
-inicializar la malla de 501 tipos. Tambien ejecuta una sensibilidad local de la
-elegibilidad PAYG. Los resultados se guardan en `../results/`. Los archivos
-`becerra2026_moment_comparison.csv` y
-`becerra2026_parameter_provenance.csv` documentan, respectivamente, los ajustes
-contra los datos y la condicion de cada parametro (directo, calibrado, validado
-o retenido).
+El segundo script crea las trayectorias de capital, salarios, impuestos,
+formalidad y componentes pensionales; microdatos por tipo; Gini y cuantiles de
+salarios; equivalentes de consumo y participaciones de ganadores; una
+comparacion estacionaria de estres; y las figuras del paper. Los ultimos tres
+periodos se usan como buffer terminal y no se reportan como trayectoria.
 
 ## Alcance
 
-El modulo implementa el nuevo equilibrio estacionario. Las funciones de
-transicion conservadas en `R/transition.R` corresponden a los benchmarks
-exogenos anteriores y no deben usarse para una reforma de eleccion endogena.
+Un periodo representa aproximadamente 40 anos. El modelo no contiene edades,
+sexo, historias semanales de cotizacion ni un pilar semicontributivo separado.
+La simulacion es contrafactual: no debe leerse como trayectoria anual ni como
+evaluacion de una reforma ya implementada.

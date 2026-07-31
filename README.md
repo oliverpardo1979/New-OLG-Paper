@@ -1,59 +1,58 @@
-# Pension Regime Choice under Informality
+# From Competing Pension Regimes to a Pillar System
 
 Paper and R implementation by Oliver Pardo.
 
-The model is a two-period OLG economy in which heterogeneous workers choose
-simultaneously among:
+This repository contains a two-period OLG model for Colombia with endogenous
+informality and pension participation. It compares:
 
-1. informal employment;
-2. formal employment with a funded account;
-3. formal employment with a PAYG pension.
+1. Law 100 of 1993: workers choose informality, formal capitalization, or
+   formal PAYG;
+2. Law 2381 of 2024: formal earnings up to 2.3 SMLMV enter PAYG and only the
+   excess enters the funded component.
 
-Funded contributions are portable. PAYG eligibility increases with worker
-type, non-eligible contributors recover a notional balance without real
-interest, and eligible benefits have a floor and a ceiling. Colombian legal
-rates and long-run moments are mapped from Becerra's CEDE Pension Model. The
-crosswalk distinguishes direct inputs, calibrated moments, external checks,
-and structural parameters that are not comparable across models. Positive
-masses arise in all three alternatives without quotas or random-utility shocks.
+The reform is simulated as a counterfactual because the integral entry into
+force of Law 2381 remains suspended. One model period is approximately 40
+years, so transition paths are generational rather than annual forecasts.
 
-## Repository structure
+## Main outputs
 
 - `main.tex`: paper and algorithm appendix.
-- `references.bib`: bibliography.
-- `code/R/`: model functions.
-- `code/R/calibration_becerra2026.R`: reproducible moment crosswalk and fit.
-- `code/scripts/run_endogenous_analysis.R`: reproducible analysis.
-- `code/tests/run_endogenous_tests.R`: endogenous-choice validation.
-- `results/endogenous_steady_state.csv`: benchmark equilibrium.
-- `results/endogenous_sensitivity.csv`: eligibility sensitivity.
-- `results/endogenous_micro_choices.csv`: type-level choices and utilities.
-- `results/becerra2026_moment_comparison.csv`: targets, model moments, and gaps.
-- `results/becerra2026_parameter_provenance.csv`: parameter source and use.
-- `results/legacy_exogenous/`: archived results from the earlier exogenous
-  architecture draft.
-- `output/pdf/`: compiled paper.
+- `code/R/policy_transition.R`: pillar mapping, endogenous transition,
+  two-cycle validation, microdata, and distributional statistics.
+- `code/scripts/run_policy_reform_analysis.R`: reproducible policy analysis.
+- `code/tests/run_policy_reform_tests.R`: stationary, transition, fiscal, and
+  distributional tests.
+- `results/policy_transition_path.csv`: endogenous paths and reported window.
+- `results/policy_distribution_summary.csv`: wage and welfare distributions.
+- `results/policy_scenario_summary.csv`: Law 100, central pillars, and stress.
+- `results/policy_parameter_crosswalk.csv`: source and status of policy inputs.
+- `figures/policy_*.png`: paper figures.
+- `output/pdf/main.pdf`: compiled paper.
 
-## Run the model
+The older benchmark files remain available as `endogenous_*.csv`. Results from
+the exogenous predecessor are archived in `results/legacy_exogenous/`.
+
+## Run
 
 From `code/`:
 
 ```powershell
 Rscript tests/run_endogenous_tests.R
-Rscript scripts/run_endogenous_analysis.R
+Rscript tests/run_policy_reform_tests.R
+Rscript scripts/run_policy_reform_analysis.R
 ```
 
-The analysis first solves a 101-type grid and uses that equilibrium to
-initialize the reported 501-type solution.
+The policy script solves 201-type stationary equilibria and a 101-type
+transition with exact insertion of endogenous choice roots. The last three
+cohorts form a terminal buffer and are excluded from reported transition
+figures. Validation accepts either convergence to the pillar steady state or a
+nondegenerate two-generation cycle; the central calibration produces the
+latter.
 
-## Compile the paper
+## Compile
 
 From the repository root:
 
 ```powershell
 tectonic --keep-logs --outdir build main.tex
 ```
-
-The endogenous-choice module currently reports stationary equilibria. The
-legacy transition code is retained for the exogenous benchmarks and is not
-used for the endogenous results in the paper.

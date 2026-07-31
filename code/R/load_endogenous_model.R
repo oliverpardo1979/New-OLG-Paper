@@ -18,3 +18,7 @@ source(
   file.path(project_dir, "R", "calibration_becerra2026.R"),
   local = .GlobalEnv
 )
+source(
+  file.path(project_dir, "R", "policy_transition.R"),
+  local = .GlobalEnv
+)
