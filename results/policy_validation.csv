@@ -1,0 +1,8 @@
+"criterion","value","threshold","passed"
+"initial steady state",1,1,TRUE
+"pillar steady state",1,1,TRUE
+"stress steady state",1,1,TRUE
+"internal fixed point",1,1,TRUE
+"two-cycle repetition",0.0046839288421788,0.01,TRUE
+"terminal steady-state consistency",0.130223809712463,0.01,FALSE
+"maximum fiscal residual",2.68544174161778e-05,2e-04,TRUE

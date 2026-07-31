@@ -3,15 +3,15 @@
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
 \usepackage[margin=1.15in]{geometry}
-\usepackage{amsmath,amssymb,booktabs,threeparttable,microtype,setspace,enumitem,natbib}
+\usepackage{amsmath,amssymb,booktabs,threeparttable,microtype,setspace,enumitem,natbib,graphicx}
 \usepackage{xcolor,hyperref}
-\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black,pdftitle={Pension Regime Choice under Informality},pdfauthor={Oliver Pardo}}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black,pdftitle={From Competing Pension Regimes to a Pillar System},pdfauthor={Oliver Pardo}}
 \onehalfspacing
 \newcommand{\1}{\mathbf{1}}
 \newcommand{\dd}{\,\mathrm{d}}
 
-\title{\textbf{Pension Regime Choice under Informality:}\\
-\large Endogenous Sorting between PAYG and Funded Accounts}
+\title{\textbf{From Competing Pension Regimes to a Pillar System:}\\
+\large Informality, Transitional Dynamics, and Distributional Welfare in Colombia}
 \author{Oliver Pardo\thanks{Departamento de Administraci{\'o}n, Pontificia Universidad Javeriana,
 Bogot{\'a}, Colombia. Email: \href{mailto:pardoo@javeriana.edu.co}{pardoo@javeriana.edu.co}.}}
 \date{July 2026}
@@ -21,82 +21,92 @@ Bogot{\'a}, Colombia. Email: \href{mailto:pardoo@javeriana.edu.co}{pardoo@javeri
 
 \begin{abstract}\small\sloppy
 \noindent
-This paper studies the joint choice of labor-market sector and pension regime in an economy
-with informality. I build a two-period overlapping-generations model in which heterogeneous
-workers choose among informal employment, formal employment with a funded account, and formal
-employment with a pay-as-you-go (PAYG) pension. Funded contributions are portable. PAYG
-eligibility increases with worker type, non-eligible contributors recover their notional
-balance, and the pension formula includes a floor and a ceiling. I discipline the Colombian
-calibration with legal parameters and long-run moments reported by the CEDE Pension Model.
-The total contribution rate is 16 percent; 11.5 percent is credited to a funded account and
-13 percent to a PAYG notional account. The benchmark matches a 48.5 percent long-run formality
-anchor and an eligibility proxy derived from 25 percent contributory coverage. It produces
-50.9 percent informality, 46.0 percent formal capitalization, and 3.1 percent formal PAYG.
-Workers below type 0.470 are informal, those between 0.470 and 0.771 choose capitalization,
-and higher types choose PAYG. PAYG accounts for 6.4 percent of formal workers, below the
-10 percent enrollment share observed for young entrants. Easier PAYG eligibility raises
-participation but also raises the consumption tax and informality because the additional
-benefits are fiscally costly. The results establish a coherent mechanism for regime
-coexistence and a transparent calibration crosswalk; they are not an evaluation of the
-2024 reform.
+This paper studies Colombia's counterfactual transition from the competing pension regimes
+created by Law 100 of 1993 to the pillar architecture of Law 2381 of 2024. I embed the reform
+in a two-period overlapping-generations economy with heterogeneous workers, endogenous
+informality, PAYG eligibility, portable funded balances, fiscal closure, and general-equilibrium
+prices. Under Law 100, workers choose among informality, capitalization, and PAYG. Under the
+pillar system, formal workers no longer choose an exclusive regime: earnings up to 2.3 minimum
+wages enter PAYG and only the excess enters an individual account. The legal mapping assigns
+13.2 percent of that excess to the funded account, applies the statutory declining replacement
+formula and one-minimum-wage floor, and calibrates the solidarity benefit to the 2023 extreme-
+poverty line. The Law 100 benchmark produces 50.9 percent informality, 46.0 percent funded
+participation, and 3.1 percent PAYG. The central pillar steady state has about 77.5 percent
+informality, 6.2 percent PAYG-only formality, and 16.3 percent mixed formality, with a 53.4
+percent consumption tax. More importantly, the perfect-foresight transition does not converge
+to that stationary comparison. It approaches a two-generation cycle: a high-tax, high-
+informality phase alternates with a low-tax, higher-formality phase. Welfare gains likewise
+alternate across cohorts and are sharply heterogeneous within cohorts. The exercise is a
+model-based counterfactual, not an evaluation of an implemented reform: the integral entry
+into force of Law 2381 remains suspended.
 
-\medskip\noindent\textbf{Keywords:} pension choice; informality; funded accounts; pay-as-you-go;
-eligibility; overlapping generations. \quad \textbf{JEL:} E21; H55; J26; J46.
+\medskip\noindent\textbf{Keywords:} pension reform; informality; pillar system; PAYG; funded accounts;
+transitional dynamics; distributional welfare. \quad \textbf{JEL:} E21; H55; J26; J46.
 \end{abstract}\fussy
 
 \section{Introduction}
 
-Workers in economies with large informal sectors make two related decisions. They decide
-whether to participate in formal employment and, when the law permits it, which pension
-regime will receive their contributions. Treating pension assignment as exogenous suppresses
-the second margin. It can also conceal a corner solution: if the two formal regimes charge the
-same contribution rate and promise linear benefits, the regime with the higher implicit
-return attracts every formal worker.
+Workers in economies with large informal sectors choose both whether to enter formal employment
+and how much value they obtain from mandatory pension contributions. Under Colombia's Law 100
+of 1993, formal workers could choose between a PAYG regime and an individual funded account
+\citep{Colombia1993}. Law 2381 of 2024 replaces that competition with complementarity: every
+formal worker contributes to PAYG on earnings up to 2.3 statutory minimum wages, while only the
+excess enters the funded component \citep{Colombia2024}. The reform therefore changes the
+choice set itself, not merely contribution rates.
 
-This paper asks whether informality, funded accounts, and PAYG pensions can coexist as
-endogenous choices. The model gives each worker three alternatives:
+This paper asks three questions. How does that institutional change affect informality,
+capital, wages, taxes, and pension participation? Which cohorts gain or lose during the
+transition? How are gains and losses distributed across worker types within each generation?
+These are counterfactual questions. The Constitutional Court suspended the integral entry into
+force of Law 2381 while it reviews the corrected legislative procedure \citep{Corte2025}; the
+experiment below is consequently not an observed before-and-after evaluation.
+
+I answer the questions in a two-period overlapping-generations economy. One period represents
+roughly 40 years. Heterogeneous workers choose informality or formality, voluntary saving, and,
+when Law 100 applies, one of two pension regimes. A funded balance is portable and earns the
+market return. PAYG eligibility increases with worker type; an ineligible contributor receives
+a refund, while an eligible contributor obtains a defined benefit with a floor and a ceiling.
+These differences produce the benchmark ordering
 \[
-\text{informal},\qquad \text{formal--capitalization},\qquad
-\text{formal--PAYG}.
+\text{informal}\;\longrightarrow\;\text{capitalization}\;\longrightarrow\;\text{PAYG}
 \]
-The pension regimes differ in three institutional dimensions. A funded account is portable
-and pays the accumulated market return. PAYG requires the worker to complete a contribution
-history, represented by an eligibility probability that increases with productivity. A
-worker who does not qualify recovers the notional balance without a real return. Conditional
-on qualifying, the PAYG pension follows a replacement formula with a floor and a ceiling.
+without quotas or random-utility shocks. Under Law 2381, the second choice disappears. A formal
+worker receives a single package containing PAYG and, above the statutory threshold, funded
+saving. The endogenous allocation is therefore among informality, PAYG-only formality, and
+mixed PAYG--funded formality.
 
-These differences generate comparative advantage across worker types. Low types prefer
-informality because formal taxes and pension contributions exceed the value of formal-sector
-benefits. Middle types enter formal employment but choose capitalization because their PAYG
-eligibility remains low and their account is portable. High types choose PAYG because they
-are likely to qualify and receive its implicit subsidy. The model therefore produces two
-endogenous thresholds rather than imposing an assignment rule.
+The legal crosswalk matters quantitatively. The total contribution is 16 percent. Thirteen
+points on earnings up to 2.3 minimum wages finance the common PAYG fund, and 13.2 points on the
+excess are credited to the individual account. The PAYG replacement rate is
+$65.5-0.5s$ percent, where $s$ is the covered income in minimum wages, and its contributory
+benefit cannot fall below one minimum wage. The solidarity benefit is normalized to the 2023
+extreme-poverty line, $218{,}846/1{,}160{,}000=0.1887$ minimum wages, and its targeted mass is
+proxied by the 12.6 percent incidence of extreme poverty \citep{DANE2023Poverty,
+Colombia2022MinimumWage}.
 
-The benchmark equilibrium has the desired three-way sorting. Workers below type 0.470 are
-informal; workers between 0.470 and 0.771 choose capitalization; and workers above 0.771
-choose PAYG. The corresponding population shares are 50.9, 46.0, and 3.1 percent. The
-consumption tax that balances the consolidated public budget is 19.6 percent.
+The Law 100 benchmark has 50.9 percent informality, 46.0 percent capitalization, and 3.1
+percent PAYG. The central pillar steady-state comparison has approximately 77.5 percent
+informality, 6.2 percent PAYG-only formality, and 16.3 percent mixed formality. Its consumption
+tax is about 53.4 percent. Those magnitudes are not forecasts: the 40-year conversion of a PAYG
+flow is not identified. A stress value that transfers the benchmark multiplier of 2.9 to the
+pillar formula raises the stationary tax further and makes the transition numerically
+infeasible.
 
-The small PAYG share is economically informative. PAYG is selected only by high-productivity
-workers with high eligibility. Moreover, PAYG benefits exceed contemporaneous PAYG
-contributions in the calibration, so easier eligibility increases fiscal expenditure.
-When the eligibility intercept rises from $-8.90$ to $-8.70$, the PAYG share rises from
-2.7 to 3.8 percent, but informality rises from 48.3 to 54.8 percent and the consumption
-tax from 17.1 to 23.7 percent. The general-equilibrium fiscal response reverses the partial
-equilibrium presumption that easier eligibility must increase formality.
+The main result concerns dynamics rather than the terminal comparison. The perfect-foresight
+path converges to a two-generation cycle. In the high-tax phase, the consumption tax is about
+91 percent and informality about 85 percent; in the low-tax phase, the corresponding values
+are about 23 and 63 percent. The mechanism is an intergenerational fiscal feedback. A cohort
+with more formal contributors creates larger future PAYG obligations. The next cohort faces
+the tax adjustment, exits toward informality, and leaves smaller obligations to its successor.
+Welfare therefore alternates as well: the first reform cohort loses about 9.7 percent in
+consumption-equivalent terms, while the next cohort has a small aggregate gain with gains
+concentrated among roughly half of worker types.
 
-The paper makes two contributions. First, it replaces exogenous pension assignment with a
-joint discrete choice that remains deterministic and interpretable. Second, it shows that
-eligibility and portability can produce regime coexistence without preference shocks.
-The calibration adds a third contribution: it distinguishes parameters that can be transferred
-from a Colombian microsimulation from those that cannot. Statutory contribution, account, and
-refund rates enter directly; long-run formality and contributory coverage discipline two
-parameters; the observed enrollment of young workers and the assumed real return are retained
-as external checks. The long-period conversion of PAYG benefits remains unidentified, so the
-regime shares should not be read as empirical predictions.
-
-The rest of the paper reviews the related literature, presents the model and calibration,
-reports the equilibrium and sensitivity results, and describes the algorithm.
+The paper contributes an endogenous institutional mapping, a transition experiment that does
+not presume convergence to a stationary state, and a distributional accounting of wages and
+welfare within and across cohorts. The rest of the paper reviews the literature, presents the
+model, maps both laws into parameters, reports stationary and transition results, and details
+the algorithm and its validation.
 
 \section{Related literature}
 
@@ -105,8 +115,9 @@ The model follows the overlapping-generations approach to social security in
 \citep{Feldstein1985}, while present-biased preferences provide a behavioral rationale for
 mandatory contributions \citep{Laibson1998,Imrohoroglu2003}. \citet{Pardo2023} introduces
 mandatory retirement saving into an economy with endogenous informality. The present paper
-adds a second choice margin: formal workers select the institution that receives their
-contributions.
+adds pension-institution choice under Law 100 and then removes that choice under the mandatory
+pillar package. This permits a transition analysis in which the policy changes both returns
+and the feasible alternatives.
 
 Pension design cannot be separated from labor informality. Payroll-financed programs alter
 the value of formal employment \citep{Levy2008}, and informality reflects choices by workers
@@ -117,14 +128,15 @@ economy also changes the information and tax bases available for redistribution
 
 Quantitative pension models with informality include \citet{Joubert2015} and
 \citet{McKiernan2020}. Related work studies retirement and occupational behavior when formal
-contributions can be avoided \citep{Ferreira2020,Moreno2022}. This paper focuses on a narrower
-mechanism: the interaction between pension eligibility, contribution portability, and the
-formal--informal margin. The objective is not to impose observed regime shares, but to identify
-conditions under which the three alternatives are simultaneously optimal for positive masses
-of workers.
+contributions can be avoided \citep{Ferreira2020,Moreno2022}. The mechanism studied here is the
+interaction between pension eligibility, contribution portability, and the formal--informal
+margin. The stationary benchmark identifies conditions for interior regime coexistence; the
+reform experiment then studies how mandatory complementarity propagates through fiscal
+closure, wages, and cohort welfare. The two-cycle result connects pension design to endogenous
+intergenerational instability rather than assuming monotone convergence.
 
 
-For Colombia, \citet{Becerra2026} develops the CEDE Pension Model, a dynamic microsimulation
+For Colombia, \citet{Becerra2025} develops the CEDE Pension Model, a dynamic microsimulation
 that combines household surveys, administrative records, legal rules, and population
 projections. That model supplies the institutional rates and empirical anchors used below.
 Its annual partial-equilibrium accounting and the present model's 40-year general-equilibrium
@@ -264,6 +276,57 @@ P,&i\geq i_2.
 Equation~\eqref{eq:sorting} is an equilibrium outcome. The algorithm evaluates all three
 utilities point by point and does not impose either threshold.
 
+\subsection{The pillar reform}
+
+Law 2381 changes both the alternatives and the contribution bases. Let $w_{\min}$ denote one
+minimum wage in model units and $\bar y=2.3w_{\min}$. For a formal worker with earnings $y_i$,
+the PAYG and funded bases are
+\begin{align}
+y_i^{P}&=\min\{y_i,\bar y\},\\
+y_i^{C}&=\max\{y_i-\bar y,0\}.
+\label{eq:pillarbases}
+\end{align}
+The worker pays the 16 percent total contribution on both bases. Thirteen percent of $y_i^P$
+enters the common PAYG fund; 13.2 percent of $y_i^C$ is credited to the individual account.
+The remaining shares finance administration, insurance, and the public savings fund, which are
+consolidated in the government budget.
+
+For covered earnings measured in minimum wages, $s_i=y_i^P/w_{\min}$, the statutory PAYG rate is
+\begin{equation}
+b^{2381}(s_i)=0.655-0.005s_i.
+\label{eq:pillarrate}
+\end{equation}
+The modeled defined benefit is
+\begin{equation}
+\mathcal B^{2381}(y_i^P)=
+\chi_{2381}\max\{w_{\min},b^{2381}(s_i)y_i^P\},
+\label{eq:pillarbenefit}
+\end{equation}
+subject to the statutory maximum. The central experiment sets $\chi_{2381}=1$ because the
+long-period conversion is not legally identified; $\chi_{2381}=2.9$, the value selected for
+the Law 100 interior branch, is reported only as a stress test.
+
+The solidarity transfer is targeted to the lowest types among informal workers. With cutoff
+$i_S$ chosen so that $F(i_S)=0.126$,
+\begin{equation}
+S(i)=\1\{j^*(i)=I,\ i\leq i_S\},
+\qquad B^S=0.1887w_{\min}.
+\label{eq:solidarity}
+\end{equation}
+This is a parsimonious proxy for poverty targeting. It does not separately represent the
+semicontributory pillar, contribution histories, disability, sex-specific ages, or household
+means tests.
+
+Formal workers now choose a package rather than an exclusive pension regime:
+\begin{equation}
+j_{2381}^*(i)=\arg\max_{j\in\{I,F\}}V_j(i).
+\label{eq:pillarchoice}
+\end{equation}
+A formal worker with $y_i\leq\bar y$ is classified as PAYG-only, while one with
+$y_i>\bar y$ is classified as mixed PAYG--funded. Thus positive masses in the three reported
+categories arise from the endogenous formality threshold and the statutory earnings threshold;
+they are not three pension-plan choices under the new law.
+
 \subsection{Aggregation and fiscal closure}
 
 Let $d_j(i)=\1\{j^*(i)=j\}$. Regime shares and effective labor are
@@ -293,26 +356,43 @@ With expected PAYG benefits $B^{pg}$, the consolidated public budget is
 \end{equation}
 The consumption tax $\tau_c$ adjusts to satisfy \eqref{eq:budget}. Consequently, a policy
 that raises expected PAYG benefits can affect all three choices through the fiscal response.
+Under pillars, the funded term in capital accumulation becomes
+$\int \1\{j^*=F\}0.132y_i^C f(i)\dd i/[(1+n)(1+g)]$. Public pension revenue becomes
+\begin{equation}
+R^{pen}_{2381}=\int_0^1\1\{j^*(i)=F\}
+\left[0.16y_i^P+(0.16-0.132)y_i^C\right]f(i)\dd i.
+\label{eq:pillarrevenue}
+\end{equation}
+The PAYG benefit, refunds, the solidarity transfer, and preserved Law 100 rights of the old
+cohort enter the expenditure side. This consolidated closure makes the consumption tax the
+key intergenerational feedback variable.
+
 
 \section{Calibration}
 
 \subsection{Parameter crosswalk}
 
-The Colombian inputs come from the CEDE Pension Model documented by \citet{Becerra2026}.
+The Colombian inputs come from the CEDE Pension Model documented by \citet{Becerra2025}.
 That source is an annual dynamic microsimulation; the present model is a stationary
 40-year OLG equilibrium. I therefore classify each input as a direct legal parameter, a
 comparable calibration moment, an external validation, or a retained structural parameter.
 This prevents annual accounting assumptions from being reinterpreted as balanced-growth
 parameters.
 
-The direct legal inputs are the 16 percent total contribution rate, the 11.5 percent credited
-to the individual retirement account, and the 13 percent credited to the PAYG notional
-account. A funded worker pays the full 16 percent: the 11.5 percent account balance becomes
-capital and the remaining 4.5 percent enters consolidated public revenue, which parsimoniously
-combines the minimum-pension fund, administration, and insurance components not separately
-modeled here. A PAYG worker also pays 16 percent, while a failed eligibility draw returns the
-13 percent notional balance with no real interest. The statutory DB replacement formula is
-approximately 65 percent at one minimum wage, so I set $b=0.65$.
+For the Law 100 benchmark, the direct legal inputs are the 16 percent total contribution rate,
+the 11.5 percent credited to an individual account, and the 13 percent credited to the PAYG
+notional balance. A funded worker pays the full 16 percent: the credited balance becomes capital
+and the remainder enters consolidated public revenue. A PAYG worker also pays 16 percent, while
+a failed eligibility draw returns the 13 percent notional balance with no real interest. The
+replacement parameter is 0.65 near one minimum wage.
+
+The reform crosswalk is separate. Under Law 2381, 13 points below the 2.3-minimum-wage
+threshold enter the common PAYG fund, while 13.2 points above it enter the funded account. The
+remaining 2.8 points on the excess consolidate administration, insurance, and public saving.
+The legal replacement formula and one-minimum-wage floor enter directly. The solidarity amount
+uses the 2023 extreme-poverty line, while the share of low types eligible for targeting uses the
+national 12.6 percent extreme-poverty incidence. These are a benefit ratio and a targeting proxy,
+respectively; neither should be interpreted as an estimate of take-up among older adults.
 
 Table~\ref{tab:parameters} reports the complete benchmark. Annual population growth,
 productivity growth, and discounting remain compounded over 40 years:
@@ -352,6 +432,28 @@ $B_{\min}$&0.0500&retained&floor in internal OLG units\\
 $B_{\max}$&100.0000&retained&nonbinding ceiling\\ \bottomrule
 \end{tabular}
 \end{table}
+\begin{table}[htbp]\centering
+\small
+\caption{Law 2381 policy mapping}\label{tab:reformparameters}
+\begin{tabular}{lrl}
+\toprule Parameter&Value&Status\\ \midrule
+Total contribution rate&0.1600&direct legal input\\
+PAYG credit below threshold&0.1300&direct legal input\\
+Funded credit above threshold&0.1320&direct legal input\\
+PAYG earnings threshold&2.3000 SMLMV&direct legal input\\
+Replacement intercept&0.6550&direct legal input\\
+Replacement slope&0.0050&direct legal input\\
+Minimum contributory benefit&1.0000 SMLMV&direct legal input\\
+Solidarity benefit&0.1887 SMLMV&calibration ratio\\
+Solidarity target mass&0.1260&calibration proxy\\
+$\chi_{2381}$ central (stress)&1.0000 (2.9000)&not identified\\ \bottomrule
+\end{tabular}
+\begin{flushleft}\footnotesize
+Notes: SMLMV denotes the statutory monthly minimum wage. The solidarity ratio is
+$218{,}846/1{,}160{,}000$. The 2.9 multiplier is not a legal input.
+\end{flushleft}
+\end{table}
+
 
 \subsection{Moments and external checks}
 
@@ -361,7 +463,7 @@ coverage near 25 percent in 2080--2100. Because the OLG has no contribution-hist
 approximate conditional eligibility among formal workers by $0.25/0.485=0.51546$. This ratio
 is a calibration proxy, not an accounting identity: contributory coverage in the source
 includes DB, DC, and DB+DC pensions and is measured among older adults.\footnote{The coverage
-rows in Table 2 of \citet{Becerra2026} are labeled in the reverse order. Section 4.1, Figure 4,
+rows in Table 2 of \citet{Becerra2025} are labeled in the reverse order. Section 4.1, Figure 4,
 and Table 1 consistently report contributory coverage of 23.7--23.8 percent on average and
 non-contributory coverage of 53.1--53.3 percent. The calibration uses the separately reported
 long-run contributory value of approximately 25 percent.}
@@ -390,10 +492,10 @@ approximately 10 percent DB enrollment share among entrants aged 20--30 reported
 
 The source does not identify the logistic slope, the conversion from an annual pension flow
 to a 40-year benefit, or the minimum wage in the model's efficiency-wage units. Accordingly,
-$\gamma_1$, $\chi$, and $B_{\min}$ are not claimed as empirical estimates. The value
-$\chi=2.9$ selects a locally stable interior branch. The benchmark is solved first on a
-101-type grid and then refined on a 501-type grid. Its maximum fixed-point residual is
-$1.8\times10^{-7}$.
+$\gamma_1$, $\chi$, and the wage normalization are not empirical estimates. The value
+$\chi=2.9$ selects the interior Law 100 branch; it is not transferred to the central reform
+experiment. The reported stationary reform solution is refined to 201 types, while the
+transition uses 101 diagnostic types plus exact root insertion at every choice boundary.
 \section{Results}
 
 \subsection{Benchmark equilibrium}
@@ -471,37 +573,155 @@ threshold, so informality increases by 6.5 percentage points between the two end
 capitalization share falls by 7.6 points: some workers enter PAYG while others leave formality.
 This is a general-equilibrium implication of the calibrated fiscal rule, not a claim that
 easier eligibility must raise informality in every pension system.
+\subsection{Stationary pillar comparison}
+
+Table~\ref{tab:pillarsteady} compares the two stationary allocations. The pillar system does
+not produce an exclusive funded category. About 6.2 percent of workers are formal and below
+the statutory threshold, while 16.3 percent are formal with both PAYG and funded components.
+Informality rises to approximately 77.5 percent and the consumption tax to 53.4 percent. The
+result reflects the consolidated fiscal rule, the PAYG floor, and the solidarity transfer; it
+is not a forecast of take-up or tax legislation.
+
+\begin{table}[htbp]\centering
+\caption{Stationary comparison: Law 100 and central pillars}\label{tab:pillarsteady}
+\begin{tabular}{lrr}
+\toprule Outcome&Law 100&Pillars\\ \midrule
+Informal share&0.5093&0.7745\\
+Funded-only share&0.4595&0.0000\\
+PAYG-only share&0.0312&0.0622\\
+Mixed PAYG--funded share&0.0000&0.1633\\
+Consumption tax&0.1962&0.5334\\
+Capital stock&0.0297&0.0250\\
+Formal wage&0.0545&0.0604\\ \bottomrule
+\end{tabular}
+\begin{flushleft}\footnotesize
+Notes: Values shown use the reproducible reform script. The Law 100 table above uses the more
+refined benchmark script, which explains immaterial rounding differences.
+\end{flushleft}
+\end{table}
+
+The stress experiment transfers $\chi=2.9$ from the Law 100 sorting calibration to the pillar
+benefit. It produces roughly 79 percent informality and a consumption tax near 75 percent in
+the stationary comparison. The transition iteration then leaves the domain in which the
+consumption-tax base is positive. This is evidence against treating $\chi=2.9$ as a portable
+legal parameter, not proof that the statutory reform is infeasible.
+
+\subsection{Transitional dynamics and the two-generation cycle}
+
+The reform begins with cohort 1. The old at that date retain their Law 100 contributory rights
+but can receive the new solidarity transfer. Cohort 1 and every subsequent entrant face the
+pillar rules. Figure~\ref{fig:transition} reports cohorts through 13; three additional cohorts
+are used only as a terminal buffer and are omitted from the figure.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{figures/policy_transition_trajectories.png}
+\caption{Endogenous transition from Law 100 to the pillar system}\label{fig:transition}
+\begin{minipage}{0.94\textwidth}\footnotesize
+Notes: One cohort is one model period of approximately 40 years. Cohort 0 is the Law 100
+benchmark. The terminal pillar steady state is not joined to the path because it is not the
+dynamic limit. PAYG cash balance is contributions minus benefits.
+\end{minipage}
+\end{figure}
+
+The first reform cohort initially raises formality: informality is 53.4 percent and the
+consumption tax 15.0 percent. The path then settles into the phases summarized in
+Table~\ref{tab:cycle}. In the high-tax phase, informality is about 84.8 percent, the tax about
+91 percent, and every formal worker has earnings above the funded threshold. In the low-tax
+phase, informality is about 62.8 percent and a sizable PAYG-only group reappears. The capital
+stock moves much less than labor status and the tax.
+
+\begin{table}[htbp]\centering
+\caption{Validated phases of the transition}\label{tab:cycle}
+\begin{tabular}{lrrrr}
+\toprule Outcome&Law 100&First cohort&High-tax phase&Low-tax phase\\ \midrule
+Informal share&0.5093&0.5334&0.8482&0.6281\\
+PAYG-only share&0.0312&0.3316&0.0000&0.2384\\
+Mixed share&0.0000&0.1350&0.1518&0.1335\\
+Consumption tax&0.1962&0.1501&0.9086&0.2297\\
+Capital stock&0.0297&0.0297&0.0265&0.0260\\
+PAYG cash balance&$-0.0333$&0.0167&$-0.0253$&0.0250\\ \bottomrule
+\end{tabular}
+\end{table}
+
+The fiscal lag explains the cycle. Higher formality expands current contributions but also
+creates larger PAYG benefits for the next old generation. The following cohort finances those
+obligations through the consumption tax, which increases informality and shrinks the benefit
+base inherited by its successor. The next tax can then fall and formality recovers. Numerically,
+the maximum relative distance between a phase and its value two periods earlier is below one
+percent, while the distance from the imposed stationary capital is about 13 percent. I therefore
+classify the dynamic outcome as a two-cycle rather than relaxing the terminal tolerance.
+
+\subsection{Wage and welfare distributions}
+
+Figures~\ref{fig:wages} and \ref{fig:intragenerational} show that averages conceal substantial
+redistribution across types. The earnings distribution shifts back and forth with the fiscal
+cycle. Relative to the Law 100 benchmark, the high-tax phase has higher mean earnings in model
+units but a lower Gini, while the low-tax phase has mean earnings near the benchmark and a
+higher Gini. These are equilibrium labor earnings, not observed Colombian wage pesos.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.88\textwidth]{figures/policy_wage_distribution.png}
+\caption{Distribution of labor earnings across selected cohorts}\label{fig:wages}
+\end{figure}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.88\textwidth]{figures/policy_welfare_distribution.png}
+\caption{Intragenerational welfare effects by worker type}\label{fig:intragenerational}
+\end{figure}
+
+The old at the reform gain about 15.9 percent in aggregate consumption-equivalent welfare,
+mainly because acquired contributory rights are preserved while the targeted solidarity
+benefit begins immediately. The first reform cohort loses about 9.7 percent and every type
+loses. In the high-tax phase, aggregate welfare rises by roughly 1.5 percent, but only 52.2
+percent of workers gain: the tenth percentile loses about 22 percent while the ninetieth gains
+about 6.3 percent. In the low-tax phase, aggregate welfare falls by about 9.2 percent and all
+types lose. The stationary pillar comparison has an aggregate loss near 3.3 percent, but it is
+not reached dynamically.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{figures/policy_intergenerational_welfare.png}
+\caption{Intergenerational welfare and the share of winners}\label{fig:intergenerational}
+\begin{minipage}{0.94\textwidth}\footnotesize
+Notes: Welfare is computed with experienced utility, excluding the present-bias parameter from
+the normative weight. The shaded area spans the tenth to ninetieth percentile of individual
+consumption-equivalent changes.
+\end{minipage}
+\end{figure}
+
 \section{Conclusion}
 
-Informality, capitalization, and PAYG can coexist without exogenous pension assignment. The
-model generates two endogenous thresholds because funded balances are portable while PAYG
-benefits depend on eligibility and include an implicit subsidy. Low types choose informality,
-middle types choose formal capitalization, and high types choose formal PAYG.
+Moving from competing regimes to a pillar system changes more than pension assignment. Under
+Law 100, informality, capitalization, and PAYG coexist because portability and eligibility
+create comparative advantage across worker types. Under Law 2381, every formal worker enters
+PAYG up to 2.3 minimum wages and only higher earnings generate funded saving. The relevant
+endogenous categories become informal, formal PAYG-only, and formal mixed.
 
-The Colombian crosswalk sharpens the quantitative exercise. Statutory contribution,
-account-crediting, refund, and replacement rates now come from an explicit institutional
-source. The benchmark approximates long-run formality and the contributory-eligibility proxy
-while preserving an interior allocation: 50.9 percent informal, 46.0 percent capitalization,
-and 3.1 percent PAYG. Local changes in eligibility preserve all three alternatives. They also
-reveal the fiscal tension: easier PAYG access increases expected benefits, the consumption
-tax, and informality.
+The central stationary comparison raises informality and the consumption tax while preserving
+positive masses in all three categories. The more consequential result is that this stationary
+allocation is not the destination of the transition. The model converges to a two-generation
+fiscal cycle. High formality today raises PAYG obligations tomorrow; the following tax response
+induces informality and reduces the liabilities passed to the next generation. Capital moves
+modestly, but taxes, labor status, wages, and welfare alternate sharply.
 
-The audit also identifies what the calibration cannot support. The source's annual wage
-growth is not the model's balanced-growth productivity rate, and its assumed 4 percent
-actuarial return is not an endogenous closed-economy price. The 10 percent DB enrollment of
-young entrants is a useful external check, but the model produces 6.4 percent PAYG among
-formals. Forcing that fit through the benefit multiplier pushes the economy toward a
-high-tax branch. Treating non-comparable quantities as direct parameters would therefore
-create spurious precision.
+Distributional accounting changes the policy interpretation. Preserving acquired rights and
+adding the solidarity benefit favors those already old when the reform begins. The first new
+cohort loses across the entire type distribution. Later cohorts alternate between a phase with
+a small aggregate gain but substantial losers and a phase with losses for all types. A reform
+cannot therefore be summarized by the welfare of one stationary representative cohort.
 
-The remaining magnitudes are provisional. Eligibility still depends only on productivity;
-the model has no separate contribution-history state, sex, or education. The next empirical
-step is to import the contribution densities behind the CEDE transitions, map the minimum
-wage into efficiency-wage units, and value statutory DB and DC benefits with the same annuity
-factor. Those additions would permit a genuine reform experiment. The present stationary
-competition between PAYG and capitalization is not a simulation of Colombia's 2024
-complementarity reform. Random-utility shocks are not required for the interior equilibrium
-reported here.
+Three cautions are essential. First, Law 2381 remains suspended, so the exercise is a
+counterfactual mapping of its statutory design. Second, one model period is approximately 40
+years; the path is generational, not an annual forecast. Third, the benefit multiplier, the
+mapping of the minimum wage into efficiency units, and contribution histories remain
+underidentified. The 2.9 multiplier used to obtain the Law 100 interior branch is especially
+nonportable: transferring it to pillars produces an extreme fiscal stress case.
+
+The next empirical step is to add age, sex, contribution histories, and the semicontributory
+rules from the CEDE microsimulation, and to value PAYG and funded annuities with a common
+actuarial conversion. Those extensions can test whether the two-cycle survives a richer fiscal
+instrument set and gradual legal transition rules. The present result should be read as a
+mechanism and a warning: imposing a stationary endpoint can conceal economically meaningful
+intergenerational instability.
 \appendix
 \section{Numerical algorithm}
 
@@ -545,6 +765,54 @@ positive masses in all three choices, two interior roots, the sequence
 $I\rightarrow C\rightarrow P$, the income identity, and a maximum fixed-point residual below
 $2\times10^{-6}$. The sensitivity equilibria repeat the complete fixed point rather than
 holding prices or taxes fixed.
+
+\subsection{Transition path iteration}
+
+Let $T=16$ be the computational horizon. The initial capital stock is predetermined by the Law
+100 steady state. From cohort 1 onward, household problems use the pillar parameters. The old
+at the announcement date retain their contributory choice and accumulated saving from Law 100;
+the realized return and the new solidarity transfer determine their old-age consumption.
+
+For a candidate sequence
+\[
+\{K_t,N_{ft},N_{st},\tau_{ct}\}_{t=0}^{T},
+\]
+the algorithm performs four operations. First, it computes current prices at every date.
+Second, each young cohort solves its two alternatives using the candidate next-period return.
+Third, aggregation produces implied capital and labor sequences. Fourth, the consolidated
+budget produces the implied consumption tax. The four paths are updated with damping and the
+process repeats until the maximum relative change and fiscal residual are below tolerance.
+The final stationary prices are used only to close expectations beyond $T$.
+
+A stationary terminal condition is not accepted automatically. Let $x_t$ collect capital,
+formal labor, informal labor, and the consumption tax at date $t$. The last three cohorts are
+reserved as a boundary buffer. The two-cycle
+criterion is
+\begin{equation}
+\Delta_2=\max_{x\in x_t}
+\max_{t\in\{T-5,T-4\}}
+\frac{|x_t-x_{t-2}|}{\max\{10^{-8},|x_t|,|x_{t-2}|\}}<10^{-2}.
+\label{eq:cycletest}
+\end{equation}
+The two phases must also differ by more than five times that tolerance. A transition is
+validated when the internal fixed point and fiscal budget converge and either the stationary
+terminal gap passes or criterion~\eqref{eq:cycletest} identifies a nondegenerate two-cycle.
+The reported path excludes the boundary buffer.
+
+\subsection{Distributional accounting}
+
+The code retains 101 type-level observations for every cohort. Population weights are the
+quadrature weights of $f(i)$. It reports weighted wage quantiles and Gini coefficients, as well
+as the share of types with welfare gains. Normative welfare uses experienced utility $W$, not
+the present-biased decision utility $V$. For $\sigma\neq1$, the consumption-equivalent change
+relative to the Law 100 allocation is
+\begin{equation}
+\lambda(i)=
+\left[\frac{W^{2381}(i)}{W^{100}(i)}\right]^{1/(1-\sigma)}-1.
+\end{equation}
+The old at reform receive an old-age-only equivalent; young cohorts receive a lifetime
+equivalent. Aggregate equivalents are computed from weighted aggregate utilities and are not
+the arithmetic mean of individual equivalents.
 
 \bibliographystyle{chicago}
 \bibliography{references}
