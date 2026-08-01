@@ -171,19 +171,105 @@ realize_initial_old_endogenous <- function(
   )
 }
 
+tax_to_fiscal_state <- function(tax, tax_upper) {
+  if (any(!is.finite(tax)) || any(tax <= 0) ||
+      any(tax >= tax_upper)) {
+    stop_model("El impuesto debe estar estrictamente entre cero y tax_upper.")
+  }
+  qlogis(tax / tax_upper)
+}
+
+fiscal_state_to_tax <- function(state, tax_upper) {
+  tax_upper * plogis(state)
+}
+
+make_fiscal_rule <- function(
+    final_solution,
+    initial_debt = 0,
+    debt_target = 0,
+    tax_anchor_weight = 0.05,
+    tax_upper = 0.90,
+    domestic_debt_share = 0.25
+) {
+  if (!inherits(final_solution, "pension_steady_state") ||
+      !final_solution$validated) {
+    stop_model("La regla fiscal requiere un estado final validado.")
+  }
+  assert_scalar(initial_debt, "initial_debt", -Inf, Inf)
+  assert_scalar(debt_target, "debt_target", -Inf, Inf)
+  assert_scalar(tax_anchor_weight, "tax_anchor_weight", 0, 0.999999)
+  assert_scalar(tax_upper, "tax_upper", 0, Inf)
+  assert_scalar(domestic_debt_share, "domestic_debt_share", 0, 1)
+  target_tax <- final_solution$state[["consumption_tax"]]
+  if (target_tax <= 0 || target_tax >= tax_upper) {
+    stop_model(
+      "tax_upper debe exceder el impuesto del estado estacionario final."
+    )
+  }
+  list(
+    initial_debt = initial_debt,
+    debt_target = debt_target,
+    tax_anchor_weight = tax_anchor_weight,
+    tax_upper = tax_upper,
+    domestic_debt_share = domestic_debt_share,
+    target_tax = target_tax,
+    target_state = tax_to_fiscal_state(target_tax, tax_upper)
+  )
+}
+
+government_debt_next <- function(
+    current_debt,
+    primary_deficit,
+    interest_rate,
+    param
+) {
+  growth <- (1 + param$n) * (1 + param$g)
+  ((1 + interest_rate) * current_debt + primary_deficit) / growth
+}
+
+fiscal_rule_tax_current <- function(
+    current_debt,
+    interest_rate,
+    budget,
+    param,
+    fiscal_rule
+) {
+  growth <- (1 + param$n) * (1 + param$g)
+  stabilizing_tax <- (
+    budget$spending - budget$non_consumption_revenue +
+      (1 + interest_rate) * current_debt -
+      growth * fiscal_rule$debt_target
+  ) / budget$consumption_tax_base
+  tax_epsilon <- 1e-8
+  bounded_stabilizing_tax <- min(
+    max(stabilizing_tax, tax_epsilon),
+    fiscal_rule$tax_upper - tax_epsilon
+  )
+  desired_state <- tax_to_fiscal_state(
+    bounded_stabilizing_tax,
+    fiscal_rule$tax_upper
+  )
+  current_state <-
+    fiscal_rule$tax_anchor_weight *
+      fiscal_rule$target_state +
+    (1 - fiscal_rule$tax_anchor_weight) * desired_state
+  fiscal_state_to_tax(current_state, fiscal_rule$tax_upper)
+}
+
 solve_transition_endogenous <- function(
     initial_param,
     final_param,
     periods = 12L,
     initial_solution = NULL,
     final_solution = NULL,
+    initial_path = NULL,
     grid = make_type_grid(501L),
     old_weight = 0.92,
+    fiscal_old_weight = 0.95,
     tolerance = 1e-7,
     terminal_tolerance = 2e-3,
-    budget_tolerance = 2e-5,
-    cycle_tolerance = 1e-2,
-    boundary_buffer = 3L,
+    fiscal_tolerance = 2e-5,
+    fiscal_rule = NULL,
     max_iterations = 3000L,
     verbose = FALSE
 ) {
@@ -191,6 +277,12 @@ solve_transition_endogenous <- function(
   validate_endogenous_parameters(final_param)
   if (initial_param$regime != "compete" ||
       final_param$regime != "pillars") {
+  assert_scalar(
+    fiscal_old_weight,
+    "fiscal_old_weight",
+    0,
+    0.999999
+  )
     stop_model("La transicion debe ir de compete a pillars.")
   }
   if (periods < 6L) {
@@ -208,13 +300,6 @@ solve_transition_endogenous <- function(
       paste(changed, collapse = ", ")
     )
   }
-  if (boundary_buffer < 2L ||
-      periods < boundary_buffer + 6L) {
-    stop_model(
-      "Se requieren al menos seis cohortes interiores y un buffer terminal de dos."
-    )
-  }
-
 
   if (is.null(initial_solution)) {
     initial_solution <- solve_steady_state_endogenous(
@@ -232,6 +317,20 @@ solve_transition_endogenous <- function(
   }
   if (!initial_solution$validated || !final_solution$validated) {
     stop_model("Los dos estados estacionarios deben estar validados.")
+  }
+  if (is.null(fiscal_rule)) {
+    fiscal_rule <- make_fiscal_rule(final_solution)
+  }
+  required_rule <- c(
+    "initial_debt", "debt_target", "tax_anchor_weight",
+    "tax_upper", "domestic_debt_share", "target_tax", "target_state"
+  )
+  if (!all(required_rule %in% names(fiscal_rule))) {
+    stop_model("La especificacion de la regla fiscal esta incompleta.")
+  }
+  initial_tax <- initial_solution$state[["consumption_tax"]]
+  if (initial_tax <= 0 || initial_tax >= fiscal_rule$tax_upper) {
+    stop_model("El impuesto inicial no pertenece al dominio de la regla.")
   }
 
   horizon <- periods + 1L
@@ -251,11 +350,50 @@ solve_transition_endogenous <- function(
     final_solution$state[["informal_labor"]]
   )
   consumption_tax <- interpolate_state(
-    initial_solution$state[["consumption_tax"]],
+    initial_tax,
     final_solution$state[["consumption_tax"]]
   )
 
-  evaluate_paths <- function(k_path, formal_path, informal_path, tax_path) {
+  consumption_tax[2L] <- initial_tax
+  public_debt <- c(
+    fiscal_rule$initial_debt,
+    seq(
+      fiscal_rule$initial_debt,
+      fiscal_rule$debt_target,
+      length.out = periods
+    )
+  )
+  if (!is.null(initial_path)) {
+    required_path <- c(
+      "capital", "formal_labor", "informal_labor",
+      "consumption_tax", "public_debt"
+    )
+    if (!is.data.frame(initial_path) ||
+        nrow(initial_path) != horizon ||
+        !all(required_path %in% names(initial_path))) {
+      stop_model(
+        "initial_path debe contener %d filas y las cinco sendas requeridas.",
+        horizon
+      )
+    }
+    k <- initial_path$capital
+    formal_labor <- initial_path$formal_labor
+    informal_labor <- initial_path$informal_labor
+    consumption_tax <- initial_path$consumption_tax
+    public_debt <- initial_path$public_debt
+    if (any(!is.finite(k)) || any(k <= 0) ||
+        any(!is.finite(consumption_tax)) ||
+        any(consumption_tax <= 0) ||
+        any(consumption_tax >= fiscal_rule$tax_upper)) {
+      stop_model("initial_path queda fuera del dominio economico.")
+    }
+  }
+  evaluate_paths <- function(
+      k_path,
+      formal_path,
+      informal_path,
+      tax_path
+  ) {
     price_path <- vector("list", horizon)
     for (t in seq_len(horizon)) {
       period_param <- if (t == 1L) initial_param else final_param
@@ -274,7 +412,9 @@ solve_transition_endogenous <- function(
       "formal_share", "solidarity_beneficiary_share",
       "funded_only_share", "payg_only_share",
       "mixed_share", "payg_contributions", "payg_benefits",
-      "decision_welfare", "experienced_welfare", "budget_residual"
+      "decision_welfare", "experienced_welfare", "budget_residual",
+      "primary_balance", "primary_deficit", "debt_identity_residual",
+      "fiscal_rule_residual"
     )
     tracked <- setNames(
       lapply(names_to_track, function(x) rep(NA_real_, horizon)),
@@ -284,6 +424,10 @@ solve_transition_endogenous <- function(
     implied_formal <- formal_path
     implied_informal <- informal_path
     implied_tax <- tax_path
+    implied_debt <- rep(fiscal_rule$debt_target, horizon)
+    implied_debt[1:2] <- fiscal_rule$initial_debt
+    implied_tax[1L] <- initial_tax
+    gross_assets_next <- k_path
     cohort_path <- vector("list", horizon)
     cohort_path[[1L]] <- initial_solution$cohort
     cohort_path[[horizon]] <- final_solution$cohort
@@ -346,7 +490,7 @@ solve_transition_endogenous <- function(
         grid
       )
       cohort_path[[t]] <- cohort
-      implied_k[t + 1L] <- cohort$capital_next
+      gross_assets_next[t + 1L] <- cohort$capital_next
       implied_formal[t] <- cohort$formal_labor
       implied_informal[t] <- cohort$informal_labor
       tracked$consumption_young[t] <- cohort$consumption_young
@@ -377,8 +521,36 @@ solve_transition_endogenous <- function(
         tracked$payg_benefits[t],
         old_solidarity_share[t]
       )
-      implied_tax[t] <- budget$implied_tax
-      tracked$budget_residual[t] <- budget$residual
+      implied_tax[t] <- fiscal_rule_tax_current(
+        implied_debt[t],
+        price_path[[t]]$r,
+        budget,
+        final_param,
+        fiscal_rule
+      )
+      tracked$primary_balance[t] <-
+        implied_tax[t] * budget$consumption_tax_base +
+        budget$non_consumption_revenue - budget$spending
+      tracked$primary_deficit[t] <- -tracked$primary_balance[t]
+      tracked$budget_residual[t] <- tracked$primary_balance[t]
+      implied_debt[t + 1L] <- government_debt_next(
+        implied_debt[t],
+        tracked$primary_deficit[t],
+        price_path[[t]]$r,
+        final_param
+      )
+      implied_k[t + 1L] <- gross_assets_next[t + 1L] -
+        fiscal_rule$domestic_debt_share * implied_debt[t + 1L]
+      if (!is.finite(implied_k[t + 1L])) {
+        stop_model("El capital fisico implicito no es finito.")
+      }
+      growth <- (1 + final_param$n) * (1 + final_param$g)
+      tracked$debt_identity_residual[t] <-
+        growth * implied_debt[t + 1L] -
+        ((1 + price_path[[t]]$r) * implied_debt[t] +
+          tracked$primary_deficit[t])
+      tracked$fiscal_rule_residual[t] <-
+        tax_path[t] - implied_tax[t]
     }
 
     list(
@@ -388,18 +560,36 @@ solve_transition_endogenous <- function(
       implied_k = implied_k,
       implied_formal = implied_formal,
       implied_informal = implied_informal,
-      implied_tax = implied_tax
+      implied_tax = implied_tax,
+      implied_debt = implied_debt,
+      gross_assets_next = gross_assets_next
     )
   }
 
   converged_internal <- FALSE
   internal_gap <- Inf
   terminal_gap <- Inf
+  terminal_gaps <- function(evaluated) {
+    c(
+      capital = abs(
+        evaluated$implied_k[horizon] -
+          final_solution$state[["k"]]
+      ) / final_solution$state[["k"]],
+      debt = abs(
+        evaluated$implied_debt[horizon] - fiscal_rule$debt_target
+      ) / final_solution$state[["k"]],
+      tax = abs(
+        evaluated$implied_tax[periods] - fiscal_rule$target_tax
+      ) / fiscal_rule$target_tax
+    )
+  }
+
   for (iteration in seq_len(max_iterations)) {
     old_k <- k
     old_formal <- formal_labor
     old_informal <- informal_labor
     old_tax <- consumption_tax
+    old_debt <- public_debt
     evaluated <- evaluate_paths(
       k,
       formal_labor,
@@ -412,6 +602,11 @@ solve_transition_endogenous <- function(
       k[update_k] <- old_weight * k[update_k] +
         (1 - old_weight) * evaluated$implied_k[update_k]
     }
+    if (any(!is.finite(k[update_k])) || any(k[update_k] <= 0)) {
+      stop_model(
+        "La iteracion produjo capital no positivo; ajuste la regla fiscal."
+      )
+    }
     update_flow <- 2:periods
     formal_labor[update_flow] <-
       old_weight * formal_labor[update_flow] +
@@ -419,38 +614,52 @@ solve_transition_endogenous <- function(
     informal_labor[update_flow] <-
       old_weight * informal_labor[update_flow] +
       (1 - old_weight) * evaluated$implied_informal[update_flow]
-    consumption_tax[update_flow] <-
-      old_weight * consumption_tax[update_flow] +
-      (1 - old_weight) * evaluated$implied_tax[update_flow]
+    update_fiscal <- 3:periods
+    public_debt[update_fiscal] <-
+      fiscal_old_weight * public_debt[update_fiscal] +
+      (1 - fiscal_old_weight) * evaluated$implied_debt[update_fiscal]
+    update_tax <- 2:periods
+    consumption_tax[update_tax] <-
+      fiscal_old_weight * consumption_tax[update_tax] +
+      (1 - fiscal_old_weight) * evaluated$implied_tax[update_tax]
 
-    internal_gap <- max(
-      max_relative_gap(k[3:periods], old_k[3:periods]),
+    internal_gap_components <- c(
+      capital = max_relative_gap(k[3:periods], old_k[3:periods]),
       max_relative_gap(
         formal_labor[2:periods],
         old_formal[2:periods]
-      ),
+      ) |> setNames("formal_labor"),
       max_relative_gap(
         informal_labor[2:periods],
         old_informal[2:periods]
-      ),
+      ) |> setNames("informal_labor"),
       max_relative_gap(
         consumption_tax[2:periods],
         old_tax[2:periods]
-      )
+      ) |> setNames("consumption_tax"),
+      public_debt = max(
+        abs(public_debt[3:periods] - old_debt[3:periods])
+      ) / final_solution$state[["k"]]
     )
-    terminal_gap <- abs(
-      evaluated$implied_k[horizon] -
-        final_solution$state[["k"]]
-    ) / final_solution$state[["k"]]
+    internal_gap <- max(internal_gap_components)
+    terminal_gap <- max(terminal_gaps(evaluated))
+    fiscal_gap_iteration <- max(
+      abs(evaluated$tracked$fiscal_rule_residual[2:periods]),
+      na.rm = TRUE
+    )
     if (verbose && (iteration == 1L || iteration %% 50L == 0L)) {
       message(sprintf(
-        "iter=%d gap=%.3e brecha_terminal=%.3e",
+        "iter=%d gap=%.3e (%s) brecha_terminal=%.3e brecha_fiscal=%.3e",
         iteration,
         internal_gap,
-        terminal_gap
+        names(which.max(internal_gap_components)),
+        terminal_gap,
+        fiscal_gap_iteration
       ))
     }
-    if (internal_gap < tolerance) {
+    if (internal_gap < tolerance &&
+        terminal_gap < terminal_tolerance &&
+        fiscal_gap_iteration < fiscal_tolerance) {
       converged_internal <- TRUE
       break
     }
@@ -462,17 +671,35 @@ solve_transition_endogenous <- function(
     informal_labor,
     consumption_tax
   )
-  terminal_gap <- abs(
-    evaluated$implied_k[horizon] - final_solution$state[["k"]]
-  ) / final_solution$state[["k"]]
+  terminal_gap_components <- terminal_gaps(evaluated)
+  terminal_gap <- max(terminal_gap_components)
   tracked <- evaluated$tracked
-  max_budget_residual <- max(
-    abs(tracked$budget_residual[2:periods]),
+  max_primary_deficit <- max(
+    abs(tracked$primary_deficit[2:periods]),
     na.rm = TRUE
   )
+  max_debt_identity_residual <- max(
+    abs(tracked$debt_identity_residual[2:periods]),
+    na.rm = TRUE
+  )
+  max_fiscal_rule_residual <- max(
+    abs(tracked$fiscal_rule_residual[2:periods]),
+    na.rm = TRUE
+  )
+  tracked$primary_balance[c(1L, horizon)] <- 0
+  tracked$primary_deficit[c(1L, horizon)] <- 0
+  tracked$debt_identity_residual[c(1L, horizon)] <- 0
+  tracked$fiscal_rule_residual[c(1L, horizon)] <- 0
+  formal_output <- k^final_param$alpha *
+    formal_labor^(1 - final_param$alpha)
+  informal_output <- final_param$A_informal * informal_labor
+  total_output <- formal_output + informal_output
   path <- data.frame(
     cohort = 0:periods,
     capital = k,
+    public_debt = evaluated$implied_debt,
+    output = total_output,
+    debt_to_output = evaluated$implied_debt / total_output,
     formal_labor = formal_labor,
     informal_labor = informal_labor,
     consumption_tax = consumption_tax,
@@ -505,42 +732,23 @@ solve_transition_endogenous <- function(
     payg_contributions = tracked$payg_contributions,
     payg_benefits = tracked$payg_benefits,
     decision_welfare = tracked$decision_welfare,
+    primary_balance = tracked$primary_balance,
+    primary_deficit = tracked$primary_deficit,
+    debt_identity_residual = tracked$debt_identity_residual,
+    fiscal_rule_residual = tracked$fiscal_rule_residual,
     experienced_welfare = tracked$experienced_welfare,
     budget_residual = tracked$budget_residual,
     stringsAsFactors = FALSE
   )
 
-  cycle_variables <- c(
-    "capital", "formal_labor", "informal_labor", "consumption_tax"
-  )
-  cycle_end <- periods - boundary_buffer
-  late_cohorts <- (cycle_end - 1L):cycle_end
-  early_cohorts <- late_cohorts - 2L
-  cycle_gap <- max(vapply(
-    cycle_variables,
-    function(variable) {
-      max_relative_gap(
-        path[path$cohort %in% late_cohorts, variable],
-        path[path$cohort %in% early_cohorts, variable]
-      )
-    },
-    numeric(1)
-  ))
-  phase_gap <- max(vapply(
-    cycle_variables,
-    function(variable) max_relative_gap(
-      path[path$cohort == late_cohorts[2L], variable],
-      path[path$cohort == late_cohorts[1L], variable]
-    ),
-    numeric(1)
-  ))
   terminal_consistent <- terminal_gap < terminal_tolerance
-  cycle_detected <- cycle_gap < cycle_tolerance &&
-    phase_gap > 5 * cycle_tolerance
-  dynamic_outcome <- if (terminal_consistent) {
+  fiscal_consistent <-
+    max_debt_identity_residual < fiscal_tolerance &&
+    max_fiscal_rule_residual < fiscal_tolerance
+  dynamic_outcome <- if (
+      converged_internal && terminal_consistent && fiscal_consistent
+  ) {
     "steady_state"
-  } else if (cycle_detected) {
-    "two_cycle"
   } else {
     "unresolved"
   }
@@ -548,22 +756,24 @@ solve_transition_endogenous <- function(
     list(
       converged_internal = converged_internal,
       terminal_consistent = terminal_consistent,
-      cycle_detected = cycle_detected,
+      fiscal_consistent = fiscal_consistent,
       dynamic_outcome = dynamic_outcome,
-      cycle_gap = cycle_gap,
-      phase_gap = phase_gap,
       validated = converged_internal &&
-        (terminal_consistent || cycle_detected) &&
-        max_budget_residual < budget_tolerance,
+        terminal_consistent && fiscal_consistent,
       iterations = iteration,
       internal_gap = internal_gap,
       terminal_gap = terminal_gap,
-      max_budget_residual = max_budget_residual,
+      terminal_gap_components = terminal_gap_components,
+      max_primary_deficit = max_primary_deficit,
+      max_debt_identity_residual = max_debt_identity_residual,
+      max_fiscal_rule_residual = max_fiscal_rule_residual,
       path = path,
       price_path = evaluated$price_path,
       cohort_path = evaluated$cohort_path,
       initial_solution = initial_solution,
       final_solution = final_solution,
+      internal_gap_components = internal_gap_components,
+      fiscal_rule = fiscal_rule,
       grid = grid,
       timing = paste(
         "La reforma comienza con la cohorte 1.",
@@ -835,15 +1045,17 @@ print.pension_policy_transition <- function(x, ...) {
     ifelse(x$converged_internal, "si", "no"),
     x$iterations
   ))
-  cat(sprintf("  Brecha terminal del capital: %.3e\n", x$terminal_gap))
+  cat(sprintf("  Brecha terminal conjunta: %.3e\n", x$terminal_gap))
   cat(sprintf("  Resultado dinamico: %s\n", x$dynamic_outcome))
+  cat(sprintf("  Identidades fiscales: %s\n",
+              ifelse(x$fiscal_consistent, "si", "no")))
   cat(sprintf(
-    "  Brecha de repeticion a dos periodos: %.3e\n",
-    x$cycle_gap
+    "  Maximo residuo de deuda: %.3e\n",
+    x$max_debt_identity_residual
   ))
   cat(sprintf(
-    "  Maximo residuo fiscal interior: %.3e\n",
-    x$max_budget_residual
+    "  Maximo residuo de regla fiscal: %.3e\n",
+    x$max_fiscal_rule_residual
   ))
   cat(sprintf("  Validada: %s\n", ifelse(x$validated, "si", "no")))
   invisible(x)

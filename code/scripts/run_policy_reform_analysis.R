@@ -65,26 +65,47 @@ stress <- solve_steady_state_endogenous(
 )
 if (!stress$validated) stop("El estado de estres chi=2.9 no fue validado.")
 
+fiscal_rule <- make_fiscal_rule(
+  pillar,
+  initial_debt = 0,
+  debt_target = 0,
+  tax_anchor_weight = 0.05,
+  tax_upper = 0.90,
+  domestic_debt_share = 0.25
+)
+
+transition_seed <- NULL
+saved_transition_file <- file.path(results_dir, "policy_transition.rds")
+if (file.exists(saved_transition_file)) {
+  saved_transition <- readRDS(saved_transition_file)
+  if (inherits(saved_transition, "pension_policy_transition") &&
+      nrow(saved_transition$path) == 21L &&
+      "public_debt" %in% names(saved_transition$path)) {
+    transition_seed <- saved_transition$path
+  }
+}
+
 transition <- solve_transition_endogenous(
   initial_param = initial_param,
   final_param = pillar_param,
-  periods = 16L,
+  periods = 20L,
   initial_solution = initial,
   final_solution = pillar,
+  initial_path = transition_seed,
   grid = make_type_grid(101L),
-  old_weight = 0.85,
-  tolerance = 2e-5,
-  terminal_tolerance = 1e-2,
-  budget_tolerance = 2e-4,
-  cycle_tolerance = 1e-2,
-  boundary_buffer = 3L,
-  max_iterations = 600L
+  old_weight = 0.90,
+  fiscal_old_weight = 0.95,
+  tolerance = 1e-4,
+  terminal_tolerance = 1e-3,
+  fiscal_tolerance = 2e-4,
+  fiscal_rule = fiscal_rule,
+  max_iterations = 1200L
 )
-if (!transition$validated || transition$dynamic_outcome != "two_cycle") {
-  stop("La trayectoria central no produjo el ciclo de dos periodos validado.")
+if (!transition$validated || transition$dynamic_outcome != "steady_state") {
+  stop("La trayectoria central no converge al estado estacionario validado.")
 }
 
-reporting_cutoff <- max(transition$path$cohort) - 3L
+reporting_cutoff <- max(transition$path$cohort)
 path <- transition$path
 path$reported <- path$cohort <= reporting_cutoff
 path$phase <- ifelse(
@@ -93,7 +114,7 @@ path$phase <- ifelse(
   ifelse(
     path$cohort == 1L,
     "first reform cohort",
-    ifelse(path$cohort %% 2L == 0L, "high-tax phase", "low-tax phase")
+    ifelse(path$cohort == reporting_cutoff, "pillar steady state", "transition")
   )
 )
 path$payg_balance <- path$payg_contributions - path$payg_benefits
@@ -135,7 +156,9 @@ parameter_crosswalk <- data.frame(
     "replacement intercept", "replacement slope per SMLMV",
     "minimum contributory benefit in SMLMV",
     "solidarity benefit in SMLMV", "solidarity target mass",
-    "PAYG long-period multiplier"
+    "PAYG long-period multiplier", "public-debt target",
+    "fiscal tax-anchor weight", "domestic debt share",
+    "consumption-tax ceiling"
   ),
   value = c(
     pillar_param$tau_pension, pillar_param$payg_notional_account_rate,
@@ -144,7 +167,9 @@ parameter_crosswalk <- data.frame(
     pillar_param$pillar_replacement_slope, 1,
     pillar_param$solidarity_benefit_smlmv,
     pillar_param$solidarity_target_mass,
-    pillar_param$payg_benefit_multiplier
+    pillar_param$payg_benefit_multiplier, fiscal_rule$debt_target,
+    fiscal_rule$tax_anchor_weight, fiscal_rule$domestic_debt_share,
+    fiscal_rule$tax_upper
   ),
   source = c(
     "Law 2381, art. 23", "Law 2381, art. 23",
@@ -152,11 +177,14 @@ parameter_crosswalk <- data.frame(
     "Law 2381, art. 32", "Law 2381, art. 32",
     "Law 2381, art. 32", "DANE 2023 line / 2023 SMLMV",
     "DANE 2023 extreme-poverty incidence",
-    "structural normalization; chi=2.9 is stress"
+    "structural normalization; chi=2.9 is stress",
+    "reduced-form fiscal calibration", "reduced-form fiscal calibration",
+    "reduced-form fiscal calibration", "numerical policy domain"
   ),
   status = c(
     rep("direct legal input", 7L),
-    "calibration ratio", "calibration proxy", "not identified"
+    "calibration ratio", "calibration proxy", "not identified",
+    rep("provisional calibration", 4L)
   ),
   stringsAsFactors = FALSE
 )
@@ -164,22 +192,26 @@ parameter_crosswalk <- data.frame(
 validation <- data.frame(
   criterion = c(
     "initial steady state", "pillar steady state", "stress steady state",
-    "internal fixed point", "two-cycle repetition",
-    "terminal steady-state consistency", "maximum fiscal residual"
+    "internal fixed point", "terminal steady-state consistency",
+    "maximum debt-identity residual", "maximum fiscal-rule residual",
+    "steady-state dynamic outcome"
   ),
   value = c(
     initial$validated, pillar$validated, stress$validated,
-    transition$converged_internal, transition$cycle_gap,
-    transition$terminal_gap, transition$max_budget_residual
+    transition$converged_internal, transition$terminal_gap,
+    transition$max_debt_identity_residual,
+    transition$max_fiscal_rule_residual,
+    transition$dynamic_outcome == "steady_state"
   ),
   threshold = c(
-    1, 1, 1, 1, 1e-2, 1e-2, 2e-4
+    1, 1, 1, 1, 1e-3, 2e-4, 2e-4, 1
   ),
   passed = c(
     initial$validated, pillar$validated, stress$validated,
-    transition$converged_internal, transition$cycle_gap < 1e-2,
-    transition$terminal_consistent,
-    transition$max_budget_residual < 2e-4
+    transition$converged_internal, transition$terminal_consistent,
+    transition$max_debt_identity_residual < 2e-4,
+    transition$max_fiscal_rule_residual < 2e-4,
+    transition$dynamic_outcome == "steady_state"
   ),
   stringsAsFactors = FALSE
 )
@@ -234,14 +266,15 @@ legend("right", c("Informal", "PAYG only", "PAYG + funded"),
 plot(reported_path$cohort, 100 * reported_path$consumption_tax,
      type = "o", pch = 16, col = colors[["orange"]],
      xlab = "Cohort", ylab = "Percent", main = "Consumption tax")
-plot(reported_path$cohort, reported_path$formal_wage,
-     type = "o", pch = 16, col = colors[["blue"]],
-     xlab = "Cohort", ylab = "Model units", main = "Formal wage")
-plot(reported_path$cohort, reported_path$payg_balance,
+plot(reported_path$cohort, 100 * reported_path$debt_to_output,
+     type = "o", pch = 17, lty = 2, col = colors[["blue"]],
+     xlab = "Cohort", ylab = "Percent of output", main = "Public debt")
+abline(h = 0, col = colors[["gray"]])
+plot(reported_path$cohort, reported_path$primary_balance,
      type = "h", lwd = 4, col = ifelse(
-       reported_path$payg_balance >= 0, colors[["teal"]], colors[["orange"]]
-     ), xlab = "Cohort", ylab = "Contributions minus benefits",
-     main = "PAYG cash balance")
+       reported_path$primary_balance >= 0, colors[["teal"]], colors[["orange"]]
+     ), xlab = "Cohort", ylab = "Model units",
+     main = "Primary fiscal balance")
 abline(h = 0, col = colors[["gray"]])
 plot(reported_distribution$cohort,
      100 * reported_distribution$aggregate_welfare_cev,
@@ -252,7 +285,7 @@ abline(h = 0, col = colors[["gray"]])
 mtext("Transition from Law 100 competition to Law 2381 pillars", outer = TRUE, cex = 1.15)
 dev.off()
 
-selected_cohorts <- c(0L, 1L, 2L, 3L, 12L, 13L)
+selected_cohorts <- c(0L, 1L, 2L, 5L, 10L, 20L)
 selected_micro <- micro[
   micro$life_stage == "young_lifetime" & micro$cohort %in% selected_cohorts,
 ]
@@ -274,7 +307,7 @@ legend("bottomright", paste("Cohort", selected_cohorts), col = line_colors,
        lty = seq_along(selected_cohorts), lwd = 2, bty = "n", cex = 0.82)
 dev.off()
 
-welfare_cohorts <- c(1L, 2L, 3L, 12L, 13L)
+welfare_cohorts <- c(1L, 2L, 5L, 10L, 20L)
 welfare_micro <- micro[
   micro$life_stage == "young_lifetime" & micro$cohort %in% welfare_cohorts,
 ]

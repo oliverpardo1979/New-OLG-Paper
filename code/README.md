@@ -22,10 +22,11 @@ Rscript tests/run_policy_reform_tests.R
 
 Las pruebas exigen consumo positivo, ahorro no negativo, participaciones
 normalizadas, masas positivas en las tres categorias, cierre presupuestal y
-residuos bajo tolerancia. La transicion se valida si converge al estado
-estacionario o a un ciclo de dos generaciones no degenerado. En la calibracion
-central, la brecha de repeticion a dos periodos es menor a 1%, aunque el estado
-estacionario de pilares no es el limite dinamico.
+residuos bajo tolerancia. La transicion incorpora deuda publica, una regla
+acotada para el impuesto al consumo y desplazamiento parcial del capital
+domestico. Se valida solo si converge al estado estacionario de pilares y pasa
+simultaneamente las tolerancias de punto fijo, brecha terminal, identidad de
+deuda y regla fiscal. Un ciclo no se acepta como solucion.
 
 ## Analisis reproducible
 
@@ -35,10 +36,11 @@ Rscript scripts/run_policy_reform_analysis.R
 ```
 
 El segundo script crea las trayectorias de capital, salarios, impuestos,
-formalidad y componentes pensionales; microdatos por tipo; Gini y cuantiles de
-salarios; equivalentes de consumo y participaciones de ganadores; una
-comparacion estacionaria de estres; y las figuras del paper. Los ultimos tres
-periodos se usan como buffer terminal y no se reportan como trayectoria.
+deuda, formalidad y componentes pensionales; microdatos por tipo; Gini y
+cuantiles de salarios; equivalentes de consumo y participaciones de ganadores;
+una comparacion estacionaria de estres; y las figuras del paper. La cohorte 20
+es la condicion de frontera estacionaria, pero la convergencia se verifica con
+la ultima cohorte endogena y con las identidades fiscales, no por inspeccion
 
 ## Alcance
 

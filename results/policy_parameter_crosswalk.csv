@@ -9,3 +9,7 @@
 "solidarity benefit in SMLMV",0.188660344827586,"DANE 2023 line / 2023 SMLMV","calibration ratio"
 "solidarity target mass",0.126,"DANE 2023 extreme-poverty incidence","calibration proxy"
 "PAYG long-period multiplier",1,"structural normalization; chi=2.9 is stress","not identified"
+"public-debt target",0,"reduced-form fiscal calibration","provisional calibration"
+"fiscal tax-anchor weight",0.05,"reduced-form fiscal calibration","provisional calibration"
+"domestic debt share",0.25,"reduced-form fiscal calibration","provisional calibration"
+"consumption-tax ceiling",0.9,"numerical policy domain","provisional calibration"
