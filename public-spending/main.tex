@@ -1,0 +1,610 @@
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1.15in]{geometry}
+\usepackage{
+  amsmath,amssymb,booktabs,threeparttable,microtype,
+  setspace,natbib,graphicx
+}
+\usepackage{xcolor,hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  citecolor=blue!50!black,
+  urlcolor=blue!50!black,
+  pdftitle={Public Spending, Capital Accumulation, and Informality in Colombia},
+  pdfauthor={Oliver Pardo}
+}
+\onehalfspacing
+\newcommand{\dd}{\,\mathrm{d}}
+\input{results/summary_values.tex}
+
+\title{\textbf{Public Spending, Capital Accumulation, and Informality:}\\
+\large Why the Financing Instrument Matters in Colombia}
+\author{
+  Oliver Pardo\thanks{
+    Departamento de Administraci{\'o}n, Pontificia Universidad Javeriana,
+    Bogot{\'a}, Colombia.
+    Email: \href{mailto:pardoo@javeriana.edu.co}{pardoo@javeriana.edu.co}.
+  }
+}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}\small\sloppy
+\noindent
+This paper studies how a permanent increase in government purchases affects
+capital accumulation and labor informality. The distinction between spending
+and financing is central. I build an annual deterministic general-equilibrium
+model in which private capital is used only in formal production and workers
+choose between formal and informal employment. A smooth discrete-choice margin
+keeps both sectors active. The illustrative Colombian calibration matches
+\BenchmarkInformality{} labor informality and government consumption equal to
+\BenchmarkGovernmentShare{} of GDP. Government purchases then rise permanently
+by two percent of benchmark GDP. If the additional spending is financed by a
+lump-sum instrument, stationary capital and informality do not change, while
+private consumption falls 2.8 percent. If half of the increase is charged to
+the formal wage bill, capital falls 8.2 percent and informality rises
+\MixedInformalityChange. If the entire increase is financed through the formal
+payroll, capital falls \PayrollCapitalChange{} and informality rises
+\PayrollInformalityChange. Whether public consumption enters utility
+additively changes welfare but not the allocation. Public spending must be
+nonseparable with private consumption, affect productivity, or modify an
+individual constraint to alter behavior independently of its financing.
+The quantitative results are mechanism exercises, not fiscal forecasts.
+
+\medskip\noindent
+\textbf{Keywords:} government spending; informality; capital accumulation;
+payroll taxation; fiscal policy; Colombia.
+\quad
+\textbf{JEL:} E22; E62; H30; H50; J46.
+\end{abstract}\fussy
+
+\section{Introduction}
+
+An increase in government spending withdraws resources from private uses, but
+that accounting statement does not determine its effect on capital or labor
+informality. The result depends on what the government purchases, whether
+households value it, and which tax base finances the additional expenditure.
+A payroll tax lowers the return to formal employment. A broad tax or a
+lump-sum instrument does not create the same formal--informal wedge. Debt can
+postpone the wedge but cannot eliminate the need for a fiscal adjustment after
+a permanent increase in spending.
+
+This paper studies how a permanent increase in government purchases affects
+capital accumulation and labor informality in Colombia. The exercise compares
+three ways to finance the same increase in spending: a lump-sum instrument, an
+equal combination of lump-sum and payroll revenue, and a tax charged entirely
+to the formal wage bill. Every experiment starts from the same stationary
+equilibrium. The comparison therefore holds constant the size and timing of
+the spending increase and changes only its marginal source of financing.
+
+The model is annual and deliberately parsimonious. A representative household
+chooses private consumption and saving. A unit mass of workers is allocated
+between formal and informal employment according to the difference between
+after-tax sectoral wages and heterogeneous sector preferences. Formal firms
+use capital and labor. Informal production is labor intensive. The aggregate
+capital stock follows from the household Euler equation and the economy's
+resource constraint.
+
+The stationary calibration reproduces two Colombian aggregates. Labor
+informality is \BenchmarkInformality{}, the proportion reported by
+\citet{DANE2025Informality} for August--October 2025. General-government final
+consumption is \BenchmarkGovernmentShare{} of GDP, close to the 2024 national
+accounts measure reported by \citet{WorldBank2026}. The policy experiment
+raises government purchases by two percent of initial GDP. The remaining
+parameters are provisional and are selected from values commonly used in
+annual macroeconomic models. The exercise should consequently be read as a
+quantitative decomposition, not as an estimated response to a specific
+Colombian program.
+
+The financing instrument determines the stationary response. Lump-sum
+financing leaves the formal employment wedge unchanged. Capital and
+informality therefore remain at their benchmark values, although private
+consumption falls 2.8 percent because government purchases absorb additional
+output. When half of the increase is financed from the formal wage bill,
+informality rises 3.6 percentage points, capital falls 8.2 percent, and output
+falls 3.8 percent. Full payroll financing increases informality by 9.8
+percentage points and lowers capital by 22.1 percent. The spending increase is
+the same in every case; the differences come from the tax wedge and its effect
+on the formal labor input used together with capital.
+
+The treatment of public consumption provides a second distinction. Preferences
+are
+\[
+  \sum_{t=0}^{\infty}\beta^t
+  \left[u(C_t)+\chi_G\log G_t\right].
+\]
+Because $G_t$ is exogenous and additively separable, changing $\chi_G$ affects
+welfare but not consumption, saving, wages, or informality. This result is not
+an innocuous modeling detail. A paper that makes public consumption valuable
+by adding it to utility cannot claim a behavioral channel unless public and
+private consumption are nonseparable, the spending relaxes a household
+constraint, or government expenditure changes productivity.
+
+The paper contributes a transparent decomposition rather than a new fiscal
+multiplier. Existing Colombian models contain richer nominal, fiscal, and
+labor-market blocks. The narrower structure used here isolates one question:
+how much of the response attributed to government spending is instead produced
+by the instrument used to finance it? The rest of the paper reviews the
+related literature, presents the model, describes the provisional calibration,
+reports stationary and transition results, and documents the numerical
+algorithm.
+
+\section{Related literature}
+
+The macroeconomic effect of government spending depends on household behavior,
+the persistence of the shock, and the fiscal instrument. In the neoclassical
+model of \citet{BaxterKing1993}, permanent government purchases affect private
+wealth, labor supply, and investment. \citet{Barro1990} distinguishes
+unproductive government consumption from public services that enter
+production. \citet{Gali2007} shows that household heterogeneity and market
+structure can change the response of private consumption. The present paper
+sets aside short-run nominal rigidities and concentrates on capital
+accumulation and the formal--informal margin.
+
+Informality makes the fiscal instrument part of the policy experiment.
+\citet{Levy2008} emphasizes that payroll-financed benefits can tax formal
+employment while subsidizing activities outside the contributory system.
+\citet{LaPortaShleifer2014} and \citet{Ulyssea2018} show why informal firms
+cannot be treated only as formal firms that evade a tax. Productivity,
+technology, firm size, and selection differ across sectors. The current model
+retains only the labor-allocation margin and should be interpreted accordingly.
+
+For Colombia, \citet{MejiaPosada2007} study the coexistence of formal and
+informal production when regulation can be evaded and enforcement is costly.
+\citet{Osorio2016} uses a dynamic general-equilibrium model to study tax reform
+and informality. \citet{Rincon2017} construct a fiscal model that distinguishes
+government consumption from public investment and embeds a fiscal rule.
+\citet{GrandaMorales2023} analyze tax policy, public enforcement spending, and
+labor-market rigidities. More recently, \citet{Herrera2025} present a detailed
+fiscal model for Colombia with several revenue sources, expenditure
+categories, public debt, and a sovereign risk channel.
+
+The present exercise is less detailed than those models. Its purpose is to
+make the financing decomposition visible. A permanent increase in $G$ financed
+from a lump-sum source provides the resource benchmark. Charging an increasing
+share to formal payroll adds the endogenous-informality channel. This
+comparison would be harder to identify inside a model in which several tax
+rates, transfers, debt, and monetary policy adjust simultaneously.
+
+\section{Model}
+
+\subsection{Household preferences and capital accumulation}
+
+Time is discrete and one period is one year. The representative household
+maximizes
+\begin{equation}
+  U_0=
+  \sum_{t=0}^{\infty}\beta^t
+  \left[
+    \frac{C_t^{1-\sigma}-1}{1-\sigma}
+    +\chi_G\log G_t
+  \right],
+  \qquad
+  \beta\in(0,1),\quad \sigma>0.
+  \label{eq:utility}
+\end{equation}
+Private consumption is $C_t$. Government purchases are $G_t$. The public
+consumption term is additive and $G_t$ is exogenous. It therefore does not
+enter the first-order condition for private saving:
+\begin{equation}
+  \frac{C_{t+1}}{C_t}
+  =
+  \left[\beta(1+r_{t+1})\right]^{1/\sigma}.
+  \label{eq:euler}
+\end{equation}
+Changing $\chi_G$ changes welfare evaluated along a given allocation but does
+not change that allocation.
+
+Private capital evolves according to the aggregate resource constraint:
+\begin{equation}
+  K_{t+1}
+  =
+  (1-\delta)K_t+Y_t-C_t-G_t.
+  \label{eq:capital}
+\end{equation}
+Government purchases are unproductive in the benchmark. They neither become
+public capital nor affect private total factor productivity.
+
+\subsection{Formal and informal production}
+
+Formal firms use private capital and formal labor:
+\begin{equation}
+  Y_t^F=K_t^\alpha(L_t^F)^{1-\alpha},
+  \qquad \alpha\in(0,1).
+  \label{eq:formal_production}
+\end{equation}
+The competitive formal wage and net return on capital are
+\begin{align}
+  w_t^F
+  &=
+  (1-\alpha)
+  \left(\frac{K_t}{L_t^F}\right)^\alpha,
+  \label{eq:formal_wage}
+  \\
+  r_t
+  &=
+  \alpha
+  \left(\frac{L_t^F}{K_t}\right)^{1-\alpha}
+  -\delta.
+  \label{eq:return}
+\end{align}
+
+Informal output uses labor only:
+\begin{equation}
+  Y_t^I=A_I L_t^I,
+  \qquad
+  w_t^I=A_I.
+  \label{eq:informal_production}
+\end{equation}
+The labor force has unit mass, so $L_t^I=1-L_t^F$. Total output is
+\begin{equation}
+  Y_t=Y_t^F+Y_t^I.
+  \label{eq:total_output}
+\end{equation}
+
+Equation \eqref{eq:informal_production} is a benchmark, not a claim that
+informal firms literally use no equipment. It represents labor-intensive
+services and microenterprises with limited access to formal finance. The
+assumption also implies that a shift out of formal employment reduces the
+labor input used together with private capital. A robustness exercise should
+allow informal firms to use a smaller amount of capital and should introduce a
+financing wedge rather than assume frictionless mobility of capital across
+sectors.
+
+\subsection{Endogenous informality}
+
+Workers differ in their idiosyncratic valuation of the two sectors. Aggregating
+extreme-value preference shocks gives the formal employment share
+\begin{equation}
+  L_t^F
+  =
+  \Lambda\left(
+    \frac{
+      \log[(1-\tau_t^F)w_t^F]
+      -\log w_t^I-\kappa
+    }{\mu}
+  \right),
+  \qquad
+  \Lambda(x)=\frac{1}{1+e^{-x}}.
+  \label{eq:formal_choice}
+\end{equation}
+The parameter $\kappa$ is the average nonpecuniary cost of formal employment.
+The scale $\mu$ controls heterogeneity. A positive $\mu$ prevents the economy
+from collapsing mechanically into a corner when after-tax wages change.
+
+The formal payroll tax $\tau_t^F$ affects both the tax base and the allocation
+of labor. A higher tax lowers the net formal wage in
+\eqref{eq:formal_choice}. The resulting fall in $L_t^F$ reduces the wage bill
+on which the tax is collected. The model therefore checks for an interior
+fiscal equilibrium rather than calculating the tax rate from a fixed base.
+
+\subsection{Government spending and fiscal closure}
+
+The government budget is balanced each period:
+\begin{equation}
+  G_t=\tau_t^F w_t^F L_t^F+T_t,
+  \label{eq:government_budget}
+\end{equation}
+where $T_t$ denotes a lump-sum fiscal instrument. Let $G_0$ be benchmark
+spending and let $\Delta G_t=G_t-G_0$. Payroll revenue is required to satisfy
+\begin{equation}
+  \tau_t^F w_t^F L_t^F
+  =
+  \lambda_0G_0+\lambda_\Delta\Delta G_t.
+  \label{eq:payroll_finance}
+\end{equation}
+The remaining revenue is lump sum:
+\begin{equation}
+  T_t=(1-\lambda_0)G_0+
+  (1-\lambda_\Delta)\Delta G_t.
+  \label{eq:lump_sum_finance}
+\end{equation}
+
+All experiments use the same $\lambda_0$ and the same initial equilibrium.
+They differ in $\lambda_\Delta$. The lump-sum experiment sets
+$\lambda_\Delta=0$, the mixed experiment sets $\lambda_\Delta=0.5$, and the
+payroll experiment sets $\lambda_\Delta=1$. The lump-sum instrument is a
+theoretical benchmark. It is not proposed as a readily available Colombian
+tax.
+
+\subsection{Equilibrium}
+
+Given a path for government purchases and a marginal financing share, an
+equilibrium is a sequence
+\[
+  \{C_t,K_{t+1},L_t^F,\tau_t^F,w_t^F,r_t,Y_t\}_{t=0}^{\infty}
+\]
+that satisfies household optimality
+\eqref{eq:euler}, capital accumulation \eqref{eq:capital}, factor prices
+\eqref{eq:formal_wage}--\eqref{eq:return}, endogenous formality
+\eqref{eq:formal_choice}, and the government budget
+\eqref{eq:government_budget}--\eqref{eq:lump_sum_finance}.
+
+In a stationary equilibrium,
+\begin{equation}
+  r^\star=\frac{1}{\beta}-1
+  \label{eq:ss_return}
+\end{equation}
+and
+\begin{equation}
+  \frac{K^\star}{L^{F,\star}}
+  =
+  \left[
+    \frac{\alpha}{
+      \beta^{-1}-1+\delta
+    }
+  \right]^{1/(1-\alpha)}.
+  \label{eq:ss_capital_labor}
+\end{equation}
+Equations \eqref{eq:formal_choice},
+\eqref{eq:payroll_finance}, and
+\eqref{eq:ss_capital_labor} jointly determine formal employment, the payroll
+tax, and capital.
+
+\section{Calibration and experiment}
+
+Table \ref{tab:calibration} reports the initial calibration. The model targets
+55.4 percent national labor informality, measured by
+\citet{DANE2025Informality} for August--October 2025. This target covers the
+national economy; it is higher than the corresponding rate for the thirteen
+largest metropolitan areas. The government-consumption target is 14.72 percent
+of GDP in 2024 \citep{WorldBank2026}. It measures purchases of goods and
+services, not total public expenditure, transfers, or debt service.
+
+\begin{table}[!htbp]
+\centering
+\caption{Initial calibration}
+\label{tab:calibration}
+\begin{threeparttable}
+\begin{tabular}{llrl}
+\toprule
+Parameter & Symbol & Value & Status or target \\
+\midrule
+Capital share & $\alpha$ & 0.33 & Provisional standard value \\
+Annual depreciation & $\delta$ & 0.06 & Provisional standard value \\
+Discount factor & $\beta$ & 0.96 & Provisional standard value \\
+Risk aversion & $\sigma$ & 2.00 & Provisional standard value \\
+Informal productivity & $A_I$ & 0.60 & Normalization \\
+Choice dispersion & $\mu$ & 0.30 & Provisional \\
+Informal employment & $L^I$ & 0.554 & DANE target \\
+Government consumption / GDP & $G/Y$ & 0.1472 & WDI target \\
+Baseline payroll share & $\lambda_0$ & 0.50 & Provisional closure \\
+Permanent spending increase & $\Delta G/Y_0$ & 0.02 & Policy experiment \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: The calibration is illustrative. Parameters labeled
+``provisional'' have not been estimated for this model. The formality cost
+$\kappa$ is selected to match the informality target conditional on the
+remaining parameters.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The experiment is an unanticipated and permanent increase:
+\begin{equation}
+  G_t=
+  \begin{cases}
+    G_0, & t=0,\\
+    G_0+0.02Y_0, & t\geq1.
+  \end{cases}
+  \label{eq:spending_path}
+\end{equation}
+The amount is fixed in units of benchmark output. It is not set equal to a
+constant share of contemporaneous GDP. Consequently, $G_t/Y_t$ can rise by
+more than two percentage points if output falls.
+
+\section{Results}
+
+\subsection{Stationary effects}
+
+\input{results/steady_state_table.tex}
+
+Table \ref{tab:steady_results} separates the resource effect of government
+purchases from the formal-tax effect. With lump-sum financing, the permanent
+increase in $G$ reduces stationary private consumption by 2.8 percent. It does
+not change capital, output, or informality. The return condition
+\eqref{eq:ss_return} fixes the formal capital--labor ratio, while the formal
+employment wedge remains at its benchmark value. The additional government
+purchase is absorbed by lower private consumption.
+
+Mixed financing changes the result because half of the additional expenditure
+is collected from the formal wage bill. The payroll tax rises 3.7 percentage
+points. Informality rises from 55.4 to 59.0 percent, an increase of 3.6
+percentage points. Formal labor and capital are complements in production, so
+capital falls 8.2 percent. Output falls 3.8 percent and private consumption
+falls 6.6 percent.
+
+Full payroll financing produces a larger contraction of the formal tax base.
+The payroll tax rises from 15.6 to 25.4 percent and informality reaches 65.2
+percent. Capital falls 22.1 percent, output falls 10.4 percent, and private
+consumption falls 13.0 percent. These values are not estimates of a Colombian
+fiscal reform. They show the amplification produced by financing a permanent
+spending increase from a tax base that shrinks when its own rate rises.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/steady_state_comparison.png}
+\caption{Stationary effects by marginal financing instrument}
+\label{fig:steady_comparison}
+\begin{minipage}{0.94\textwidth}\footnotesize
+\textit{Notes:} Changes are measured relative to the common benchmark.
+Government purchases rise permanently by two percent of initial GDP.
+\end{minipage}
+\end{figure}
+
+\subsection{Transition}
+
+Figure \ref{fig:transition} reports the perfect-foresight transition. Capital
+is predetermined when the spending increase is announced. Consumption and the
+fiscal instruments can adjust immediately. Under lump-sum financing, private
+consumption absorbs the spending increase on impact and capital remains at its
+initial stationary level. Under mixed and payroll financing, the higher formal
+tax reduces formal employment. Capital then declines gradually toward the
+lower stationary value.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/transition_financing.png}
+\caption{Transition after a permanent increase in government purchases}
+\label{fig:transition}
+\begin{minipage}{0.94\textwidth}\footnotesize
+\textit{Notes:} The gray dotted line is the common benchmark. The numerical
+solution uses a long terminal horizon because the stable root approaches the
+new stationary equilibrium slowly in the payroll-financed experiment. One
+period is one year.
+\end{minipage}
+\end{figure}
+
+The paths are monotone near the new steady state. They do not alternate
+between tax and informality regimes. The algorithm obtains the stable branch
+from the model's Euler and resource equations rather than applying a moving
+average or damping the plotted series. This distinction matters because a
+smooth figure is not evidence of an equilibrium transition unless the
+underlying residuals also converge.
+
+\subsection{Public consumption and welfare}
+
+The allocation is identical whether $\chi_G=0$ or $\chi_G>0$ in
+\eqref{eq:utility}. The welfare assessment is not. With $\chi_G=0$, a
+proportional increase of 2.9 percent in private consumption along the
+lump-sum-financed path would be required to restore benchmark welfare. The
+corresponding compensations are 4.8 percent under mixed financing and 7.4
+percent under payroll financing. With $\chi_G=0.15$, the value assigned to
+public consumption lowers those compensations to 1.3, 3.2, and 5.7 percent,
+respectively.
+
+This comparison does not establish that the increase in $G$ lowers Colombian
+welfare. The result depends on the provisional value of $\chi_G$ and on the
+assumption that government purchases are unproductive. Its narrower conclusion
+is that adding an exogenous and separable $G_t$ to utility changes the welfare
+calculation without creating an additional effect on capital or informality.
+
+\section{Extensions and limitations}
+
+The first limitation is the fiscal closure. The government balances its
+budget every year. Public debt could transfer part of the adjustment across
+dates, but a permanent increase in spending still requires a higher stationary
+primary revenue. A debt extension should distinguish the transition from the
+long-run financing instrument and should impose a terminal debt rule.
+
+The second limitation is the composition of spending. Public consumption is
+neither productive nor accumulated. A productive-spending extension could set
+\[
+  Y_t^F=A(G_t^P)K_t^\alpha(L_t^F)^{1-\alpha},
+  \qquad A'(G_t^P)>0,
+\]
+or introduce public capital with its own accumulation equation. The benefit of
+additional spending would then depend on its productivity, not only on the
+utility weight assigned to it.
+
+The third limitation is the single final good. Formal and informal output are
+perfect substitutes in \eqref{eq:total_output}. A two-good extension should
+aggregate formal and informal consumption with a finite elasticity of
+substitution and should specify which good is used for investment and
+government purchases. This extension may change the size, but not the logical
+importance, of the financing channel.
+
+The fourth limitation is the labor market. The logit allocation produces
+interior employment shares but does not contain unemployment, firm entry,
+search, wage rigidities, or enforcement. Those mechanisms are central in the
+richer Colombian literature. The current specification is useful only while
+the paper's purpose remains the decomposition of spending and financing.
+
+\section{Conclusions}
+
+A permanent increase in government purchases does not have a unique effect on
+capital accumulation or labor informality. The financing instrument is part
+of the policy. In the illustrative calibration, lump-sum financing lowers
+private consumption but leaves capital and informality unchanged. Charging
+half of the additional spending to the formal wage bill lowers capital 8.2
+percent and raises informality 3.6 percentage points. Full payroll financing
+lowers capital 22.1 percent and raises informality 9.8 percentage points.
+
+The model also clarifies what follows from placing government consumption in
+utility. When $G_t$ is exogenous and additively separable, it changes welfare
+but not the allocation. To obtain an independent behavioral effect, public
+spending must interact with private consumption, affect productivity, or relax
+a constraint faced by households or firms.
+
+The next quantitative step is not to add more adjustment parameters. It is to
+replace the lump-sum benchmark with observed Colombian tax instruments and a
+debt rule, distinguish public consumption from public investment, and estimate
+the formal-employment response to the relevant tax wedges. Those additions
+would permit the paper to move from a mechanism exercise to a Colombian policy
+counterfactual.
+
+\appendix
+
+\section{Numerical algorithm}
+
+The code is written in R and uses only base packages. The stationary and
+transition calculations proceed as follows.
+
+\begin{enumerate}
+\item Given $(K_t,G_t)$ and required payroll revenue, solve
+\eqref{eq:formal_choice} jointly with
+\eqref{eq:payroll_finance}. The algorithm searches all admissible roots and
+selects the root connected to the preceding allocation.
+
+\item Compute formal and informal output, factor prices, tax revenue, and the
+government budget residual.
+
+\item In a stationary equilibrium, impose
+\eqref{eq:ss_return} and solve the remaining scalar equation for formal
+employment. Compute consumption from
+\[
+  C^\star=Y^\star-G^\star-\delta K^\star.
+\]
+
+\item For the transition, combine \eqref{eq:euler} and
+\eqref{eq:capital} into a two-dimensional map for $(K_t,C_t)$. Capital at the
+announcement date is inherited from the benchmark.
+
+\item Evaluate the Jacobian of that map at the final stationary equilibrium.
+The calibration has one stable and one unstable root. Select the eigenvector
+associated with the stable root.
+
+\item Start close to the final equilibrium on the stable eigenvector and apply
+the inverse Euler and resource maps. Continue backward until the path reaches
+the inherited capital stock. A scalar root selects the terminal displacement
+that reproduces initial capital.
+
+\item Reverse the resulting sequence and append the final stationary
+allocation after the terminal discrepancy is below the numerical tolerance.
+The reported tests verify the household Euler equation, the resource
+constraint, the government budget, the benchmark targets, and terminal
+convergence.
+\end{enumerate}
+
+The stable-path method avoids the numerical instability of forward shooting.
+It does not smooth the endogenous variables after they are computed. The
+transition paths are generated by the model equations themselves.
+
+\section{Alternative preference specifications}
+
+The additive specification in \eqref{eq:utility} can be replaced by a
+nonseparable private--public consumption aggregator:
+\begin{equation}
+  X_t=
+  \left[
+    \omega^{1/\eta}C_t^{(\eta-1)/\eta}
+    +(1-\omega)^{1/\eta}G_t^{(\eta-1)/\eta}
+  \right]^{\eta/(\eta-1)}.
+  \label{eq:public_private_ces}
+\end{equation}
+Utility would then be $u(X_t)$. Government consumption changes the marginal
+utility of private consumption and can affect saving during a transition.
+That model is economically different from assigning a positive value to
+$\chi_G$ in \eqref{eq:utility}; it should be calibrated as a separate
+experiment.
+
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}
