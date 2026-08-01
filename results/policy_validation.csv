@@ -2,8 +2,16 @@
 "initial steady state",1,1,TRUE
 "pillar steady state",1,1,TRUE
 "stress steady state",1,1,TRUE
-"internal fixed point",1,1,TRUE
-"terminal steady-state consistency",8.54096213739975e-05,0.001,TRUE
-"maximum debt-identity residual",0,2e-04,TRUE
-"maximum fiscal-rule residual",0.000193251945885042,2e-04,TRUE
-"steady-state dynamic outcome",1,1,TRUE
+"funded steady state",1,1,TRUE
+"pillar internal fixed point",1,1,TRUE
+"pillar terminal consistency",0.000399540238165241,0.001,TRUE
+"pillar debt-identity residual",0,2e-04,TRUE
+"pillar fiscal-rule residual",4.91314393393782e-05,2e-04,TRUE
+"pillar dynamic outcome",1,1,TRUE
+"funded internal fixed point",1,1,TRUE
+"funded terminal consistency",0.000203809026617485,0.001,TRUE
+"funded debt-identity residual",0,2e-04,TRUE
+"funded fiscal-rule residual",4.0027481624863e-06,2e-04,TRUE
+"funded dynamic outcome",1,1,TRUE
+"pillar maximum direction reversals",1,2,TRUE
+"funded maximum direction reversals",0,2,TRUE
