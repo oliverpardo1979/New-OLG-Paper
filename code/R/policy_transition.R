@@ -1,4 +1,4 @@
-# Reforma pensional: transicion desde competencia de regimenes hacia pilares.
+# Reforma pensional: transicion desde competencia hacia un regimen alternativo.
 # Un periodo del modelo representa una generacion de aproximadamente 40 anos.
 
 make_law2381_parameters <- function(
@@ -81,6 +81,29 @@ make_law2381_parameters <- function(
   param$payg_benefit_multiplier <- payg_benefit_multiplier
   # El piso de la prestacion contributiva se normaliza a un SMLMV.
   param$payg_minimum_benefit <- minimum_wage
+  validate_endogenous_parameters(param)
+  param
+}
+
+make_fully_funded_parameters <- function(
+    initial_solution,
+    solidarity_benefit_smlmv = 218846 / 1160000,
+    solidarity_target_mass = 0.126
+) {
+  param <- make_law2381_parameters(
+    initial_solution,
+    solidarity_benefit_smlmv = solidarity_benefit_smlmv,
+    solidarity_target_mass = solidarity_target_mass,
+    payg_benefit_multiplier = 0
+  )
+  param$regime <- "funded"
+  # Counterfactual architecture: the full mandatory contribution is credited
+  # to the worker's individual account. The solidarity pillar is retained.
+  param$funded_account_rate <- param$tau_pension
+  param$payg_income_threshold <- 0
+  param$payg_notional_account_rate <- 0
+  param$payg_benefit_multiplier <- 0
+  param$payg_minimum_benefit <- 0
   validate_endogenous_parameters(param)
   param
 }
@@ -171,89 +194,126 @@ realize_initial_old_endogenous <- function(
   )
 }
 
-tax_to_fiscal_state <- function(tax, tax_upper) {
-  if (any(!is.finite(tax)) || any(tax <= 0) ||
+tax_to_fiscal_state <- function(tax, tax_lower, tax_upper) {
+  if (any(!is.finite(tax)) || any(tax <= tax_lower) ||
       any(tax >= tax_upper)) {
-    stop_model("El impuesto debe estar estrictamente entre cero y tax_upper.")
+    stop_model("La tasa fiscal debe estar dentro de su dominio abierto.")
   }
-  qlogis(tax / tax_upper)
+  qlogis((tax - tax_lower) / (tax_upper - tax_lower))
 }
 
-fiscal_state_to_tax <- function(state, tax_upper) {
-  tax_upper * plogis(state)
+fiscal_state_to_tax <- function(state, tax_lower, tax_upper) {
+  tax_lower + (tax_upper - tax_lower) * plogis(state)
 }
 
 make_fiscal_rule <- function(
     final_solution,
-    initial_debt = 0,
-    debt_target = 0,
-    tax_anchor_weight = 0.05,
+    initial_debt = NULL,
+    debt_target = NULL,
+    tax_lower = -0.20,
     tax_upper = 0.90,
-    domestic_debt_share = 0.25
+    domestic_debt_share = NULL,
+    debt_interest_rate = NULL,
+    debt_persistence = 0.25,
+    tax_persistence = 0.70
 ) {
   if (!inherits(final_solution, "pension_steady_state") ||
       !final_solution$validated) {
     stop_model("La regla fiscal requiere un estado final validado.")
   }
+  if (is.null(final_solution$fiscal)) {
+    stop_model("El estado final no contiene el cierre fiscal estacionario.")
+  }
+  if (is.null(debt_target)) {
+    debt_target <- final_solution$fiscal$public_debt
+  }
+  if (is.null(initial_debt)) {
+    initial_debt <- debt_target
+  }
+  if (is.null(domestic_debt_share)) {
+    domestic_debt_share <- final_solution$fiscal$domestic_debt_share
+  }
+  if (is.null(debt_interest_rate)) {
+    debt_interest_rate <- final_solution$fiscal$debt_interest_rate
+  }
   assert_scalar(initial_debt, "initial_debt", -Inf, Inf)
   assert_scalar(debt_target, "debt_target", -Inf, Inf)
-  assert_scalar(tax_anchor_weight, "tax_anchor_weight", 0, 0.999999)
+  assert_scalar(tax_lower, "tax_lower", -0.999999, Inf)
   assert_scalar(tax_upper, "tax_upper", 0, Inf)
+  if (tax_lower >= tax_upper) {
+    stop_model("tax_lower debe ser menor que tax_upper.")
+  }
   assert_scalar(domestic_debt_share, "domestic_debt_share", 0, 1)
-  target_tax <- final_solution$state[["consumption_tax"]]
-  if (target_tax <= 0 || target_tax >= tax_upper) {
+  assert_scalar(debt_interest_rate, "debt_interest_rate", -1, Inf)
+  assert_scalar(debt_persistence, "debt_persistence", 0, 0.999999)
+  assert_scalar(tax_persistence, "tax_persistence", 0, 0.999999)
+  growth <- (1 + final_solution$param$n) *
+    (1 + final_solution$param$g)
+  debt_feedback <- (1 + debt_interest_rate) -
+    debt_persistence * growth
+  if (debt_feedback <= 0) {
     stop_model(
-      "tax_upper debe exceder el impuesto del estado estacionario final."
+      "La persistencia objetivo implica una reaccion fiscal no positiva."
+    )
+  }
+  target_tax <- final_solution$state[["consumption_tax"]]
+  if (target_tax <= tax_lower || target_tax >= tax_upper) {
+    stop_model(
+      "El impuesto final debe quedar dentro del dominio fiscal."
     )
   }
   list(
     initial_debt = initial_debt,
     debt_target = debt_target,
-    tax_anchor_weight = tax_anchor_weight,
+    tax_persistence = tax_persistence,
+    tax_lower = tax_lower,
     tax_upper = tax_upper,
     domestic_debt_share = domestic_debt_share,
     target_tax = target_tax,
-    target_state = tax_to_fiscal_state(target_tax, tax_upper)
+    target_state = tax_to_fiscal_state(
+      target_tax, tax_lower, tax_upper),
+    target_primary_balance = final_solution$fiscal$primary_balance,
+    target_primary_balance_to_gdp =
+      final_solution$fiscal$primary_balance_to_gdp,
+    target_debt_to_annual_gdp =
+      final_solution$fiscal$debt_to_annual_gdp,
+    years_per_period = final_solution$fiscal$years_per_period,
+    debt_persistence = debt_persistence,
+    debt_feedback = debt_feedback,
+    debt_interest_rate = debt_interest_rate,
+    annual_debt_interest_rate =
+      (1 + debt_interest_rate)^(1 / final_solution$fiscal$years_per_period) - 1
   )
 }
 
 government_debt_next <- function(
     current_debt,
     primary_deficit,
-    interest_rate,
-    param
-) {
-  growth <- (1 + param$n) * (1 + param$g)
-  ((1 + interest_rate) * current_debt + primary_deficit) / growth
-}
-
-fiscal_rule_tax_current <- function(
-    current_debt,
-    interest_rate,
-    budget,
     param,
     fiscal_rule
 ) {
   growth <- (1 + param$n) * (1 + param$g)
-  stabilizing_tax <- (
-    budget$spending - budget$non_consumption_revenue +
-      (1 + interest_rate) * current_debt -
-      growth * fiscal_rule$debt_target
-  ) / budget$consumption_tax_base
-  tax_epsilon <- 1e-8
-  bounded_stabilizing_tax <- min(
-    max(stabilizing_tax, tax_epsilon),
-    fiscal_rule$tax_upper - tax_epsilon
-  )
-  desired_state <- tax_to_fiscal_state(
-    bounded_stabilizing_tax,
+  ((1 + fiscal_rule$debt_interest_rate) * current_debt +
+    primary_deficit) / growth
+}
+
+fiscal_rule_tax_current <- function(
+    previous_tax,
+    fiscal_rule
+) {
+  previous_state <- tax_to_fiscal_state(
+    previous_tax,
+    fiscal_rule$tax_lower,
     fiscal_rule$tax_upper
   )
   current_state <-
-    fiscal_rule$tax_anchor_weight *
-      fiscal_rule$target_state +
-    (1 - fiscal_rule$tax_anchor_weight) * desired_state
-  fiscal_state_to_tax(current_state, fiscal_rule$tax_upper)
+    fiscal_rule$tax_persistence * previous_state +
+    (1 - fiscal_rule$tax_persistence) * fiscal_rule$target_state
+  fiscal_state_to_tax(
+    current_state,
+    fiscal_rule$tax_lower,
+    fiscal_rule$tax_upper
+  )
 }
 
 solve_transition_endogenous <- function(
@@ -275,15 +335,15 @@ solve_transition_endogenous <- function(
 ) {
   validate_endogenous_parameters(initial_param)
   validate_endogenous_parameters(final_param)
-  if (initial_param$regime != "compete" ||
-      final_param$regime != "pillars") {
   assert_scalar(
     fiscal_old_weight,
     "fiscal_old_weight",
     0,
     0.999999
   )
-    stop_model("La transicion debe ir de compete a pillars.")
+  if (initial_param$regime != "compete" ||
+      !final_param$regime %in% c("pillars", "funded")) {
+    stop_model("La transicion debe ir de compete a pillars o funded.")
   }
   if (periods < 6L) {
     stop_model("La transicion requiere al menos seis generaciones.")
@@ -322,14 +382,19 @@ solve_transition_endogenous <- function(
     fiscal_rule <- make_fiscal_rule(final_solution)
   }
   required_rule <- c(
-    "initial_debt", "debt_target", "tax_anchor_weight",
-    "tax_upper", "domestic_debt_share", "target_tax", "target_state"
+    "initial_debt", "debt_target",
+    "tax_lower", "tax_upper", "domestic_debt_share", "target_tax", "target_state",
+    "target_primary_balance", "target_primary_balance_to_gdp",
+    "target_debt_to_annual_gdp", "years_per_period",
+    "debt_interest_rate", "annual_debt_interest_rate",
+    "debt_persistence", "debt_feedback", "tax_persistence"
   )
   if (!all(required_rule %in% names(fiscal_rule))) {
     stop_model("La especificacion de la regla fiscal esta incompleta.")
   }
   initial_tax <- initial_solution$state[["consumption_tax"]]
-  if (initial_tax <= 0 || initial_tax >= fiscal_rule$tax_upper) {
+  if (initial_tax <= fiscal_rule$tax_lower ||
+      initial_tax >= fiscal_rule$tax_upper) {
     stop_model("El impuesto inicial no pertenece al dominio de la regla.")
   }
 
@@ -383,7 +448,7 @@ solve_transition_endogenous <- function(
     public_debt <- initial_path$public_debt
     if (any(!is.finite(k)) || any(k <= 0) ||
         any(!is.finite(consumption_tax)) ||
-        any(consumption_tax <= 0) ||
+        any(consumption_tax <= fiscal_rule$tax_lower) ||
         any(consumption_tax >= fiscal_rule$tax_upper)) {
       stop_model("initial_path queda fuera del dominio economico.")
     }
@@ -414,7 +479,8 @@ solve_transition_endogenous <- function(
       "mixed_share", "payg_contributions", "payg_benefits",
       "decision_welfare", "experienced_welfare", "budget_residual",
       "primary_balance", "primary_deficit", "debt_identity_residual",
-      "fiscal_rule_residual"
+      "fiscal_rule_residual", "rule_primary_balance",
+      "fiscal_adjustment"
     )
     tracked <- setNames(
       lapply(names_to_track, function(x) rep(NA_real_, horizon)),
@@ -522,22 +588,27 @@ solve_transition_endogenous <- function(
         old_solidarity_share[t]
       )
       implied_tax[t] <- fiscal_rule_tax_current(
-        implied_debt[t],
-        price_path[[t]]$r,
-        budget,
-        final_param,
+        tax_path[t - 1L],
         fiscal_rule
       )
-      tracked$primary_balance[t] <-
+      raw_primary_balance <-
         implied_tax[t] * budget$consumption_tax_base +
         budget$non_consumption_revenue - budget$spending
+      tracked$rule_primary_balance[t] <-
+        fiscal_rule$target_primary_balance +
+        fiscal_rule$debt_feedback *
+          (implied_debt[t] - fiscal_rule$debt_target)
+      tracked$fiscal_adjustment[t] <-
+        tracked$rule_primary_balance[t] - raw_primary_balance
+      tracked$primary_balance[t] <- raw_primary_balance +
+        tracked$fiscal_adjustment[t]
       tracked$primary_deficit[t] <- -tracked$primary_balance[t]
-      tracked$budget_residual[t] <- tracked$primary_balance[t]
+      tracked$budget_residual[t] <- raw_primary_balance
       implied_debt[t + 1L] <- government_debt_next(
         implied_debt[t],
         tracked$primary_deficit[t],
-        price_path[[t]]$r,
-        final_param
+        final_param,
+        fiscal_rule
       )
       implied_k[t + 1L] <- gross_assets_next[t + 1L] -
         fiscal_rule$domestic_debt_share * implied_debt[t + 1L]
@@ -547,7 +618,7 @@ solve_transition_endogenous <- function(
       growth <- (1 + final_param$n) * (1 + final_param$g)
       tracked$debt_identity_residual[t] <-
         growth * implied_debt[t + 1L] -
-        ((1 + price_path[[t]]$r) * implied_debt[t] +
+        ((1 + fiscal_rule$debt_interest_rate) * implied_debt[t] +
           tracked$primary_deficit[t])
       tracked$fiscal_rule_residual[t] <-
         tax_path[t] - implied_tax[t]
@@ -580,7 +651,7 @@ solve_transition_endogenous <- function(
       ) / final_solution$state[["k"]],
       tax = abs(
         evaluated$implied_tax[periods] - fiscal_rule$target_tax
-      ) / fiscal_rule$target_tax
+      )
     )
   }
 
@@ -686,8 +757,13 @@ solve_transition_endogenous <- function(
     abs(tracked$fiscal_rule_residual[2:periods]),
     na.rm = TRUE
   )
-  tracked$primary_balance[c(1L, horizon)] <- 0
-  tracked$primary_deficit[c(1L, horizon)] <- 0
+  tracked$rule_primary_balance[1L] <- initial_solution$fiscal$primary_balance
+  tracked$rule_primary_balance[horizon] <- final_solution$fiscal$primary_balance
+  tracked$fiscal_adjustment[c(1L, horizon)] <- 0
+  tracked$primary_balance[1L] <- initial_solution$fiscal$primary_balance
+  tracked$primary_balance[horizon] <- final_solution$fiscal$primary_balance
+  tracked$primary_deficit[1L] <- -initial_solution$fiscal$primary_balance
+  tracked$primary_deficit[horizon] <- -final_solution$fiscal$primary_balance
   tracked$debt_identity_residual[c(1L, horizon)] <- 0
   tracked$fiscal_rule_residual[c(1L, horizon)] <- 0
   formal_output <- k^final_param$alpha *
@@ -699,7 +775,8 @@ solve_transition_endogenous <- function(
     capital = k,
     public_debt = evaluated$implied_debt,
     output = total_output,
-    debt_to_output = evaluated$implied_debt / total_output,
+    debt_to_output = fiscal_rule$years_per_period *
+      evaluated$implied_debt / total_output,
     formal_labor = formal_labor,
     informal_labor = informal_labor,
     consumption_tax = consumption_tax,
@@ -735,6 +812,8 @@ solve_transition_endogenous <- function(
     primary_balance = tracked$primary_balance,
     primary_deficit = tracked$primary_deficit,
     debt_identity_residual = tracked$debt_identity_residual,
+    rule_primary_balance = tracked$rule_primary_balance,
+    fiscal_adjustment = tracked$fiscal_adjustment,
     fiscal_rule_residual = tracked$fiscal_rule_residual,
     experienced_welfare = tracked$experienced_welfare,
     budget_residual = tracked$budget_residual,
@@ -870,7 +949,11 @@ build_policy_microdata <- function(transition) {
         final$param,
         final$prices
       )
-      policy_label <- "Law 2381 pillars"
+      policy_label <- if (final$param$regime == "pillars") {
+        "Law 2381 pillars"
+      } else {
+        "Fully funded system"
+      }
     } else {
       t <- cohort + 1L
       tax_path <- transition$path$consumption_tax
@@ -888,7 +971,11 @@ build_policy_microdata <- function(transition) {
         period_param,
         decision_prices
       )
-      policy_label <- "Law 2381 pillars"
+      policy_label <- if (final$param$regime == "pillars") {
+        "Law 2381 pillars"
+      } else {
+        "Fully funded system"
+      }
     }
     cev <- experienced_consumption_equivalent(
       outcome$experienced_utility,
@@ -955,7 +1042,11 @@ build_policy_microdata <- function(transition) {
   old <- data.frame(
     cohort = -1L,
     life_stage = "old_at_reform",
-    policy = "Law 2381 pillars",
+    policy = if (final$param$regime == "pillars") {
+      "Law 2381 pillars"
+    } else {
+      "Fully funded system"
+    },
     i = grid$i,
     weight = grid$weights,
     choice = baseline$choice,
@@ -1039,7 +1130,10 @@ summarize_policy_distributions <- function(micro, param) {
 }
 
 print.pension_policy_transition <- function(x, ...) {
-  cat("Transicion Ley 100 a sistema de pilares\n")
+  final_label <- if (x$final_solution$param$regime == "pillars") {
+    "sistema de pilares"
+  } else "sistema totalmente fondeado"
+  cat(sprintf("Transicion Ley 100 a %s\n", final_label))
   cat(sprintf(
     "  Punto fijo interior: %s (%d iteraciones)\n",
     ifelse(x$converged_internal, "si", "no"),

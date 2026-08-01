@@ -196,11 +196,12 @@ pension_choice_accounts <- function(
   if (length(choice) != n_obs) {
     stop_model("i y choice deben tener la misma longitud.")
   }
-  valid <- if (param$regime == "compete") {
-    c("informal", "capitalization", "payg")
-  } else {
-    c("informal", "pillars")
-  }
+  valid <- switch(
+    param$regime,
+    compete = c("informal", "capitalization", "payg"),
+    pillars = c("informal", "pillars"),
+    funded = c("informal", "capitalization")
+  )
   if (any(!choice %in% valid)) {
     stop_model("Alternativa pensional no valida.")
   }
@@ -212,7 +213,7 @@ pension_choice_accounts <- function(
       choice == "capitalization"
     )
     payg_base <- covered_wage * as.numeric(choice == "payg")
-  } else {
+  } else if (param$regime == "pillars") {
     funded_base <- pmax(
       0,
       covered_wage - param$payg_income_threshold
@@ -221,6 +222,9 @@ pension_choice_accounts <- function(
       covered_wage,
       param$payg_income_threshold
     )
+  } else {
+    funded_base <- covered_wage
+    payg_base <- rep(0, n_obs)
   }
   has_funded <- funded_base > 0
   has_payg <- payg_base > 0
@@ -234,7 +238,7 @@ pension_choice_accounts <- function(
 
   eligibility <- payg_eligibility_probability(i, param) *
     as.numeric(has_payg)
-  replacement_rate <- if (param$regime == "pillars") {
+  replacement_rate <- if (identical(param$regime, "pillars")) {
     wage_smlmv <- payg_base / param$minimum_wage_model_units
     pmax(
       0,
@@ -317,12 +321,14 @@ household_choice_outcomes <- function(i, choice, param, prices) {
         "funded_only",
         "payg_only"
       )
-    } else {
+    } else if (param$regime == "pillars") {
       ifelse(
         pension$has_funded_component,
         "mixed",
         "payg_only"
       )
+    } else {
+      rep("funded_only", n_obs)
     }
   )
 
@@ -378,11 +384,12 @@ household_choice_outcomes <- function(i, choice, param, prices) {
 }
 
 choose_endogenous_regime <- function(i, param, prices) {
-  alternatives <- if (param$regime == "compete") {
-    c("informal", "capitalization", "payg")
-  } else {
-    c("informal", "pillars")
-  }
+  alternatives <- switch(
+    param$regime,
+    compete = c("informal", "capitalization", "payg"),
+    pillars = c("informal", "pillars"),
+    funded = c("informal", "capitalization")
+  )
   outcomes <- lapply(
     alternatives,
     function(choice) household_choice_outcomes(
@@ -418,6 +425,9 @@ choose_endogenous_regime <- function(i, param, prices) {
   if (param$regime == "pillars") {
     selected$utility_capitalization <- NA_real_
     selected$utility_payg <- NA_real_
+  } else if (param$regime == "funded") {
+    selected$utility_payg <- NA_real_
+    selected$utility_pillars <- NA_real_
   }
   selected$utility_difference_formal_informal <-
     apply(utilities[, -1L, drop = FALSE], 1L, max) -
@@ -431,6 +441,13 @@ choose_endogenous_regime <- function(i, param, prices) {
   }
   selected$utility_difference_pillars_informal <- if (
       param$regime == "pillars"
+  ) {
+    utilities[, 2L] - utilities[, 1L]
+  } else {
+    rep(NA_real_, nrow(utilities))
+  }
+  selected$utility_difference_funded_informal <- if (
+      param$regime == "funded"
   ) {
     utilities[, 2L] - utilities[, 1L]
   } else {
@@ -460,10 +477,15 @@ endogenous_choice_diagnostics <- function(micro) {
       sequence,
       c("informal", "pillars")
     ),
+    ordered_funded_choice = identical(
+      sequence,
+      c("informal", "capitalization")
+    ),
     ordered_policy_choice = identical(
       sequence,
       c("informal", "capitalization", "payg")
-    ) || identical(sequence, c("informal", "pillars")),
+    ) || identical(sequence, c("informal", "pillars")) ||
+      identical(sequence, c("informal", "capitalization")),
     monotone_single_crossing = length(changes) <= 2L,
     first_formal_type = if (any(micro$formal)) {
       min(micro$i[micro$formal])
@@ -657,11 +679,12 @@ evaluate_endogenous_cohort <- function(param, prices, grid) {
     funded_covered_share = funded_covered_share,
     solidarity_beneficiary_share = solidarity_beneficiary_share,
     payg_covered_share = payg_covered_share,
-    payg_share_among_formal = if (param$regime == "compete") {
-      payg_share / formal_share
-    } else {
-      payg_only_share / formal_share
-    },
+    payg_share_among_formal = switch(
+      param$regime,
+      compete = payg_share / formal_share,
+      pillars = payg_only_share / formal_share,
+      funded = 0
+    ),
     formal_eligibility_probability = formal_eligibility_mass /
       formal_share,
     formal_labor = formal_labor,
@@ -721,8 +744,8 @@ evaluate_endogenous_cohort <- function(param, prices, grid) {
 solve_steady_state_endogenous <- function(
     param = default_endogenous_parameters(),
     initial = NULL,
-      solidarity_root = intervals$solidarity_root,
     grid = make_type_grid(1001L),
+    fiscal_closure = NULL,
     old_weight = 0.97,
     tolerance = 1e-9,
     residual_tolerance = 1e-5,
@@ -730,6 +753,8 @@ solve_steady_state_endogenous <- function(
     verbose = FALSE
 ) {
   validate_endogenous_parameters(param)
+  fiscal_closure <- normalize_fiscal_steady_state_closure(
+    fiscal_closure)
   if (is.null(initial)) {
     initial <- initial_steady_state_guess(param, grid)
   }
@@ -760,11 +785,19 @@ solve_steady_state_endogenous <- function(
       cohort$consumption_old_next,
       cohort$payg_benefits_next
     )
+    fiscal <- steady_state_fiscal_targets(
+      iter_param,
+      state[["k"]],
+      cohort,
+      fiscal_closure
+    )
     target <- c(
-      k = cohort$capital_next,
+      k = cohort$capital_next - fiscal$domestic_debt_share *
+        fiscal$public_debt,
       formal_labor = cohort$formal_labor,
       informal_labor = cohort$informal_labor,
-      consumption_tax = budget$implied_tax
+      consumption_tax = budget$implied_tax +
+        fiscal$primary_balance / budget$consumption_tax_base
     )
     if (target[["k"]] <= 0 ||
         target[["formal_labor"]] <= 0 ||
@@ -817,6 +850,12 @@ solve_steady_state_endogenous <- function(
     cohort$consumption_old_next,
     cohort$payg_benefits_next
   )
+  fiscal <- steady_state_fiscal_targets(
+    final_param,
+    state[["k"]],
+    cohort,
+    fiscal_closure
+  )
   identities <- steady_state_identities(
     final_param,
     prices,
@@ -824,13 +863,15 @@ solve_steady_state_endogenous <- function(
     cohort
   )
   fixed_point_residuals <- c(
-    capital = cohort$capital_next - state[["k"]],
+    capital = cohort$capital_next - fiscal$domestic_debt_share *
+      fiscal$public_debt - state[["k"]],
     formal_labor = cohort$formal_labor - state[["formal_labor"]],
     informal_labor = cohort$informal_labor -
       state[["informal_labor"]],
-    consumption_tax = budget$implied_tax -
+    consumption_tax = budget$implied_tax +
+      fiscal$primary_balance / budget$consumption_tax_base -
       state[["consumption_tax"]],
-    government_budget = budget$residual
+    government_budget = budget$residual - fiscal$primary_balance
   )
   max_residual <- max(abs(fixed_point_residuals))
 
@@ -848,7 +889,8 @@ solve_steady_state_endogenous <- function(
       identities = identities,
       fixed_point_residuals = fixed_point_residuals,
       residual_tolerance = residual_tolerance,
-      grid = grid
+      grid = grid,
+      fiscal = fiscal
     ),
     class = "pension_steady_state"
   )

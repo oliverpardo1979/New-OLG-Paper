@@ -1,4 +1,4 @@
-default_parameters <- function(regime = c("compete", "pillars")) {
+default_parameters <- function(regime = c("compete", "pillars", "funded")) {
   regime <- match.arg(regime)
 
   list(
@@ -63,8 +63,8 @@ validate_parameters <- function(param) {
     stop_model("Faltan parámetros: %s.", paste(missing, collapse = ", "))
   }
 
-  if (!param$regime %in% c("compete", "pillars")) {
-    stop_model("`regime` debe ser `compete` o `pillars`.")
+  if (!param$regime %in% c("compete", "pillars", "funded")) {
+    stop_model("`regime` debe ser `compete`, `pillars` o `funded`.")
   }
 
   assert_scalar(param$m, "m", 0, 1)
@@ -108,7 +108,7 @@ matlab_parameter_crosswalk <- function() {
     ),
     note = c(
       rep("", 27),
-      "0 -> compete; 1 -> pillars"
+      "compete, pillars or funded"
     ),
     stringsAsFactors = FALSE
   )

@@ -11,6 +11,10 @@ source(
   local = .GlobalEnv
 )
 source(
+  file.path(project_dir, "R", "fiscal_closure.R"),
+  local = .GlobalEnv
+)
+source(
   file.path(project_dir, "R", "endogenous_choice.R"),
   local = .GlobalEnv
 )
