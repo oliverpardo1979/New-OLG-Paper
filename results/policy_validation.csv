@@ -3,6 +3,7 @@
 "pillar steady state",1,1,TRUE
 "stress steady state",1,1,TRUE
 "internal fixed point",1,1,TRUE
-"two-cycle repetition",0.0046839288421788,0.01,TRUE
-"terminal steady-state consistency",0.130223809712463,0.01,FALSE
-"maximum fiscal residual",2.68544174161778e-05,2e-04,TRUE
+"terminal steady-state consistency",8.54096213739975e-05,0.001,TRUE
+"maximum debt-identity residual",0,2e-04,TRUE
+"maximum fiscal-rule residual",0.000193251945885042,2e-04,TRUE
+"steady-state dynamic outcome",1,1,TRUE

@@ -18,7 +18,8 @@ years, so transition paths are generational rather than annual forecasts.
 
 - `main.tex`: paper and algorithm appendix.
 - `code/R/policy_transition.R`: pillar mapping, endogenous transition,
-  two-cycle validation, microdata, and distributional statistics.
+  public debt, fiscal rule, terminal validation, microdata, and distributional
+  statistics.
 - `code/scripts/run_policy_reform_analysis.R`: reproducible policy analysis.
 - `code/tests/run_policy_reform_tests.R`: stationary, transition, fiscal, and
   distributional tests.
@@ -42,12 +43,15 @@ Rscript tests/run_policy_reform_tests.R
 Rscript scripts/run_policy_reform_analysis.R
 ```
 
-The policy script solves 201-type stationary equilibria and a 101-type
-transition with exact insertion of endogenous choice roots. The last three
-cohorts form a terminal buffer and are excluded from reported transition
-figures. Validation accepts either convergence to the pillar steady state or a
-nondegenerate two-generation cycle; the central calibration produces the
-latter.
+The policy script solves 201-type stationary equilibria and a 101-type,
+20-cohort transition with exact insertion of endogenous choice roots. The
+fiscal block advances public debt forward, applies a bounded consumption-tax
+rule, and allows 25 percent of debt to crowd out domestic capital. The final
+pillar allocation is used as a boundary condition. Validation nevertheless
+requires the preceding endogenous path to satisfy the joint terminal gap, the
+government debt identity, and the fiscal-rule residual; a cycle is not an
+admissible outcome. The central calibration converges to the pillar steady
+state.
 
 ## Compile
 
