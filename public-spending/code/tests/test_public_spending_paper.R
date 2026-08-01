@@ -35,9 +35,27 @@ assert_close(
 )
 assert_close(
   baseline$government_share_output,
-  param$target_government_share,
+  param$target_social_security_share,
   1e-8,
-  "Government-spending calibration"
+  "Social-security-spending calibration"
+)
+assert_close(
+  baseline$government_spending,
+  param$social_security_spending_per_elderly *
+    param$initial_old_age_dependency_ratio,
+  1e-10,
+  "Initial spending-per-elderly identity"
+)
+final_levels <- scenario_levels(
+  param,
+  old_age_dependency_ratio = param$final_old_age_dependency_ratio
+)
+assert_close(
+  final_levels$government_spending,
+  param$social_security_spending_per_elderly *
+    param$final_old_age_dependency_ratio,
+  1e-10,
+  "Final spending-per-elderly identity"
 )
 assert_close(
   baseline$government_residual,
@@ -58,8 +76,8 @@ assert_close(
   "Stationary Euler equation"
 )
 
-scenario_names <- c("Lump sum", "Mixed", "Payroll")
-payroll_shares <- c(0, 0.5, 1)
+scenario_names <- c("Broad tax", "Mixed", "Payroll heavy")
+payroll_shares <- c(0, 0.5, 0.75)
 steady <- do.call(
   rbind,
   lapply(
@@ -67,7 +85,7 @@ steady <- do.call(
     function(index) {
       solve_steady_state(
         param,
-        spending_increase = param$permanent_spending_increase,
+        old_age_dependency_ratio = param$final_old_age_dependency_ratio,
         marginal_payroll_share = payroll_shares[index],
         label = scenario_names[index]
       )
@@ -79,6 +97,19 @@ if (!all(diff(steady$informal_share) > 0)) {
 }
 if (!all(diff(steady$capital) < 0)) {
   stop("Capital should fall with payroll financing.")
+}
+
+full_payroll <- tryCatch(
+  solve_steady_state(
+    param,
+    old_age_dependency_ratio = param$final_old_age_dependency_ratio,
+    marginal_payroll_share = 1,
+    label = "Full marginal payroll financing"
+  ),
+  error = function(error) error
+)
+if (!inherits(full_payroll, "error")) {
+  stop("Full marginal payroll financing should fail the interior equilibrium check.")
 }
 
 transitions <- lapply(
@@ -112,6 +143,12 @@ for (index in seq_along(transitions)) {
     transition$final_steady$informal_share,
     1e-7,
     paste("Terminal informality", scenario_names[index])
+  )
+  assert_close(
+    transition$data$old_age_dependency_ratio[last],
+    param$final_old_age_dependency_ratio,
+    1e-10,
+    paste("Terminal old-age dependency", scenario_names[index])
   )
 }
 

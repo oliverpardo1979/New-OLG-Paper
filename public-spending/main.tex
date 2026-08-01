@@ -13,15 +13,16 @@
   linkcolor=blue!50!black,
   citecolor=blue!50!black,
   urlcolor=blue!50!black,
-  pdftitle={Public Spending, Capital Accumulation, and Informality in Colombia},
+  pdftitle={Population Aging, Social Security Spending, and Informality in Colombia},
   pdfauthor={Oliver Pardo}
 }
 \onehalfspacing
+\setlength{\emergencystretch}{2em}
 \newcommand{\dd}{\,\mathrm{d}}
 \input{results/summary_values.tex}
 
-\title{\textbf{Public Spending, Capital Accumulation, and Informality:}\\
-\large Why the Financing Instrument Matters in Colombia}
+\title{\textbf{Population Aging, Social Security Spending, and Informality:}\\
+\large The Financing Margin in Colombia}
 \author{
   Oliver Pardo\thanks{
     Departamento de Administraci{\'o}n, Pontificia Universidad Javeriana,
@@ -36,140 +37,141 @@
 
 \begin{abstract}\small\sloppy
 \noindent
-This paper studies how a permanent increase in government purchases affects
-capital accumulation and labor informality. The distinction between spending
-and financing is central. I build an annual deterministic general-equilibrium
-model in which private capital is used only in formal production and workers
-choose between formal and informal employment. A smooth discrete-choice margin
-keeps both sectors active. The illustrative Colombian calibration matches
-\BenchmarkInformality{} labor informality and government consumption equal to
-\BenchmarkGovernmentShare{} of GDP. Government purchases then rise permanently
-by two percent of benchmark GDP. If the additional spending is financed by a
-lump-sum instrument, stationary capital and informality do not change, while
-private consumption falls 2.8 percent. If half of the increase is charged to
-the formal wage bill, capital falls 8.2 percent and informality rises
-\MixedInformalityChange. If the entire increase is financed through the formal
-payroll, capital falls \PayrollCapitalChange{} and informality rises
-\PayrollInformalityChange. Whether public consumption enters utility
-additively changes welfare but not the allocation. Public spending must be
-nonseparable with private consumption, affect productivity, or modify an
-individual constraint to alter behavior independently of its financing.
-The quantitative results are mechanism exercises, not fiscal forecasts.
+This paper studies how population aging affects capital accumulation and labor
+informality when the government finances a fixed social-security outlay per
+older adult. Let $d_t=N_t^o/N_t^y$ denote the ratio of people aged 65 and over
+to the working-age population. Government outlays per working-age adult obey
+the identity $G_t^{SS}=\bar g_o d_t$. I embed this fiscal block in an annual
+deterministic general-equilibrium model in which private capital is used only
+in formal production and workers choose between formal and informal
+employment. The Colombian illustration raises $d_t$ from 15.02 percent in 2024
+to 27.28 percent in 2050, using DANE population projections, while holding
+$\bar g_o$ fixed. Initial public pension outlays are normalized to 5.7 percent
+of GDP. If broad taxes finance the entire aging-induced increase, stationary
+capital and informality do not change and private consumption falls 5.8
+percent. If half of the increase is charged to the formal wage bill, capital
+falls 13.2 percent and informality rises \MixedInformalityChange. If that
+share is 75 percent, capital falls \PayrollCapitalChange{} and informality
+rises \PayrollInformalityChange. Financing the entire increase on formal
+payroll has no interior stationary equilibrium in this calibration. The model
+treats social-security outlays as a real resource claim. It is therefore a
+reduced-form aging exercise, not a literal model of pension transfers; that
+interpretation requires separate generations and retired-household budgets.
 
 \medskip\noindent
-\textbf{Keywords:} government spending; informality; capital accumulation;
-payroll taxation; fiscal policy; Colombia.
+\textbf{Keywords:} population aging; social security; informality; capital
+accumulation; payroll taxation; Colombia.
 \quad
-\textbf{JEL:} E22; E62; H30; H50; J46.
+\textbf{JEL:} E22; E62; H55; J11; J46.
 \end{abstract}\fussy
 
 \section{Introduction}
 
-An increase in government spending withdraws resources from private uses, but
-that accounting statement does not determine its effect on capital or labor
-informality. The result depends on what the government purchases, whether
-households value it, and which tax base finances the additional expenditure.
-A payroll tax lowers the return to formal employment. A broad tax or a
-lump-sum instrument does not create the same formal--informal wedge. Debt can
-postpone the wedge but cannot eliminate the need for a fiscal adjustment after
-a permanent increase in spending.
+Population aging creates a fiscal pressure even when policy rules do not
+change. If every older adult receives a fixed real amount of pensions, health
+care, or long-term care, total social-security outlays rise with the number of
+older people relative to the tax-paying population. The relevant primitive is
+therefore not an arbitrary path for government purchases. It is the
+demographic ratio that maps the number of beneficiaries into a fiscal claim.
 
-This paper studies how a permanent increase in government purchases affects
-capital accumulation and labor informality in Colombia. The exercise compares
-three ways to finance the same increase in spending: a lump-sum instrument, an
-equal combination of lump-sum and payroll revenue, and a tax charged entirely
-to the formal wage bill. Every experiment starts from the same stationary
-equilibrium. The comparison therefore holds constant the size and timing of
-the spending increase and changes only its marginal source of financing.
+This paper studies that mechanism in Colombia. Let $N_t^o$ be the population
+aged 65 and over and $N_t^y$ the population aged 15--64. The government assigns
+a fixed real outlay $\bar g_o$ to each older adult. After normalizing the model
+by the working-age population, social-security spending is
+\[
+  G_t^{SS}=\bar g_o\frac{N_t^o}{N_t^y}=\bar g_o d_t.
+\]
+DANE projections imply that $d_t$ rises from 15.02 percent in 2024 to 27.28
+percent in 2050 \citep{DANE2025Projections}. Holding $\bar g_o$ fixed converts
+that demographic change into a permanent increase in the government's revenue
+requirement.
+
+The financing rule determines how the demographic pressure reaches the rest
+of the economy. A tax on the formal wage bill lowers the relative return to
+formal employment and shrinks its own base. A sufficiently broad tax does not
+create that formal--informal wedge in the present model. Public debt could
+spread the adjustment over time, but it cannot finance a permanently larger
+old-age population without a corresponding long-run primary revenue stream.
 
 The model is annual and deliberately parsimonious. A representative household
-chooses private consumption and saving. A unit mass of workers is allocated
-between formal and informal employment according to the difference between
-after-tax sectoral wages and heterogeneous sector preferences. Formal firms
-use capital and labor. Informal production is labor intensive. The aggregate
-capital stock follows from the household Euler equation and the economy's
-resource constraint.
+chooses private consumption and saving. Formal firms use capital and labor,
+whereas informal production is labor intensive. Workers select formal or
+informal employment according to after-tax wages and heterogeneous sector
+preferences. A smooth discrete-choice margin keeps both sectors active. The
+capital stock follows the Euler equation and the aggregate resource constraint.
 
-The stationary calibration reproduces two Colombian aggregates. Labor
-informality is \BenchmarkInformality{}, the proportion reported by
-\citet{DANE2025Informality} for August--October 2025. General-government final
-consumption is \BenchmarkGovernmentShare{} of GDP, close to the 2024 national
-accounts measure reported by \citet{WorldBank2026}. The policy experiment
-raises government purchases by two percent of initial GDP. The remaining
-parameters are provisional and are selected from values commonly used in
-annual macroeconomic models. The exercise should consequently be read as a
-quantitative decomposition, not as an estimated response to a specific
-Colombian program.
+The initial calibration matches \BenchmarkInformality{} national labor
+informality, measured by \citet{DANE2025Informality}, and sets public pension
+outlays to \BenchmarkGovernmentShare{} of GDP, the Colombian value reported by
+\citet{OECD2023Colombia}. The demographic experiment keeps the outlay per older
+adult fixed and replaces the 2024 dependency ratio with DANE's 2050 projection.
+The remaining parameters are provisional. The exercise is consequently a
+mechanism decomposition, not a forecast of Colombian pension or health
+expenditure.
 
-The financing instrument determines the stationary response. Lump-sum
-financing leaves the formal employment wedge unchanged. Capital and
-informality therefore remain at their benchmark values, although private
-consumption falls 2.8 percent because government purchases absorb additional
-output. When half of the increase is financed from the formal wage bill,
-informality rises 3.6 percentage points, capital falls 8.2 percent, and output
-falls 3.8 percent. Full payroll financing increases informality by 9.8
-percentage points and lowers capital by 22.1 percent. The spending increase is
-the same in every case; the differences come from the tax wedge and its effect
-on the formal labor input used together with capital.
+The stationary results separate the resource claim from the formal-employment
+wedge. Under broad-tax financing, capital, output, and informality remain at
+their initial values; private consumption falls 5.8 percent. If half of the
+additional outlay is financed from the formal wage bill, informality rises 5.9
+percentage points, capital falls 13.2 percent, and output falls 6.2 percent.
+When 75 percent is charged to formal payroll, informality rises 10.2 percentage
+points and capital falls 22.9 percent. A rule that places the entire increase
+on formal payroll does not admit an interior stationary equilibrium. That last
+result is an endogenous fiscal limit, not a numerical convergence failure.
 
-The treatment of public consumption provides a second distinction. Preferences
-are
-\[
-  \sum_{t=0}^{\infty}\beta^t
-  \left[u(C_t)+\chi_G\log G_t\right].
-\]
-Because $G_t$ is exogenous and additively separable, changing $\chi_G$ affects
-welfare but not consumption, saving, wages, or informality. This result is not
-an innocuous modeling detail. A paper that makes public consumption valuable
-by adding it to utility cannot claim a behavioral channel unless public and
-private consumption are nonseparable, the spending relaxes a household
-constraint, or government expenditure changes productivity.
+One accounting qualification is essential. Cash pensions are transfers between
+households, not government absorption of output. Health and long-term care are
+closer to real public consumption. The current representative-household model
+treats the entire $G_t^{SS}$ as a real resource claim. This shortcut permits a
+transparent analysis of capital and informality, but it cannot describe
+intergenerational redistribution or retired households' saving. A full pension
+interpretation requires an overlapping-generations extension.
 
-The paper contributes a transparent decomposition rather than a new fiscal
-multiplier. Existing Colombian models contain richer nominal, fiscal, and
-labor-market blocks. The narrower structure used here isolates one question:
-how much of the response attributed to government spending is instead produced
-by the instrument used to finance it? The rest of the paper reviews the
-related literature, presents the model, describes the provisional calibration,
-reports stationary and transition results, and documents the numerical
+The paper contributes a compact link between demography, fiscal financing, and
+informality. The next section places the exercise in the literature. The
+remaining sections present the model and calibration, report stationary and
+transition results, discuss the conceptual limits, and document the numerical
 algorithm.
 
 \section{Related literature}
 
-The macroeconomic effect of government spending depends on household behavior,
-the persistence of the shock, and the fiscal instrument. In the neoclassical
-model of \citet{BaxterKing1993}, permanent government purchases affect private
-wealth, labor supply, and investment. \citet{Barro1990} distinguishes
-unproductive government consumption from public services that enter
-production. \citet{Gali2007} shows that household heterogeneity and market
-structure can change the response of private consumption. The present paper
-sets aside short-run nominal rigidities and concentrates on capital
-accumulation and the formal--informal margin.
+This paper connects three strands of work. The first studies the fiscal effects
+of population aging. For Colombia, \citet{Ospina2024} project the public cost of
+Colpensiones and special regimes and show that longevity, growth, and formality
+materially change the long-run fiscal outlook. Their exercise models pension
+rules and coverage in detail. The present paper takes a narrower route: it
+fixes the outlay per older adult and isolates the general-equilibrium response
+of capital and informal employment.
 
-Informality makes the fiscal instrument part of the policy experiment.
-\citet{Levy2008} emphasizes that payroll-financed benefits can tax formal
-employment while subsidizing activities outside the contributory system.
-\citet{LaPortaShleifer2014} and \citet{Ulyssea2018} show why informal firms
-cannot be treated only as formal firms that evade a tax. Productivity,
-technology, firm size, and selection differ across sectors. The current model
-retains only the labor-allocation margin and should be interpreted accordingly.
+The second strand concerns fiscal policy in general equilibrium. In the
+neoclassical model of \citet{BaxterKing1993}, persistent government purchases
+affect private wealth and investment. \citet{Barro1990} distinguishes
+unproductive government consumption from productive public services, while
+\citet{Gali2007} shows that household heterogeneity and market structure can
+change private-consumption responses. Here the demographic path is exogenous,
+but its financing changes the formal labor wedge.
 
-For Colombia, \citet{MejiaPosada2007} study the coexistence of formal and
-informal production when regulation can be evaded and enforcement is costly.
-\citet{Osorio2016} uses a dynamic general-equilibrium model to study tax reform
-and informality. \citet{Rincon2017} construct a fiscal model that distinguishes
-government consumption from public investment and embeds a fiscal rule.
-\citet{GrandaMorales2023} analyze tax policy, public enforcement spending, and
-labor-market rigidities. More recently, \citet{Herrera2025} present a detailed
-fiscal model for Colombia with several revenue sources, expenditure
-categories, public debt, and a sovereign risk channel.
+The third strand studies informality. \citet{Levy2008} emphasizes that
+payroll-financed social benefits can tax formal employment and alter the
+allocation of labor. \citet{LaPortaShleifer2014} and \citet{Ulyssea2018} show
+why informal firms cannot be represented only as tax-evading versions of
+formal firms. Productivity, technology, firm size, and selection differ across
+sectors. The current model retains only the labor-allocation margin and should
+be interpreted accordingly.
 
-The present exercise is less detailed than those models. Its purpose is to
-make the financing decomposition visible. A permanent increase in $G$ financed
-from a lump-sum source provides the resource benchmark. Charging an increasing
-share to formal payroll adds the endogenous-informality channel. This
-comparison would be harder to identify inside a model in which several tax
-rates, transfers, debt, and monetary policy adjust simultaneously.
+For Colombia, \citet{MejiaPosada2007} study formal and informal production when
+regulation can be evaded and enforcement is costly. \citet{Osorio2016}
+examines tax reform and informality in dynamic general equilibrium.
+\citet{Rincon2017} embed government consumption, public investment, and a
+fiscal rule, while \citet{GrandaMorales2023} analyze taxes, enforcement, and
+labor-market rigidities. \citet{Herrera2025} provide a richer Colombian fiscal
+model with several revenue sources, expenditure categories, debt, and
+sovereign risk.
+
+The contribution here is not comparable institutional detail. It is the
+identity $G_t^{SS}=\bar g_o d_t$ combined with an endogenous formal tax base.
+That structure makes visible which effects come from aging itself and which
+come from the instrument used to finance it.
 
 \section{Model}
 
@@ -182,33 +184,37 @@ maximizes
   \sum_{t=0}^{\infty}\beta^t
   \left[
     \frac{C_t^{1-\sigma}-1}{1-\sigma}
-    +\chi_G\log G_t
+    +\chi_G\log G_t^{SS}
   \right],
   \qquad
   \beta\in(0,1),\quad \sigma>0.
   \label{eq:utility}
 \end{equation}
-Private consumption is $C_t$. Government purchases are $G_t$. The public
-consumption term is additive and $G_t$ is exogenous. It therefore does not
-enter the first-order condition for private saving:
+Private consumption is $C_t$. The term $G_t^{SS}$ denotes social-security
+outlays per working-age adult. This public term is optional and additive.
+Because it is exogenous to the household, it does not enter the first-order
+condition for private saving:
 \begin{equation}
   \frac{C_{t+1}}{C_t}
   =
   \left[\beta(1+r_{t+1})\right]^{1/\sigma}.
   \label{eq:euler}
 \end{equation}
-Changing $\chi_G$ changes welfare evaluated along a given allocation but does
-not change that allocation.
+Changing $\chi_G$ changes welfare evaluated along an allocation but does not
+change the allocation itself.
 
-Private capital evolves according to the aggregate resource constraint:
+Private capital evolves according to
 \begin{equation}
   K_{t+1}
   =
-  (1-\delta)K_t+Y_t-C_t-G_t.
+  (1-\delta)K_t+Y_t-C_t-G_t^{SS}.
   \label{eq:capital}
 \end{equation}
-Government purchases are unproductive in the benchmark. They neither become
-public capital nor affect private total factor productivity.
+Equation \eqref{eq:capital} treats social-security spending as a real resource
+claim. This is natural for publicly provided health and care services. It is a
+reduced-form shortcut for cash pensions, which are transfers rather than
+aggregate absorption. A literal pension model must assign benefits and taxes
+to different generations.
 
 \subsection{Formal and informal production}
 
@@ -283,46 +289,66 @@ of labor. A higher tax lowers the net formal wage in
 on which the tax is collected. The model therefore checks for an interior
 fiscal equilibrium rather than calculating the tax rate from a fixed base.
 
-\subsection{Government spending and fiscal closure}
+\subsection{Population aging and fiscal closure}
 
-The government budget is balanced each period:
+Let $N_t^o$ denote people aged 65 and over and $N_t^y$ people aged 15--64.
+Define the old-age dependency ratio
 \begin{equation}
-  G_t=\tau_t^F w_t^F L_t^F+T_t,
+  d_t\equiv\frac{N_t^o}{N_t^y}.
+  \label{eq:dependency}
+\end{equation}
+Each older adult requires a fixed real social-security outlay $\bar g_o$.
+After normalizing all aggregates by the working-age population, government
+spending is
+\begin{equation}
+  G_t^{SS}=\bar g_o d_t.
+  \label{eq:social_spending}
+\end{equation}
+Demography is exogenous in this version. The government does not choose
+$G_t^{SS}$ independently of $d_t$ and cannot reduce the per-capita commitment
+$\bar g_o$ along the experiment.
+
+The government budget balances each period:
+\begin{equation}
+  G_t^{SS}=\tau_t^F w_t^F L_t^F+T_t,
   \label{eq:government_budget}
 \end{equation}
-where $T_t$ denotes a lump-sum fiscal instrument. Let $G_0$ be benchmark
-spending and let $\Delta G_t=G_t-G_0$. Payroll revenue is required to satisfy
+where $T_t$ is a broad fiscal instrument represented as lump sum. Let
+$G_0^{SS}=\bar g_o d_0$ and
+$\Delta G_t^{SS}=G_t^{SS}-G_0^{SS}$. Required payroll revenue satisfies
 \begin{equation}
   \tau_t^F w_t^F L_t^F
   =
-  \lambda_0G_0+\lambda_\Delta\Delta G_t.
+  \lambda_0G_0^{SS}
+  +\lambda_\Delta\Delta G_t^{SS}.
   \label{eq:payroll_finance}
 \end{equation}
-The remaining revenue is lump sum:
+The remaining revenue is
 \begin{equation}
-  T_t=(1-\lambda_0)G_0+
-  (1-\lambda_\Delta)\Delta G_t.
+  T_t=(1-\lambda_0)G_0^{SS}
+  +(1-\lambda_\Delta)\Delta G_t^{SS}.
   \label{eq:lump_sum_finance}
 \end{equation}
 
-All experiments use the same $\lambda_0$ and the same initial equilibrium.
-They differ in $\lambda_\Delta$. The lump-sum experiment sets
-$\lambda_\Delta=0$, the mixed experiment sets $\lambda_\Delta=0.5$, and the
-payroll experiment sets $\lambda_\Delta=1$. The lump-sum instrument is a
-theoretical benchmark. It is not proposed as a readily available Colombian
-tax.
+All experiments share $\lambda_0$ and the same initial equilibrium. The
+broad-tax benchmark sets $\lambda_\Delta=0$, mixed financing sets
+$\lambda_\Delta=0.5$, and payroll-heavy financing sets
+$\lambda_\Delta=0.75$. The broad instrument is a theoretical benchmark, not a
+claim that Colombia can collect nondistortionary taxes. Setting
+$\lambda_\Delta=1$ is also evaluated as a feasibility check; under the present
+calibration it destroys the interior stationary formal-sector allocation.
 
 \subsection{Equilibrium}
 
-Given a path for government purchases and a marginal financing share, an
+Given a demographic path $\{d_t\}$ and a marginal financing share, an
 equilibrium is a sequence
 \[
-  \{C_t,K_{t+1},L_t^F,\tau_t^F,w_t^F,r_t,Y_t\}_{t=0}^{\infty}
+  \{C_t,K_{t+1},L_t^F,\tau_t^F,w_t^F,r_t,Y_t,G_t^{SS}\}_{t=0}^{\infty}
 \]
-that satisfies household optimality
-\eqref{eq:euler}, capital accumulation \eqref{eq:capital}, factor prices
-\eqref{eq:formal_wage}--\eqref{eq:return}, endogenous formality
-\eqref{eq:formal_choice}, and the government budget
+that satisfies household optimality \eqref{eq:euler}, capital accumulation
+\eqref{eq:capital}, factor prices \eqref{eq:formal_wage}--\eqref{eq:return},
+endogenous formality \eqref{eq:formal_choice}, the demographic spending rule
+\eqref{eq:social_spending}, and the government budget
 \eqref{eq:government_budget}--\eqref{eq:lump_sum_finance}.
 
 In a stationary equilibrium,
@@ -350,18 +376,28 @@ tax, and capital.
 
 Table \ref{tab:calibration} reports the initial calibration. The model targets
 55.4 percent national labor informality, measured by
-\citet{DANE2025Informality} for August--October 2025. This target covers the
-national economy; it is higher than the corresponding rate for the thirteen
-largest metropolitan areas. The government-consumption target is 14.72 percent
-of GDP in 2024 \citep{WorldBank2026}. It measures purchases of goods and
-services, not total public expenditure, transfers, or debt service.
+\citet{DANE2025Informality}. Public pension spending is set to 5.7 percent of
+GDP, as reported for Colombia by \citet{OECD2023Colombia}. This figure fixes
+the scale of the fiscal outlay; it does not turn pension transfers into public
+consumption in national-accounting terms.
+
+The demographic ratios are calculated from DANE's July 2025 national
+population projections by single year of age. The numerator is population aged
+65 and over and the denominator is population aged 15--64. The resulting ratio
+is 0.1502 in 2024 and 0.2728 in 2050 \citep{DANE2025Projections}. The
+per-elderly outlay is calibrated from the initial identity
+\[
+  \bar g_o=\frac{G_0^{SS}}{d_{2024}}.
+\]
+It is then held fixed.
 
 \begin{table}[!htbp]
 \centering
-\caption{Initial calibration}
+\caption{Initial calibration and demographic experiment}
 \label{tab:calibration}
 \begin{threeparttable}
-\begin{tabular}{llrl}
+\small
+\begin{tabular}{@{}llrl@{}}
 \toprule
 Parameter & Symbol & Value & Status or target \\
 \midrule
@@ -372,32 +408,39 @@ Risk aversion & $\sigma$ & 2.00 & Provisional standard value \\
 Informal productivity & $A_I$ & 0.60 & Normalization \\
 Choice dispersion & $\mu$ & 0.30 & Provisional \\
 Informal employment & $L^I$ & 0.554 & DANE target \\
-Government consumption / GDP & $G/Y$ & 0.1472 & WDI target \\
+Initial social-security outlays / GDP & $G_0^{SS}/Y_0$ & 0.057 & OECD target \\
+Old-age dependency ratio, 2024 & $d_{2024}$ & 0.1502 & DANE projection \\
+Old-age dependency ratio, 2050 & $d_{2050}$ & 0.2728 & DANE projection \\
+Outlay per older adult & $\bar g_o$ & 0.4285 & Calibrated identity \\
 Baseline payroll share & $\lambda_0$ & 0.50 & Provisional closure \\
-Permanent spending increase & $\Delta G/Y_0$ & 0.02 & Policy experiment \\
+Implied increase / initial GDP & $\Delta G^{SS}/Y_0$ & 0.0465 & Implied by aging \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
-\item Notes: The calibration is illustrative. Parameters labeled
-``provisional'' have not been estimated for this model. The formality cost
-$\kappa$ is selected to match the informality target conditional on the
-remaining parameters.
+\item Notes: Aggregates are normalized by the working-age population. The
+calibration is illustrative. Parameters labeled ``provisional'' have not been
+estimated for this model. The formality cost $\kappa$ is selected to match the
+informality target conditional on the remaining parameters.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-The experiment is an unanticipated and permanent increase:
+For the numerical transition, the demographic comparison is represented as an
+unanticipated permanent shift:
 \begin{equation}
-  G_t=
+  d_t=
   \begin{cases}
-    G_0, & t=0,\\
-    G_0+0.02Y_0, & t\geq1.
+    d_{2024}, & t=0,\\
+    d_{2050}, & t\geq1,
   \end{cases}
+  \qquad
+  G_t^{SS}=\bar g_o d_t.
   \label{eq:spending_path}
 \end{equation}
-The amount is fixed in units of benchmark output. It is not set equal to a
-constant share of contemporaneous GDP. Consequently, $G_t/Y_t$ can rise by
-more than two percentage points if output falls.
+This experiment is a long-run comparative transition, not DANE's literal
+annual path from 2024 to 2050. The step isolates the economy's stable adjustment
+after the demographic burden has changed. A dated projection exercise should
+feed the full annual series into a nonstationary boundary-value solver.
 
 \section{Results}
 
@@ -405,139 +448,146 @@ more than two percentage points if output falls.
 
 \input{results/steady_state_table.tex}
 
-Table \ref{tab:steady_results} separates the resource effect of government
-purchases from the formal-tax effect. With lump-sum financing, the permanent
-increase in $G$ reduces stationary private consumption by 2.8 percent. It does
-not change capital, output, or informality. The return condition
-\eqref{eq:ss_return} fixes the formal capital--labor ratio, while the formal
-employment wedge remains at its benchmark value. The additional government
-purchase is absorbed by lower private consumption.
+Table \ref{tab:steady_results} separates the resource effect of aging from the
+formal-tax effect. Under the broad-tax benchmark, the formal employment wedge
+does not change. The stationary return condition fixes the formal
+capital--labor ratio, so capital, output, and informality remain at their
+initial values. The larger social-security claim is absorbed by private
+consumption, which falls 5.8 percent.
 
-Mixed financing changes the result because half of the additional expenditure
-is collected from the formal wage bill. The payroll tax rises 3.7 percentage
-points. Informality rises from 55.4 to 59.0 percent, an increase of 3.6
-percentage points. Formal labor and capital are complements in production, so
-capital falls 8.2 percent. Output falls 3.8 percent and private consumption
-falls 6.6 percent.
+With mixed financing, half of the additional outlay is collected from the
+formal wage bill. The payroll tax rises 6.6 percentage points. Informality
+increases from 55.4 to 61.3 percent, capital falls 13.2 percent, output falls
+6.2 percent, and private consumption falls 11.2 percent. Formal labor and
+capital are complements, so the contraction of the formal tax base also lowers
+the capital stock.
 
-Full payroll financing produces a larger contraction of the formal tax base.
-The payroll tax rises from 15.6 to 25.4 percent and informality reaches 65.2
-percent. Capital falls 22.1 percent, output falls 10.4 percent, and private
-consumption falls 13.0 percent. These values are not estimates of a Colombian
-fiscal reform. They show the amplification produced by financing a permanent
-spending increase from a tax base that shrinks when its own rate rises.
+Payroll-heavy financing places 75 percent of the additional outlay on formal
+payroll. The payroll tax rises 11.4 percentage points and informality reaches
+65.6 percent. Capital falls 22.9 percent, output 10.8 percent, and private
+consumption 15.2 percent. Requiring payroll to finance 100 percent of the
+aging-induced increase produces no interior stationary allocation. As the tax
+rate rises, formal employment and the wage bill contract too strongly to meet
+the revenue requirement. The model therefore signals a fiscal limit rather
+than reporting an artificial corner as an equilibrium.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/steady_state_comparison.png}
-\caption{Stationary effects by marginal financing instrument}
+\caption{Stationary effects of aging by marginal financing instrument}
 \label{fig:steady_comparison}
 \begin{minipage}{0.94\textwidth}\footnotesize
-\textit{Notes:} Changes are measured relative to the common benchmark.
-Government purchases rise permanently by two percent of initial GDP.
+\textit{Notes:} Changes are measured relative to the common 2024 benchmark.
+The old-age dependency ratio is replaced by its DANE 2050 projection while
+spending per older adult remains fixed.
 \end{minipage}
 \end{figure}
 
 \subsection{Transition}
 
-Figure \ref{fig:transition} reports the perfect-foresight transition. Capital
-is predetermined when the spending increase is announced. Consumption and the
-fiscal instruments can adjust immediately. Under lump-sum financing, private
-consumption absorbs the spending increase on impact and capital remains at its
-initial stationary level. Under mixed and payroll financing, the higher formal
-tax reduces formal employment. Capital then declines gradually toward the
-lower stationary value.
+Figure \ref{fig:transition} reports the perfect-foresight transition implied by
+\eqref{eq:spending_path}. Capital is predetermined when the higher dependency
+ratio is revealed. Consumption and fiscal instruments adjust immediately.
+Under broad-tax financing, private consumption absorbs the additional social
+outlay on impact and capital remains at its initial stationary value. Under
+mixed and payroll-heavy financing, the higher formal tax reduces formal
+employment and capital declines toward the lower stationary allocation.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/transition_financing.png}
-\caption{Transition after a permanent increase in government purchases}
+\caption{Transition after a permanent increase in the old-age dependency ratio}
 \label{fig:transition}
 \begin{minipage}{0.94\textwidth}\footnotesize
-\textit{Notes:} The gray dotted line is the common benchmark. The numerical
-solution uses a long terminal horizon because the stable root approaches the
-new stationary equilibrium slowly in the payroll-financed experiment. One
-period is one year.
+\textit{Notes:} The gray dotted line is the common benchmark. The exogenous
+ratio moves from $d_{2024}$ to $d_{2050}$ at year 1. The long numerical horizon
+allows the stable root to approach the new stationary equilibrium. One period
+is one year; the horizontal axis is model time, not calendar time.
 \end{minipage}
 \end{figure}
 
-The paths are monotone near the new steady state. They do not alternate
-between tax and informality regimes. The algorithm obtains the stable branch
-from the model's Euler and resource equations rather than applying a moving
-average or damping the plotted series. This distinction matters because a
-smooth figure is not evidence of an equilibrium transition unless the
-underlying residuals also converge.
+The endogenous paths are monotone near the new steady state. The algorithm
+selects the stable branch of the Euler and resource equations; it does not
+smooth, average, or damp the computed series. Numerical residuals converge at
+the terminal allocation.
 
-\subsection{Public consumption and welfare}
+\subsection{Social spending and welfare}
 
 The allocation is identical whether $\chi_G=0$ or $\chi_G>0$ in
-\eqref{eq:utility}. The welfare assessment is not. With $\chi_G=0$, a
-proportional increase of 2.9 percent in private consumption along the
-lump-sum-financed path would be required to restore benchmark welfare. The
-corresponding compensations are 4.8 percent under mixed financing and 7.4
-percent under payroll financing. With $\chi_G=0.15$, the value assigned to
-public consumption lowers those compensations to 1.3, 3.2, and 5.7 percent,
+\eqref{eq:utility}; only evaluated welfare changes. With $\chi_G=0$, the
+permanent proportional increases in private consumption required to restore
+benchmark welfare are 6.1 percent under broad-tax financing, 9.5 percent under
+mixed financing, and 11.8 percent under payroll-heavy financing. With
+$\chi_G=0.15$, those compensations become $-1.9$, 1.3, and 3.4 percent,
 respectively.
 
-This comparison does not establish that the increase in $G$ lowers Colombian
-welfare. The result depends on the provisional value of $\chi_G$ and on the
-assumption that government purchases are unproductive. Its narrower conclusion
-is that adding an exogenous and separable $G_t$ to utility changes the welfare
-calculation without creating an additional effect on capital or informality.
+The negative number in the broad-tax case does not establish a welfare gain
+from Colombian pension spending. It reflects the assumed utility value of an
+aggregate that the model also treats as public absorption. A welfare analysis
+of pensions must instead value retirees' consumption and distinguish who pays
+from who receives.
 
 \section{Extensions and limitations}
 
-The first limitation is the fiscal closure. The government balances its
-budget every year. Public debt could transfer part of the adjustment across
-dates, but a permanent increase in spending still requires a higher stationary
-primary revenue. A debt extension should distinguish the transition from the
-long-run financing instrument and should impose a terminal debt rule.
+The main limitation is the treatment of social-security outlays. Cash pensions
+are transfers; health and long-term care absorb real resources. Combining them
+in $G_t^{SS}$ is useful for a first mechanism exercise but not for welfare or
+national-accounting decomposition. An overlapping-generations model should
+assign taxes to workers, benefits and health services to older households, and
+allow both groups to save.
 
-The second limitation is the composition of spending. Public consumption is
-neither productive nor accumulated. A productive-spending extension could set
-\[
-  Y_t^F=A(G_t^P)K_t^\alpha(L_t^F)^{1-\alpha},
-  \qquad A'(G_t^P)>0,
-\]
-or introduce public capital with its own accumulation equation. The benefit of
-additional spending would then depend on its productivity, not only on the
-utility weight assigned to it.
+Second, $\bar g_o$ is fixed. Actual pension benefits depend on contribution
+histories, replacement rules, indexation, and coverage. Health expenditure also
+varies sharply within the older population. A quantitative application should
+replace the scalar $\bar g_o$ with age-specific and program-specific schedules.
 
-The third limitation is the single final good. Formal and informal output are
-perfect substitutes in \eqref{eq:total_output}. A two-good extension should
-aggregate formal and informal consumption with a finite elasticity of
-substitution and should specify which good is used for investment and
-government purchases. This extension may change the size, but not the logical
-importance, of the financing channel.
+Third, the budget balances every year. Debt could smooth the demographic
+transition, but a permanent increase in $d_t$ still requires a long-run primary
+adjustment. A debt extension should add an intertemporal government budget and
+a terminal fiscal rule rather than use debt as a residual.
 
-The fourth limitation is the labor market. The logit allocation produces
-interior employment shares but does not contain unemployment, firm entry,
-search, wage rigidities, or enforcement. Those mechanisms are central in the
-richer Colombian literature. The current specification is useful only while
-the paper's purpose remains the decomposition of spending and financing.
+Fourth, the broad-tax instrument is represented as lump sum. Observed
+consumption and income taxes have their own behavioral margins. The current
+comparison therefore identifies the additional distortion created by formal
+payroll financing, not an optimal tax mix.
+
+Fifth, informal production uses labor only and formal and informal output are
+perfect substitutes. Allowing informal capital and aggregating the two goods
+with a finite elasticity of substitution could change the quantitative
+response. Those extensions should be assessed after separating pensions from
+real public services, because the latter distinction is more fundamental.
+
+Finally, the demographic transition is imposed as a shift between two
+stationary ratios. A forecast should use the DANE annual path, endogenous labor
+force participation, mortality, migration, and cohort-specific retirement.
 
 \section{Conclusions}
 
-A permanent increase in government purchases does not have a unique effect on
-capital accumulation or labor informality. The financing instrument is part
-of the policy. In the illustrative calibration, lump-sum financing lowers
-private consumption but leaves capital and informality unchanged. Charging
-half of the additional spending to the formal wage bill lowers capital 8.2
-percent and raises informality 3.6 percentage points. Full payroll financing
-lowers capital 22.1 percent and raises informality 9.8 percentage points.
+The fiscal experiment can be stated in one equation:
+$G_t^{SS}=\bar g_o d_t$. Holding social-security spending per older adult fixed,
+DANE's projected increase in Colombia's old-age dependency ratio raises the
+long-run revenue requirement by 4.65 percent of initial GDP in the illustrative
+calibration.
 
-The model also clarifies what follows from placing government consumption in
-utility. When $G_t$ is exogenous and additively separable, it changes welfare
-but not the allocation. To obtain an independent behavioral effect, public
-spending must interact with private consumption, affect productivity, or relax
-a constraint faced by households or firms.
+That demographic pressure does not have a unique effect on capital or
+informality. Under the broad-tax benchmark, stationary capital and informality
+do not change, although private consumption falls. When half of the additional
+outlay is financed from formal payroll, capital falls 13.2 percent and
+informality rises 5.9 percentage points. With a 75 percent payroll share,
+capital falls 22.9 percent and informality rises 10.2 percentage points. Full
+marginal payroll financing has no interior stationary equilibrium.
 
-The next quantitative step is not to add more adjustment parameters. It is to
-replace the lump-sum benchmark with observed Colombian tax instruments and a
-debt rule, distinguish public consumption from public investment, and estimate
-the formal-employment response to the relevant tax wedges. Those additions
-would permit the paper to move from a mechanism exercise to a Colombian policy
-counterfactual.
+The model's strongest conclusion is therefore about financing, not the exact
+size of the simulated effects. Aging raises the fiscal claim mechanically;
+placing that claim on a tax base that contracts with its own rate amplifies the
+adjustment through informality and capital accumulation.
+
+The next step should be structural rather than cosmetic: separate pension
+transfers from health and care consumption, introduce working and retired
+households, feed the annual DANE demographic path into the transition, and
+replace the broad benchmark with observed Colombian taxes and a debt rule.
+Those additions would turn the present mechanism exercise into a model of
+intergenerational social security.
 
 \appendix
 
@@ -547,7 +597,10 @@ The code is written in R and uses only base packages. The stationary and
 transition calculations proceed as follows.
 
 \begin{enumerate}
-\item Given $(K_t,G_t)$ and required payroll revenue, solve
+\item Given the exogenous populations, compute $d_t=N_t^o/N_t^y$ and
+$G_t^{SS}=\bar g_o d_t$.
+
+\item Given $(K_t,G_t^{SS})$ and required payroll revenue, solve
 \eqref{eq:formal_choice} jointly with
 \eqref{eq:payroll_finance}. The algorithm searches all admissible roots and
 selects the root connected to the preceding allocation.
@@ -559,7 +612,7 @@ government budget residual.
 \eqref{eq:ss_return} and solve the remaining scalar equation for formal
 employment. Compute consumption from
 \[
-  C^\star=Y^\star-G^\star-\delta K^\star.
+  C^\star=Y^\star-G^{SS,\star}-\delta K^\star.
 \]
 
 \item For the transition, combine \eqref{eq:euler} and
@@ -578,7 +631,8 @@ that reproduces initial capital.
 \item Reverse the resulting sequence and append the final stationary
 allocation after the terminal discrepancy is below the numerical tolerance.
 The reported tests verify the household Euler equation, the resource
-constraint, the government budget, the benchmark targets, and terminal
+constraint, the government budget, the identity $G_t^{SS}=\bar g_o d_t$, the
+benchmark targets, and terminal
 convergence.
 \end{enumerate}
 
@@ -594,13 +648,15 @@ nonseparable private--public consumption aggregator:
   X_t=
   \left[
     \omega^{1/\eta}C_t^{(\eta-1)/\eta}
-    +(1-\omega)^{1/\eta}G_t^{(\eta-1)/\eta}
+    +(1-\omega)^{1/\eta}(G_t^{SS})^{(\eta-1)/\eta}
   \right]^{\eta/(\eta-1)}.
   \label{eq:public_private_ces}
 \end{equation}
-Utility would then be $u(X_t)$. Government consumption changes the marginal
+Utility would then be $u(X_t)$. Social-security services change the marginal
 utility of private consumption and can affect saving during a transition.
-That model is economically different from assigning a positive value to
+For cash pensions, however, utility should depend on recipients' private
+consumption rather than on aggregate outlays. The CES model is economically
+different from assigning a positive value to
 $\chi_G$ in \eqref{eq:utility}; it should be calibrated as a separate
 experiment.
 

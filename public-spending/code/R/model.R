@@ -21,9 +21,10 @@ default_parameters <- function() {
     A_informal = 0.60,
     choice_scale = 0.30,
     target_informal_share = 0.554,
-    target_government_share = 0.1472,
+    target_social_security_share = 0.057,
     baseline_payroll_finance_share = 0.50,
-    permanent_spending_increase = 0.02,
+    initial_old_age_dependency_ratio = 0.150170218,
+    final_old_age_dependency_ratio = 0.272751498,
     public_utility_weight = 0.15,
     horizon = 120L,
     gradual_speed = 0.20
@@ -34,8 +35,9 @@ validate_parameters <- function(param) {
   required <- c(
     "alpha", "depreciation", "beta", "sigma", "A_informal",
     "choice_scale", "target_informal_share",
-    "target_government_share", "baseline_payroll_finance_share",
-    "permanent_spending_increase", "public_utility_weight",
+    "target_social_security_share", "baseline_payroll_finance_share",
+    "initial_old_age_dependency_ratio",
+    "final_old_age_dependency_ratio", "public_utility_weight",
     "horizon", "gradual_speed"
   )
   missing <- setdiff(required, names(param))
@@ -55,9 +57,19 @@ validate_parameters <- function(param) {
       param$target_informal_share >= 1) {
     stop("target_informal_share must lie strictly between zero and one.")
   }
-  if (param$target_government_share <= 0 ||
-      param$target_government_share >= 1) {
-    stop("target_government_share must lie strictly between zero and one.")
+  if (param$target_social_security_share <= 0 ||
+      param$target_social_security_share >= 1) {
+    stop(
+      "target_social_security_share must lie strictly between zero and one."
+    )
+  }
+  if (param$initial_old_age_dependency_ratio <= 0 ||
+      param$final_old_age_dependency_ratio <= 0) {
+    stop("Old-age dependency ratios must be strictly positive.")
+  }
+  if (param$final_old_age_dependency_ratio <
+      param$initial_old_age_dependency_ratio) {
+    stop("The final old-age dependency ratio cannot be below the initial one.")
   }
   invisible(TRUE)
 }
@@ -80,7 +92,7 @@ calibrate_parameters <- function(param = default_parameters()) {
     formal_share^(1 - param$alpha)
   informal_output <- param$A_informal * (1 - formal_share)
   output <- formal_output + informal_output
-  government_spending <- param$target_government_share * output
+  government_spending <- param$target_social_security_share * output
   wage_formal <- (1 - param$alpha) *
     (capital / formal_share)^param$alpha
   payroll_requirement <- param$baseline_payroll_finance_share *
@@ -101,6 +113,13 @@ calibrate_parameters <- function(param = default_parameters()) {
   param$baseline_capital <- capital
   param$baseline_output <- output
   param$baseline_government_spending <- government_spending
+  param$social_security_spending_per_elderly <-
+    government_spending / param$initial_old_age_dependency_ratio
+  param$aging_spending_increase_initial_gdp <- (
+    param$social_security_spending_per_elderly *
+      param$final_old_age_dependency_ratio -
+      government_spending
+  ) / output
   param$baseline_payroll_requirement <- payroll_requirement
   param$formality_cost <- formality_cost
   param$baseline_payroll_tax <- payroll_tax
@@ -244,13 +263,18 @@ evaluate_economy <- function(
 
 scenario_levels <- function(
     param,
-    spending_increase = param$permanent_spending_increase,
+    old_age_dependency_ratio =
+      param$final_old_age_dependency_ratio,
     marginal_payroll_share = 0
 ) {
-  spending_change <- spending_increase * param$baseline_output
+  government_spending <-
+    param$social_security_spending_per_elderly *
+      old_age_dependency_ratio
+  spending_change <- government_spending -
+    param$baseline_government_spending
   list(
-    government_spending =
-      param$baseline_government_spending + spending_change,
+    old_age_dependency_ratio = old_age_dependency_ratio,
+    government_spending = government_spending,
     payroll_requirement =
       param$baseline_payroll_requirement +
       marginal_payroll_share * spending_change
@@ -259,13 +283,14 @@ scenario_levels <- function(
 
 solve_steady_state <- function(
     param,
-    spending_increase = 0,
+    old_age_dependency_ratio =
+      param$initial_old_age_dependency_ratio,
     marginal_payroll_share = 0,
     label = "Baseline"
 ) {
   levels <- scenario_levels(
     param,
-    spending_increase = spending_increase,
+    old_age_dependency_ratio = old_age_dependency_ratio,
     marginal_payroll_share = marginal_payroll_share
   )
   capital_per_formal <- steady_capital_per_formal_worker(param)
@@ -322,7 +347,13 @@ solve_steady_state <- function(
 
   data.frame(
     scenario = label,
-    spending_increase_initial_gdp = spending_increase,
+    old_age_dependency_ratio = levels$old_age_dependency_ratio,
+    social_security_spending_per_elderly =
+      param$social_security_spending_per_elderly,
+    aging_spending_increase_initial_gdp = (
+      levels$government_spending -
+        param$baseline_government_spending
+    ) / param$baseline_output,
     marginal_payroll_share = marginal_payroll_share,
     capital = capital,
     output = economy$output,
@@ -359,14 +390,19 @@ spending_path <- function(
     completion <- 1 - exp(-param$gradual_speed * time)
     completion[1L] <- 0
   }
-  spending_change <- param$permanent_spending_increase *
-    param$baseline_output
+  old_age_dependency_ratio <-
+    param$initial_old_age_dependency_ratio +
+      completion * (
+        param$final_old_age_dependency_ratio -
+          param$initial_old_age_dependency_ratio
+      )
   data.frame(
     time = time,
     completion = completion,
+    old_age_dependency_ratio = old_age_dependency_ratio,
     government_spending =
-      param$baseline_government_spending +
-      completion * spending_change
+      param$social_security_spending_per_elderly *
+        old_age_dependency_ratio
   )
 }
 
@@ -493,7 +529,7 @@ transition_given_initial_consumption <- function(
 
   final_steady <- solve_steady_state(
     param,
-    spending_increase = param$permanent_spending_increase,
+    old_age_dependency_ratio = param$final_old_age_dependency_ratio,
     marginal_payroll_share = marginal_payroll_share
   )
   terminal_gap <- capital[last] - final_steady$capital
@@ -506,6 +542,7 @@ transition_given_initial_consumption <- function(
     informal_output = informal_output,
     consumption = consumption,
     government_spending = policy$government_spending,
+    old_age_dependency_ratio = policy$old_age_dependency_ratio,
     government_share_output = policy$government_spending / output,
     formal_share = formal_share,
     informal_share = informal_share,
@@ -531,7 +568,7 @@ solve_transition <- function(
   path_type <- match.arg(path_type)
   final_steady <- solve_steady_state(
     param,
-    spending_increase = param$permanent_spending_increase,
+    old_age_dependency_ratio = param$final_old_age_dependency_ratio,
     marginal_payroll_share = marginal_payroll_share
   )
   policy <- spending_path(param, path_type)

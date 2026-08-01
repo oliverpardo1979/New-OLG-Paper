@@ -6,13 +6,13 @@ solve_step_transition_stable <- function(
   baseline <- solve_steady_state(param)
   final <- solve_steady_state(
     param,
-    spending_increase = param$permanent_spending_increase,
+    old_age_dependency_ratio = param$final_old_age_dependency_ratio,
     marginal_payroll_share = marginal_payroll_share,
     label = label
   )
   levels <- scenario_levels(
     param,
-    spending_increase = param$permanent_spending_increase,
+    old_age_dependency_ratio = param$final_old_age_dependency_ratio,
     marginal_payroll_share = marginal_payroll_share
   )
 
@@ -154,6 +154,10 @@ solve_step_transition_stable <- function(
   path$government_spending <- c(
     baseline$government_spending,
     rep(levels$government_spending, nrow(path) - 1L)
+  )
+  path$old_age_dependency_ratio <- c(
+    param$initial_old_age_dependency_ratio,
+    rep(param$final_old_age_dependency_ratio, nrow(path) - 1L)
   )
   path$payroll_requirement <- c(
     param$baseline_payroll_requirement,

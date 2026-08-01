@@ -23,11 +23,11 @@ param <- calibrate_parameters(param)
 baseline <- solve_steady_state(param, label = "Benchmark")
 scenario_map <- data.frame(
   scenario = c(
-    "Lump-sum financing",
+    "Broad-tax benchmark",
     "Mixed financing",
-    "Payroll financing"
+    "Payroll-heavy financing"
   ),
-  marginal_payroll_share = c(0, 0.5, 1)
+  marginal_payroll_share = c(0, 0.5, 0.75)
 )
 
 steady_scenarios <- lapply(
@@ -35,7 +35,7 @@ steady_scenarios <- lapply(
   function(index) {
     solve_steady_state(
       param,
-      spending_increase = param$permanent_spending_increase,
+      old_age_dependency_ratio = param$final_old_age_dependency_ratio,
       marginal_payroll_share =
         scenario_map$marginal_payroll_share[index],
       label = scenario_map$scenario[index]
@@ -101,13 +101,17 @@ calibration <- data.frame(
     "Informal productivity",
     "Discrete-choice scale",
     "Benchmark informality",
-    "Benchmark government consumption / GDP",
-    "Baseline payroll-financed share of G",
-    "Permanent increase in G / initial GDP"
+    "Initial social-security outlays / GDP",
+    "Old-age dependency ratio, 2024",
+    "Old-age dependency ratio, 2050",
+    "Social-security outlay per older adult",
+    "Baseline payroll-financed share",
+    "Implied aging increase / initial GDP"
   ),
   symbol = c(
     "alpha", "delta", "beta", "sigma", "A_I", "mu",
-    "ell_I", "G/Y", "lambda_0", "Delta G/Y_0"
+    "ell_I", "G_SS/Y", "d_2024", "d_2050", "g_bar_o",
+    "lambda_0", "Delta G_SS/Y_0"
   ),
   value = c(
     param$alpha,
@@ -117,16 +121,22 @@ calibration <- data.frame(
     param$A_informal,
     param$choice_scale,
     param$target_informal_share,
-    param$target_government_share,
+    param$target_social_security_share,
+    param$initial_old_age_dependency_ratio,
+    param$final_old_age_dependency_ratio,
+    param$social_security_spending_per_elderly,
     param$baseline_payroll_finance_share,
-    param$permanent_spending_increase
+    param$aging_spending_increase_initial_gdp
   ),
   status = c(
     rep("Standard / provisional", 6),
-    "DANE target",
-    "World Bank target",
+    "DANE labor target",
+    "OECD pension-spending target",
+    "DANE 2025 projection",
+    "DANE 2025 projection",
+    "Calibrated identity",
     "Provisional policy split",
-    "Policy experiment"
+    "Implied by aging"
   )
 )
 
@@ -172,7 +182,7 @@ policy_rows$payroll_tax_change_pp <- 100 * (
 table_lines <- c(
   "\\begin{table}[!htbp]",
   "\\centering",
-  "\\caption{Permanent public-spending increase: stationary effects}",
+  "\\caption{Population aging: stationary effects by financing rule}",
   "\\label{tab:steady_results}",
   "\\begin{threeparttable}",
   "\\begin{tabular}{lrrrrr}",
@@ -206,11 +216,11 @@ table_lines <- c(
   "\\end{tabular}",
   "\\begin{tablenotes}[flushleft]\\footnotesize",
   paste0(
-    "\\item Notes: The increase in government purchases equals two percent",
-    " of benchmark GDP. All scenarios share the same initial steady state.",
-    " Lump-sum financing means that none of the additional spending is",
-    " charged to the formal wage bill; mixed and payroll financing charge",
-    " 50 and 100 percent, respectively."
+    "\\item Notes: The old-age dependency ratio rises from 15.02 percent",
+    " in 2024 to 27.28 percent in 2050, following DANE projections.",
+    " Spending per older adult is fixed. Broad-tax financing places none",
+    " of the additional outlay on the formal wage bill; mixed and",
+    " payroll-heavy financing place 50 and 75 percent, respectively."
   ),
   "\\end{tablenotes}",
   "\\end{threeparttable}",
@@ -224,8 +234,8 @@ writeLines(
 find_policy <- function(label) {
   policy_rows[policy_rows$scenario == label, ]
 }
-payroll_row <- find_policy("Payroll financing")
-lump_row <- find_policy("Lump-sum financing")
+payroll_row <- find_policy("Payroll-heavy financing")
+lump_row <- find_policy("Broad-tax benchmark")
 mixed_row <- find_policy("Mixed financing")
 macro_lines <- c(
   paste0(
@@ -265,9 +275,9 @@ writeLines(
 )
 
 scenario_colors <- c(
-  "Lump-sum financing" = "#2A6FBB",
+  "Broad-tax benchmark" = "#2A6FBB",
   "Mixed financing" = "#E69F00",
-  "Payroll financing" = "#C43C39"
+  "Payroll-heavy financing" = "#C43C39"
 )
 
 png(
@@ -283,7 +293,7 @@ panels <- list(
   c("payroll_tax", "Formal payroll tax"),
   c("output", "Total output"),
   c("consumption", "Private consumption"),
-  c("government_share_output", "Government spending / output")
+  c("old_age_dependency_ratio", "Older adults / working-age population")
 )
 for (panel in panels) {
   variable <- panel[1L]
@@ -329,7 +339,7 @@ png(
   res = 180
 )
 par(mfrow = c(1, 3), mar = c(7, 4.2, 2.6, 1), las = 1)
-bar_labels <- c("Lump sum", "Mixed", "Payroll")
+bar_labels <- c("Broad tax", "Mixed", "Payroll heavy")
 barplot(
   policy_rows$capital_change_percent,
   names.arg = bar_labels,
