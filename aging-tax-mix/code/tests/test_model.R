@@ -24,6 +24,8 @@ stopifnot(abs(eq$informality - 0.554) < 2e-4)
 stopifnot(abs(eq$social_security_share - 0.057) < 2e-4)
 stopifnot(all(c(eq$tax_consumption, eq$tax_payroll, eq$tax_capital) >= 0))
 stopifnot(abs(par$beta * (1 + par$bond_rate) - 1) < 1e-12)
+stopifnot(abs(par$old_age_outlay - 0.426) < 0.001)
+stopifnot(abs(sum(reference_mix) - 1) < 1e-12)
 revenue_check <-
   eq$tax_consumption * (
     eq$consumption_formal +

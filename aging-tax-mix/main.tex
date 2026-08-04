@@ -430,11 +430,12 @@ model does not impose an interior solution.
 
 \section{Calibration and numerical experiment}
 
-Table \ref{tab:calibration} reports the benchmark calibration. Formal
-production uses a capital share of 0.33 and annual depreciation of 0.06. A
-four-percent real bond rate implies $\beta=1/1.04$. The CES elasticity is 1.5:
-formal and informal goods are substitutes, but far from perfect substitutes.
-The consumption tax reaches 15 percent of informal expenditure.
+Table \ref{tab:calibration} separates the two observed targets, the parameters
+chosen to match them, and the remaining benchmark inputs. Formal production
+uses a capital share of 0.33 and annual depreciation of 0.06. A four-percent
+real bond rate implies $\beta=1/1.04$. The CES elasticity is 1.5: formal and
+informal goods are substitutes, but far from perfect substitutes. The
+consumption tax reaches 15 percent of informal expenditure.
 
 \begin{table}[H]
 \centering
@@ -443,16 +444,23 @@ The consumption tax reaches 15 percent of informal expenditure.
 \begin{threeparttable}
 \begin{tabular}{llrl}
 \toprule
-Parameter & Symbol & Value & Status \\
+Quantity & Symbol & Value & Unit or source \\
 \midrule
+\multicolumn{4}{l}{\textit{Observed calibration targets}} \\
+Public pension spending & $G^S/Y$ & 0.057 & Share of GDP \\
+Labor informality & $1-n_F$ & 0.554 & Share of employment \\
+\addlinespace
+\multicolumn{4}{l}{\textit{Parameters calibrated to the observed targets}} \\
+Outlay per older adult & $\bar g_o$ & 0.426 & Model consumption units \\
+Formal-work fixed cost & $\kappa$ & 0.633 & Model utility units \\
+\addlinespace
+\multicolumn{4}{l}{\textit{Benchmark inputs and provisional assumptions}} \\
 Formal capital share & $\alpha$ & 0.330 & Provisional \\
 Annual depreciation & $\delta$ & 0.060 & Provisional \\
 Annual discount factor & $\beta$ & 0.962 & Implied by $r^b$ \\
 CES elasticity & $\eta$ & 1.500 & Provisional \\
 Informal VAT coverage & $\xi_I$ & 0.150 & Provisional \\
 Regime-choice scale & $\mu$ & 0.300 & Provisional \\
-Outlay per older adult & $\bar g_o$ & 0.426 & Calibrated \\
-Formal-work fixed cost & $\kappa$ & 0.633 & Calibrated \\
 Real-resource share & $\zeta$ & 0.250 & Provisional \\
 Real bond rate & $r^b$ & 0.040 & Provisional \\
 Trend output growth & $\gamma$ & 0.010 & Provisional \\
@@ -461,11 +469,14 @@ Common collection cost & $\chi_j$ & 2.000 & Provisional \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\footnotesize
-\item Notes: The calibration uses a reference revenue mix of 45 percent
-consumption, 35 percent payroll, and 20 percent capital income.
-$\bar g_o$ matches public pension spending of 5.7 percent of GDP, and
-$\kappa$ matches 55.4 percent labor informality. Effective tax rates and model
-units should not be read as statutory Colombian rates.
+\item Notes: The model jointly chooses $\bar g_o$ and $\kappa$ to match the two
+observed targets. The value $\bar g_o=0.426$ is expressed in model consumption
+units per older adult; it is not a share of GDP or a tax rate. This calibration
+is performed in an environment that assigns 45 percent of required revenue to
+consumption taxes, 35 percent to payroll taxes, and 20 percent to capital-income
+taxes. That mix is neither an observed target nor an estimate or policy result.
+Effective tax rates and quantities in model units should not be read as
+statutory Colombian rates or quantities in pesos.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}

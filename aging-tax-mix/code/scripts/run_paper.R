@@ -168,31 +168,40 @@ path_optimal$policy <- "2024-optimal mix"
 conditional_paths <- rbind(path_reference, path_optimal)
 
 calibration_table <- data.frame(
+  category = c(
+    rep("Observed calibration target", 2),
+    rep("Calibrated parameter", 2),
+    rep("Benchmark input / provisional assumption", 11)
+  ),
   parameter = c(
+    "Public pension spending", "Labor informality",
+    "Old-age outlay per older adult", "Formal-work fixed cost",
     "Formal capital share", "Annual depreciation", "Annual discount factor",
     "CES elasticity", "Informal VAT coverage", "Choice scale",
-    "Old-age outlay per older adult", "Formal-work fixed cost",
     "Real-resource share of social-security outlays",
     "Real bond rate", "Trend output growth", "Debt anchor",
     "Common collection-cost coefficient"
   ),
   symbol = c(
-    "alpha", "delta", "beta", "eta", "xi_I", "mu", "g_bar_o",
-    "kappa", "zeta", "r_b", "gamma", "q_bar", "chi"
+    "G_S / Y", "1 - n_F", "g_bar_o", "kappa",
+    "alpha", "delta", "beta", "eta", "xi_I", "mu",
+    "zeta", "r_b", "gamma", "q_bar", "chi"
   ),
   value = c(
+    calibration$equilibrium$social_security_share,
+    calibration$equilibrium$informality,
+    par$old_age_outlay, par$formal_cost,
     par$alpha, par$delta, par$beta, par$eta,
     par$informal_vat_coverage, par$choice_scale,
-    par$old_age_outlay, par$formal_cost, par$resource_share,
-    par$bond_rate, par$output_growth, par$debt_anchor,
-    par$collection_cost_consumption
+    par$resource_share, par$bond_rate, par$output_growth,
+    par$debt_anchor, par$collection_cost_consumption
   ),
-  status = c(
-    rep("Standard / provisional", 6),
-    "Calibrated to spending target",
-    "Calibrated to informality target",
-    "Provisional", "Provisional", "Provisional",
-    "Law 2155 of 2021", "Provisional"
+  unit_or_source = c(
+    "Share of GDP", "Share of employment",
+    "Model consumption units per older adult", "Model utility units",
+    "Provisional", "Provisional", "Implied by r_b",
+    "Provisional", "Provisional", "Provisional", "Provisional",
+    "Provisional", "Provisional", "Law 2155 of 2021", "Provisional"
   )
 )
 
